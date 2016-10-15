@@ -3,13 +3,13 @@
 #
 
 # Name of your site (displayed in the header)
-name: Your Name
+name: Marco Aurélio da Silva
 
 # Short bio or description (displayed in the header)
-description: Web Developer from Somewhere
+description: Zzzzzz...
 
 # URL of your avatar or profile pic (you could use your GitHub profile pic)
-avatar: https://raw.githubusercontent.com/barryclark/jekyll-now/master/images/jekyll-logo.png
+avatar: https://scontent-gru2-1.xx.fbcdn.net/v/t1.0-9/fr/cp0/e15/q65/75941_684038581685637_5336390958017503811_n.jpg?efg=eyJpIjoiYiJ9&oh=86f594ae941da4319af9356b76552d14&oe=589DEB67
 
 #
 # Flags below are optional
@@ -21,12 +21,12 @@ footer-links:
   email:
   facebook:
   flickr:
-  github: barryclark/jekyll-now
+  github: marcoonroad/marcoonroad.github.io # barryclark/jekyll-now
   instagram:
   linkedin:
   pinterest:
   rss: # just type anything here for a working RSS icon
-  twitter: jekyllrb
+  twitter: # jekyllrb
   stackoverflow: # your stackoverflow profile, e.g. "users/50476/bart-kiers"
   youtube: # channel/<your_long_string> or user/<user-name>
   googleplus: # anything in your profile username that comes after plus.google.com/
