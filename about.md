@@ -4,12 +4,15 @@ title: About
 permalink: /about/
 ---
 
-Some information about you!
+### About this blog
 
-### More Information
+Frequently (if God gives me the precious time), Type Theory stuff, Functional things, Compiler engineering, Computation
+models, Concurrency features, Prototype-based discussion and Forth-like related posts will arise here.
 
-A place to include any other types of information that you'd like to include about yourself.
+### About me
 
-### Contact me
+A newcomer in the constantly evolving (although not always) Computer Science field who is grateful for also being lazy.
 
-[email@domain.com](mailto:email@domain.com)
+### Contact
+
+[marcoonroad@gmail.com](mailto:marcoonroad@gmail.com)
