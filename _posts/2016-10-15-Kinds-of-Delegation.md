@@ -15,7 +15,7 @@ _unique_ selector pointing to any value.
 
   Selectors in any table (i.e, object) can't change, otherwise the uniqueness of object's selection (accessing the
 state or sending some message) is broken. In SQL terms, this column will be the _primary key_. 'Cause state mutations
-occurs frequently, our value row is also writable. Pay attention that, despite selectors being read-only, they can be
+occur frequently, our value row is also writable. Pay attention that, despite selectors being read-only, they can be
 removed if the whole entry (that is, the property) is also removed. This property erasing mechanism may be performed
 while setting a special value, such as `null`, `nil`, `undefined` or whatever, but in our discussion it will be
 `erase` (I'm reserving `nil` to trigger lookup in parent objects).
@@ -36,10 +36,10 @@ property sharing delegation.
 
   From the example above, we can easily deduce that the child's selection itself will be delegated to its parent
 rather than delegating the lookup of some non-nil value. It has interesting implications, the main one is that not
-only the state access can be delegated, _but also the state mutation_ (because these are performed after finding a
+only the state access can be delegated, _but also the state mutation_ (because this is performed after finding a
 proper property). This, in the literature, is known as _split objects representation_. We also can easily implement
 subjective/contextual programming with that. Nevertheless, without the proper care, it can lead to inconsistent
-softwares, mostly because it gives the power to the child object break encapsulation of its parent, and when there
+softwares, mostly 'cause it gives the power to the child object break encapsulation of its parent, and when there
 is a bunch of child objects, things can be out of control, worst even in non-concurrent environments.
 
   So, which is the best sharing delegation mechanism? The answer is both. While the former (i.e, value sharing) protects
