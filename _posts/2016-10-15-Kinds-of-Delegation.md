@@ -11,7 +11,7 @@ _Daniel Bardou_). But, first and foremost, let's discuss what is intrinsic to al
 the **value**. Also, we'll call every row, from now on, as simply **property**, which is a pair/entry of an
 _unique_ selector pointing to any value.
 
-![Object structure](_posts/kinds-of-delegation-object-structure.jpg)
+![Object structure](https://raw.githubusercontent.com/marcoonroad/marcoonroad.github.io/master/_posts/kinds-of-delegation-object-structure.jpg)
 
   Selectors in any table (i.e, object) can't change, otherwise the uniqueness of object's selection (accessing the
 state or sending some message) is broken. In SQL terms, this column will be the _primary key_. 'Cause state mutations
@@ -24,7 +24,7 @@ while setting a special value, such as `null`, `nil`, `undefined` or whatever, b
 me, I will take two kinds of delegation sharing, called as **property sharing** and **value sharing**. Firstly, I
 will show how **value sharing** can be represented below:
 
-![Value sharing delegation](_posts/kinds-of-delegation-value-delegation.jpg)
+![Value sharing delegation](https://raw.githubusercontent.com/marcoonroad/marcoonroad.github.io/master/_posts/kinds-of-delegation-value-delegation.jpg)
 
   As you can see, the value of the child's `move` selector is linked to the value of the parent's `move`-related
 value. Thus any change performed on the parent's `move`-related value will be reflected and synchronized with the
@@ -32,7 +32,7 @@ child's `move`-related value. If the child object performs non-nil changes in it
 link between this child and its parent on that selector is gone. By now, this topic suffices. Let's head toward
 property sharing delegation.
 
-![Property sharing delegation](_posts/kinds-of-delegation-property-delegation.jpg)
+![Property sharing delegation](https://raw.githubusercontent.com/marcoonroad/marcoonroad.github.io/master/_posts/kinds-of-delegation-property-delegation.jpg)
 
   From the example above, we can easily deduce that the child's selection itself will be delegated to its parent
 rather than delegating the lookup of some non-nil value. It has interesting implications, the main one is that not
