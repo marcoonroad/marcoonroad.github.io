@@ -7,7 +7,7 @@ tags: [oop, ownership, message-passing, prototype-based, class-based, inheritanc
 
 This post is just a suggestion for language designers of Object-oriented systems. Nothing really new except my new approach to see objects, though. Sorry, Alan Kay, but the main concept of OOP doesn't lie with **Message-Passing**, but mostly with all the sort of **Relationships** among objects. These relations are already well-known: *Inheritance*, *Delegation*, *Composition*, *Ownership*, *Cloning*, *Message-Passing* (yes, it also counts) and so on.
 
-Objects assume *relative roles* in these relations:
+Objects assume _relative roles_ in these relations:
 * In Inheritance, there is a parent object and a child one.
 * In Ownership, there is an owner object and an owned one.
 * In Delegation, there is a delegator object and a delegatee one.
