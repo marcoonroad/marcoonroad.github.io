@@ -5,6 +5,12 @@ layout: default
 <article class="post">
   <h1>{{ page.title }}</h1>
 
+  {% include tags.html %}
+  <h5> Tagged with: </h5>
+  <ul>
+  {% for pagetag in pagetags %} <li> {{ pagetag }} </li> {% endfor %}
+  </ul>
+
   <div class="entry">
     {{ content }}
   </div>
