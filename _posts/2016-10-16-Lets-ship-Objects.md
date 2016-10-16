@@ -8,12 +8,14 @@ tags: [oop, ownership, message-passing, prototype-based, class-based, inheritanc
 This post is just a suggestion for language designers of Object-oriented systems. Nothing really new except my new approach to see objects, though. Sorry, Alan Kay, but the main concept of OOP doesn't lie with **Message-Passing**, but mostly with all the sort of **Relationships** among objects. These relations are already well-known: *Inheritance*, *Delegation*, *Composition*, *Ownership*, *Cloning*, *Message-Passing* (yes, it also counts) and so on.
 
 Objects assume _relative roles_ in these relations:
-* In Inheritance, there is a parent object and a child one.
-* In Ownership, there is an owner object and an owned one.
-* In Delegation, there is a delegator object and a delegatee one.
-* In Message-Passing, there is the sender object and the receiver one.
-* In Composition, there is the entire object and the fragment one.
-* In Cloning, there is the prototype object and the clone one.
+<ul>
+<li> In Inheritance, there is a parent object and a child one. </li>
+<li> In Ownership, there is an owner object and an owned one. </li>
+<li> In Delegation, there is a delegator object and a delegatee one. </li>
+<li> In Message-Passing, there is the sender object and the receiver one. </li>
+<li> In Composition, there is the entire object and the fragment one. </li>
+<li> In Cloning, there is the prototype object and the clone one. </li>
+</ul>
 
 The most important thing is that we can generalize these roles into visibility scopes (which are commonly enumerated as `public`, `private` and `protected`). Relationship roles generalized as visibility scopes are more flexible and extensible than the today's visibility scopes known in the Java/C++ world. Also, 'cause these roles are relative, they can be overloaded (but not overridden with some kind of super-sends that will break encapsulation) through subjective/contextual mechanisms.
 
