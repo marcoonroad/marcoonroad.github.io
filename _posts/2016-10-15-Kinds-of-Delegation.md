@@ -24,7 +24,7 @@ while setting a special value, such as `null`, `nil`, `undefined` or whatever, b
 
   Bardou shows different kinds of sharing among inheritance and delegation, and also compares them in his paper. For
 me, I will take two kinds of delegation sharing, called as **property sharing** and **value sharing**. Firstly, I
-will show how **value sharing** can be represented below:
+will show how value sharing can be represented below:
 
 ![Value sharing delegation](https://raw.githubusercontent.com/marcoonroad/marcoonroad.github.io/master/_posts/kinds-of-delegation-value-delegation.jpg)
 
