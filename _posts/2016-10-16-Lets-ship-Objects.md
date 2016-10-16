@@ -23,7 +23,7 @@ For example, suppose that we want to restrict state mutation only to owner objec
 
 Of course, some design restrictions are needed, for instance, any object can't owns itself. We can implement the classical `public`, `protected` and `private` visibilities with these roles, too.
 <ul>
-<li> Private slots are slots only accessed through self-sends, that is, when the sender object and the receiver one are the same (or, better, when an object sends a message to itself). Notice also that `self` may be aliased to other variables, but that fact musn't break the system reasoning. If the self-alias escapes its self's scope, it is turned into a common object reference. </li>
+<li> Private slots are slots only accessed through self-sends, that is, when the sender object and the receiver one are the same (or, better, when an object sends a message to itself). Notice also that **self** may be aliased to other variables, but that fact musn't break the system reasoning. If the self-alias escapes its self's scope, it is turned into a common object reference. </li>
 <li> The protected visibility may be thought as the parent/delegatee giving access of some slots to its children/delegators. </li>
 <li> Public visibility is the most simple, it just don't impose any contraints for who is sending a message to an object. </li>
 </ul>
