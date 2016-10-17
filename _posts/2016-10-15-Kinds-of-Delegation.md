@@ -2,7 +2,7 @@
 layout: post
 title: Kinds of Delegation
 category: Computer Science
-tags: [prototype-based, oop, delegation]
+tags: [prototype-based, oop, delegation, lua]
 ---
 
   In my first post, I want do discuss how interestingly delegation can be thought in terms of object structure. My major
