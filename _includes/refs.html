@@ -2,9 +2,11 @@
 {% assign pagerefs = "" %}
 {% for entry in site.data.bib %}
   {% if ids contains entry.id %}
-    {% assign authors = entry.authors | join: ", " %}
-    {% assign pagerefs = pagerefs | append: "|"        | append: entry.title | append: ", " %}
-    {% assign pagerefs = pagerefs | append: entry.year | append: " - "       | append: authors %}
+    {% assign authors  = entry.authors | join: ", " %}
+    {% assign title    = "<i>"         | append: entry.title | append: "</i>" %}
+    {% assign year     = "<b>"         | append: entry.year  | append: "</b>" %}
+    {% assign pagerefs = pagerefs      | append: "|"         | append: title  | append: ", " %}
+    {% assign pagerefs = pagerefs      | append: year        | append: " - "  | append: authors %}
   {% endif %}
 {% endfor %}
 {% assign pagerefs = pagerefs | remove_first: "|" | split: "|" %}
