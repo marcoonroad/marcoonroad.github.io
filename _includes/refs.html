@@ -1,6 +1,6 @@
 {% assign ids = page.refs | sort %}
 {% assign pagerefs = "" %}
-{% for entry in site.bib %}
+{% for entry in site.data.bib %}
   {% if ids contains entry.id %}
     {% assign authors = entry.authors | join: ", " %}
     {% assign pagerefs = pagerefs | append: "|"        | append: entry.title | append: ", " %}
