@@ -2,12 +2,12 @@
 {% assign pagerefs = "" %}
 {% for entry in site.data.bib %}
   {% if ids contains entry.id %}
-    {% assign authors  = entry.authors | join: ", "                   | reverse %}
-    {% assign authors  = authors       | replace_first: " ,", " dna " | reverse %}
-    {% assign title    = "<i>"         | append: entry.title          | append: "</i>" %}
-    {% assign year     = "<b>"         | append: entry.year           | append: "</b>" %}
-    {% assign pagerefs = pagerefs      | append: "|"                  | append: title  | append: ", " %}
-    {% assign pagerefs = pagerefs      | append: year                 | append: " - "  | append: authors %}
+    {% assign authors  = entry.authors | reverse             | join: "+"      | replace_first: "+", " dna " %}
+    {% assign authors  = authors       | split: "+"          | reverse        | join: ", " %}
+    {% assign title    = "<i>"         | append: entry.title | append: "</i>" %}
+    {% assign year     = "<b>"         | append: entry.year  | append: "</b>" %}
+    {% assign pagerefs = pagerefs      | append: "|"         | append: title  | append: ", " %}
+    {% assign pagerefs = pagerefs      | append: year        | append: " - "  | append: authors %}
   {% endif %}
 {% endfor %}
 {% assign pagerefs = pagerefs | remove_first: "|" | split: "|" %}
