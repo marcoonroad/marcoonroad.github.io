@@ -1,8 +1,9 @@
 ---
 layout: post
 title: Kinds of Delegation
-category: Computer Science
+category: "Computer Science"
 tags: [prototype-based, oop, delegation, lua]
+refs: [ delegation-as-sharing, programs-without-classes ]
 ---
 
   In my first post, I want do discuss how interestingly delegation can be thought in terms of object structure. My major
