@@ -2,7 +2,7 @@
 {% assign pagerefs = "" %}
 {% for entry in site.data.bib %}
   {% if ids contains entry.id %}
-    {% assign authors  = entry.authors | reverse             | join: "+"      | replace_first: "+", " dna " %}
+    {% assign authors  = entry.authors | reverse             | join: "+"      | replace_first: "+", " and " %}
     {% assign authors  = authors       | split: "+"          | reverse        | join: ", " %}
     {% assign title    = "<i>"         | append: entry.title | append: "</i>" %}
     {% assign year     = "<b>"         | append: entry.year  | append: "</b>" %}
