@@ -9,6 +9,8 @@ tags: [prototype-based, oop, delegation]
 reference here is the paper _Delegation as a Sharing Relation: Characterization and Interpretation_ (made by
 _Daniel Bardou_). But, first and foremost, let's discuss what is intrinsic to all object structures.
 
+### Specification
+
   We can sketch an object in terms of a table: let's call the first column as the **selector** and the second one as
 the **value**. Also, we'll call every row, from now on, as simply **property**, which is a pair/entry of an
 _unique_ selector pointing to any value.
@@ -50,5 +52,76 @@ responsabilities/concerns. For the latter, it is very useful to provide well-fac
 concerns, maintainable and modular code, etc, but state mutations can break your system reasoning through entangled
 web of dependencies. For the rule of thumb, use property sharing when the state changes don't occur often, and value
 sharing when your object is not taking too much methods in its behavior.
+
+### Implementantion
+
+  To implement a proof of concept, I have chosen the Lua language. The code is shown below (don't worry, I'll explain
+step by step every piece of code):
+
+<script src="https://gist.github.com/marcoonroad/ac3d7f6c7bf4141e2bbaf26e3c54d8b7.js"> </script>
+
+  In his paper, Bardou cites an interesting issue:
+
+> Property sharing raises also the problem of object identity. If child objects have to be considered as
+> extensions of their parents, one can not put any frontier between objects: every object can create an
+> extension of another one in order to gain full access to its properties. This problem is well discussed
+> in [13].
+
+  To address that, I'm using the `protected` property to put some frontier between objects: an object only can
+be split into another representation if this property is set to `false`. By default, this property is set to
+`true` and is inherited by all descendents of `prototype`. Nevertheless, objects themselves may overwrite this
+in their own properties. 'Cause this property can be modified during runtime, triggered delegation of mutation
+on parent's properties may fail. I have put this constraint to give us a soundness feeling of the system.
+
+  There are 3 types of metatables, one for every kind of operation performed among objects, which are _cloning_,
+_split extension_ and _read-only aliasing_ (this latter for the sake of good practices). Cloning here stands for
+value sharing while extension stands for the property sharing. The lookup algorithm goes into the `parent` slot, which is not late-bound to disable unwanted recursion. The `parent` slot is also writable, which gives us Self's
+_behavioral modes_ (although our design decision is almost limited as like single-inheritance).
+
+  The `erase` property is a kind of _final_ implementation in the same way of Java's `final` keyword: it can't be
+overridden and is also inherited by all children objects. The value of the `erase` property halts the lookup if
+it is not being run with the `erase` selector (we still need to access this magic value through `erase`, after
+all). When the lookup stops by halting or by failure, it redispatchs the selection to the `missing` error handling
+method, which is expected to deal with non-existent properties.
+
+  Finally, we export an immutable alias of `prototype` to prevent external modifications into this object. If you
+are paying attention enough, you may noticed that it disallows us to call `extend` directly into `prototype` ('cause
+we can't modify the already set `protected` property), this is due the fact that prototype plays the role of an
+_abstract object_ to provide a small set of behaviors while also being a factory of objects through the `clone`
+operation. Observe also that, despite being immutable, the external reference of prototype can, without problems,
+create mutable instances. It's also valid for every kind of immutable
+view of an object...
+
+  A silly example of how using the implementation module follows:
+
+```lua
+local prototype = require 'prototype'
+
+local point = prototype: clone { x = 0, y = 0, }
+
+function point: move (x, y)
+  self.x = self.x + x
+  self.y = self.y + y
+end
+
+function point: pretty ( )
+  local format = "(%d, %d)"
+
+  return format: format (self.x, self.y)
+end
+
+local printable = { }
+
+function printable: print ( )
+  print (self: pretty ( ))
+end
+
+local instance  = point: clone { protected = false, }
+local extension = instance: extend (printable)
+
+extension: print ( )
+extension: move (5, 15)
+extension: print ( )
+```
 
   Oh God, I am tired... stay tuned on for further posts here. Thanks.
