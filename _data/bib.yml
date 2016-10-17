@@ -1,0 +1,9 @@
+- id: programs-without-classes
+  title: Organizing Programs Without Classes
+  year: 1991
+  authors: [ David Ungar, Craig Chambers, Bay-Wei Chang, Urs Hölzle ]
+
+- id: delegation-as-sharing
+  title: "Delegation as a Sharing Relation: Characterization and Interpretation"
+  year: 1996
+  authors: [ Daniel Bardou ]
