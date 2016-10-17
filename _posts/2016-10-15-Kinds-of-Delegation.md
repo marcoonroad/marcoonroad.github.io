@@ -94,34 +94,6 @@ view of an object...
 
   A silly example of how using the implementation module follows:
 
-```lua
-local prototype = require 'prototype'
-
-local point = prototype: clone { x = 0, y = 0, }
-
-function point: move (x, y)
-  self.x = self.x + x
-  self.y = self.y + y
-end
-
-function point: pretty ( )
-  local format = "(%d, %d)"
-
-  return format: format (self.x, self.y)
-end
-
-local printable = { }
-
-function printable: print ( )
-  print (self: pretty ( ))
-end
-
-local instance  = point: clone { protected = false, }
-local extension = instance: extend (printable)
-
-extension: print ( )
-extension: move (5, 15)
-extension: print ( )
-```
+<script src="https://gist.github.com/marcoonroad/621c1f796eac120a00b3d5248dc47478.js"></script>
 
   Oh God, I am tired... stay tuned on for further posts here. Thanks.
