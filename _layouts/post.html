@@ -15,6 +15,14 @@ layout: default
     {{ content }}
   </div>
 
+  {% if page.refs %}
+  {% include refs.html %}
+  <h3> References: </h3>
+  <ol>
+  {% for pageref in pagerefs %} <li> {{ pageref }} </li> {% endfor %}
+  </ol>
+  {% endif %}
+
   <div class="date">
     Written on {{ page.date | date: "%B %e, %Y" }}
   </div>
