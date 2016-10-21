@@ -77,7 +77,7 @@ on parent's properties may fail. I have put this constraint to give us a soundne
   There are 3 types of metatables, one for every kind of operation performed among objects, which are _cloning_,
 _split extension_ and _read-only aliasing_ (this latter for the sake of good practices). Cloning here stands for
 value sharing while extension stands for the property sharing. The lookup algorithm goes into the `parent` slot, which is not late-bound to disable unwanted recursion. The `parent` slot is also writable, which gives us Self's
-_behavioral modes_ (although our design decision is almost limited as like single-inheritance).
+_behavioral modes_ for free (although our design decision is almost limited as like single-inheritance).
 
   The `erase` property is a kind of _final_ implementation in the same way of Java's `final` keyword: it can't be
 overridden and is also inherited by all children objects. The value of the `erase` property halts the lookup if
@@ -85,7 +85,7 @@ it is not being run with the `erase` selector (we still need to access this magi
 all). When the lookup stops by halting or by failure, it redispatchs the selection to the `missing` error handling
 method, which is expected to deal with non-existent properties.
 
-  Finally, we export an immutable alias of `prototype` to prevent external modifications into this object. If you
+  Finally, we export an immutable alias of the `prototype` to prevent external modifications into this object. If you
 are paying attention enough, you may noticed that it disallows us to call `extend` directly into `prototype` ('cause
 we can't modify the already set `protected` property), this is due the fact that prototype plays the role of an
 _abstract object_ to provide a small set of behaviors while also being a factory of objects through the `clone`
