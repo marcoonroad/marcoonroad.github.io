@@ -3,7 +3,7 @@
 My own blog about Computer Science related posts. (http://marcoonroad.github.io)
 
 Topics, fields, features and theories that I want to cover are:
-* Object-orientation, either Class-based and Prototype-based
+* Object-orientation, either Class-based or Prototype-based
 * Type theory & type systems, including polymorphism, abstraction, effects and ownership
 * Functional programming, almost something else that you will not find easily in the web
 * Concurrency, mostly the Actor model, Reactive programming, CSP and Promises/futures
