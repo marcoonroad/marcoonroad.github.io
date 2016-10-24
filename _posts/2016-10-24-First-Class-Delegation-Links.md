@@ -58,8 +58,8 @@ can help you to grasp the whole point:
 ![Example](https://raw.githubusercontent.com/marcoonroad/marcoonroad.github.io/master/_posts/first-class-delegation-links-example.jpg)
 
 Now that you are understanding, you can see that we can also replace these
-links with another links (to some other parent stored in the receiver object)
-or even with other common values, such as numbers, strings or methods. With
+links with other links (to some other parent stored in the receiver object)
+or even with common values, such as numbers, strings or methods. With
 just one layer of indirection, we are able to easily change an object's
 behavior set dynamically. We also can increase the level of indirection just
 by put a link in the target slot of another link, going even further to achieve
