@@ -2,7 +2,8 @@
 layout: post
 title: First-Class Delegation Links
 category: "Computer Science"
-tags: [prototype-based, oop, delegation, lua]
+tags: [prototype-based, oop, delegation, lua, concatenation-based]
+refs: [concatenation-based-js]
 ---
 
 Today we will show you guys an interesting concept that we have developed,
@@ -82,7 +83,7 @@ An example of code showing how to use the library follows:
 ### Conclusion
 
 First-Class Delegation Links are an interesting alternative for sharing, not only
-in the concatenative-based inheritance model, but also in the Object-oriented world
+in the concatenation-based inheritance model, but also in the Object-oriented world
 as a whole. We want to analyze further consequences of that approach, but by now it
 may be sufficient.
 
