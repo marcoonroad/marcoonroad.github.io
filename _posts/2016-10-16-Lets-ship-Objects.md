@@ -12,12 +12,12 @@ with all the sort of **Relationships** among objects. These relations are alread
 
 Objects assume _relative roles_ in these relations:
 <ul>
-<li> In Inheritance, there is a parent object and a child one. </li>
-<li> In Ownership, there is an owner object and an owned one. </li>
-<li> In Delegation, there is a delegator object and a delegatee one. </li>
-<li> In Message-Passing, there is the sender object and the receiver one. </li>
-<li> In Composition, there is the entire object and the fragment one. </li>
-<li> In Cloning, there is the prototype object and the clone one. </li>
+<li> In Inheritance, there is a parent object and there is a child one. </li>
+<li> In Ownership, there is an owner object and there is an owned one. </li>
+<li> In Delegation, there is a delegator object and there is a delegatee one. </li>
+<li> In Message-Passing, there is the sender object and there is the receiver one. </li>
+<li> In Composition, there is the entire object and there is the fragment one. </li>
+<li> In Cloning, there is the prototype object and there is the clone one. </li>
 </ul>
 
 The most important thing to realize is that we can generalize these roles into visibility scopes (which are commonly
