@@ -6,16 +6,16 @@ tags: [prototype-based, oop, delegation, lua, concatenation-based]
 refs: [concatenation-based-js]
 ---
 
-Today we will show you guys an interesting concept that we have developed,
+Today we'll show you guys an interesting concept that we have developed,
 with the intent to provide a fine-grained implicit delegation mechanism. This
 concept is bullet-proof against the _diamond problem_ (well-known in the
 multiple-inheritance mechanism) and the _fragile base-class problem_
 (well-known in the inheritance/delegation mechanism). Traits, talents and
 mixins also provide the solution for the diamond problem, but are prone to the
-fragile base-class problem besides their our issues, e.g, the problem of
+fragile base-class problem besides their own issues, e.g, the problem of
 _external method renaming_ (which does not also rename the self-sends without
 the proper expensive code recompilation). We will call that concept as
-**First-class Delegation Links** from now on, and so we argue why our concept
+**First-Class Delegation Links** from now on, and so we argue why our concept
 is safe against such problems.
 
 _Concatenation-based prototypical inheritance_ is also safe against these
@@ -45,8 +45,8 @@ through First-Class Delegation Links...
 
 Now, as you already know, the fragile base-class arises due the passive role of
 a child object/class in the inheritance/delegation relation. Everything now may
-seem so weird and confuse, right? No problem, you have all the time of the
-world to understand that, but let us continue (you can now give a break for
+seem so weird and confused, right? No problem, you have all the time of the
+world to understand that, but let's continue (you can now give a break for
 yourself if you want or need, though).
 
 Being first-class means that our links can be passed as arguments or returned
@@ -59,11 +59,11 @@ can help you to grasp the whole point:
 
 Now that you are understanding, you can see that we can also replace these
 links with another links (to some other parent stored in the receiver object)
-or even with another common values, such as numbers, strings or methods. With
+or even with other common values, such as numbers, strings or methods. With
 just one layer of indirection, we are able to easily change an object's
 behavior set dynamically. We also can increase the level of indirection just
-by put a link in the target slot of other link, going even further to achieve
-the extension capability, but it seems a case rare to happen.
+by put a link in the target slot of another link, going even further to achieve
+the extension capability, but it seems an uncommon use for day-to-day programming.
 
 Now we will show you the proof-of-concept below:
 
@@ -72,7 +72,7 @@ Now we will show you the proof-of-concept below:
 We are using the well-known _copy on write_ technique for code optimization
 of the concatenative approach of object inheritance. As you can see, we also
 use the _copy on read_ optimization, which was developed by the Self's
-researchers (if my mind is still working). That code is a bit longer, so sorry
+researchers (if my mind is still working). That code is a bit long, so sorry
 for that (maybe we will work later in this code). Notice that we have optimized
 the delegation links to avoid useless recomputation by using memoization.
 
