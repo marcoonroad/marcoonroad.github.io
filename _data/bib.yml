@@ -7,3 +7,8 @@
   title: "Delegation as a Sharing Relation: Characterization and Interpretation"
   year: 1996
   authors: [ Daniel Bardou ]
+
+- id: concatenation-based-js
+  title: "Simplifying JavaScript with Concatenation-Based Prototype Inheritance"
+  year: 2009
+  authors: [ Antero Taivalsaari ]
