@@ -64,6 +64,8 @@ just one layer of indirection, we are able to easily change an object's
 behavior set dynamically. We also can increase the level of indirection just
 by put a link in the target slot of another link, going even further to achieve
 the extension capability, but it seems an uncommon use for day-to-day programming.
+The programmer, so, is free to change either the value in the link's source selector
+or the value in the link's target selector to create _Behavioral Modes_ à la Self.
 
 Now we will show you the proof-of-concept below:
 
