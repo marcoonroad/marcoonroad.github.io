@@ -101,3 +101,4 @@ interest in Prototype-based OOP or OOP in general:
 * [Understanding JavaScript OOP](http://robotlolita.me/2011/10/09/understanding-javascript-oop.html)
 * [Prototype Based Programming Languages](http://bluishcoder.co.nz/2009/07/16/prototype-based-programming-languages.html)
 * [Why Composition is Immune to Fragile Base Class Problem](https://medium.com/@_ericelliott/why-composition-is-immune-to-fragile-base-class-problem-8dfc6a5272aa#.p9w3pcvqt)
+* [The Heart & Soul of Prototypal OO: Concatenative Inheritance](https://medium.com/javascript-scene/the-heart-soul-of-prototypal-oo-concatenative-inheritance-a3b64cb27819#.a5hoe59og)
