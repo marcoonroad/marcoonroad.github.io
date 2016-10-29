@@ -7,22 +7,48 @@ refs: [concatenation-based-js]
 ---
 
 Today we'll show you guys an interesting concept that we have developed,
-with the intent to provide a fine-grained implicit delegation mechanism. This
-concept is bullet-proof against the _diamond problem_ (well-known in the
-multiple-inheritance mechanism) and the _fragile base-class problem_
-(well-known in the inheritance/delegation mechanism). Traits, talents and
-mixins also provide the solution for the diamond problem, but are prone to the
-fragile base-class problem besides their own issues, e.g, the problem of
-_external method renaming_ (which does not also rename the self-sends without
-the proper expensive code recompilation). We will call that concept as
-**First-Class Delegation Links** from now on, and so we argue why our concept
-is safe against such problems.
+with the sole intent to provide a _fine-grained implicit delegation mechanism_. This
+concept is bullet-proof against the
+[diamond problem](https://en.wikipedia.org/wiki/Multiple_inheritance#The_diamond_problem)
+and the [fragile base-class problem](https://en.wikipedia.org/wiki/Fragile_base_class).
+[Traits](https://en.wikipedia.org/wiki/Trait_%28computer_programming%29), talents and
+[mixins](https://en.wikipedia.org/wiki/Mixin) also provide the solution for the diamond
+problem, but are prone to the fragile base-class problem[¹](#prone-to-fragile-base-class)
+<a name="prone-to-fragile-base-class-back"> </a> besides their own issues, e.g, the problem
+of _external method renaming_[²](#external-method-renaming)<a name="external-method-renaming-back">
+</a>. We will call that concept as **First-Class Delegation Links** from now on, and so we
+argue why our concept is safe against such problems.
 
 _Concatenation-based prototypical inheritance_ is also safe against these
 problems, but a new issue arises here: the issue of
 _repetitive explicit sharing_. The programmer must ensure the copy of every
-value that she wants to share into her target objects. Our framework is
-designed with concatenation-based prototypical inheritance in mind, so we
+value that she wants to share into her target objects. In the words of Antero
+Taivalsaari (extracted from his paper called
+_Simplifying JavaScript with Concatenation-Based Prototype Inheritance_):
+
+> Concatenation-based prototype inheritance has
+> additional drawbacks that are related to the inability to modify
+> large groups of objects at once. Since delegation-based systems
+> implement parent-child relationships by physically sharing the
+> properties inherited from parents, all the changes that are
+> subsequently made to the parent objects will have an immediate
+> impact on all the children as well. While in some rare cases this
+> behavior can be undesirable, in most cases the ability to change
+> the behavior of a large group of objects simply by modifying a
+> common parent can be very convenient.
+
+> In a concatenation-based system, in contrast, the addition or
+> removal of a method or a variable will have an impact only on
+> an individual object. If the programmer wants to add certain
+> new properties (e.g., a few new methods) to an entire “class” of
+> objects, the programmer will have to use a for loop or some
+> other iterative construct to apply the same changes/differences
+> to all the objects individually. This can be clumsy and
+> inefficient. On the positive side, the benefit of this approach is
+> that the same changes can be applied to any group of objects –
+> not just those objects who happen to share a common parent.
+
+Our framework is designed with concatenation-based prototypical inheritance in mind, so we
 also address this issue in the system. In our design, we choose to implement a
 link as anything else that is _forwarded_ on given selector. With it, the
 programmer can replace a bunch of behaviors just by replacing a value from a
@@ -63,7 +89,7 @@ or even with common values, such as numbers, strings or methods. With
 just one layer of indirection, we are able to easily change an object's
 behavior set dynamically. We also can increase the level of indirection just
 by put a link in the target slot of another link, going even further to achieve
-the extension capability, but it seems an uncommon use for day-to-day programming.
+the extension capability, although it seems an uncommon use for day-to-day programming.
 The programmer, so, is free to change either the value in the link's source selector
 or the value in the link's target selector to create _Behavioral Modes_ à la Self.
 
@@ -88,6 +114,15 @@ First-Class Delegation Links are an interesting alternative for sharing, not onl
 in the concatenation-based inheritance model, but also in the Object-oriented world
 as a whole. We want to analyze further consequences of that approach, but by now it
 may be sufficient.
+
+### Notes
+
+<a name="prone-to-fragile-base-class"> </a>
+¹ - 'Cause they're frequently used with inheritance.
+[Back](#prone-to-fragile-base-class-back) <br/>
+<a name="external-method-renaming"> </a>
+² - Which doesn't also rename the self-sends without the proper expensive code recompilation.
+[Back](#external-method-renaming-back)
 
 ### Further reading
 
