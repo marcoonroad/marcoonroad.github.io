@@ -13,10 +13,12 @@ concept is bullet-proof against the
 and the [fragile base-class problem](https://en.wikipedia.org/wiki/Fragile_base_class).
 [Traits](https://en.wikipedia.org/wiki/Trait_%28computer_programming%29), talents and
 [mixins](https://en.wikipedia.org/wiki/Mixin) also provide the solution for the diamond
-problem, but are prone to the fragile base-class problem[¹](#prone-to-fragile-base-class)
+problem, but are prone to the fragile base-class
+problem[¹]({{site.url}}{{page.url}}#prone-to-fragile-base-class)
 <a name="prone-to-fragile-base-class-back"> </a> besides their own issues, e.g, the problem
-of _external method renaming_[²](#external-method-renaming)<a name="external-method-renaming-back">
-</a>. We will call that concept as **First-Class Delegation Links** from now on, and so we
+of _external method renaming_[²]({{site.url}}{{page.url}}#external-method-renaming)
+<a name="external-method-renaming-back"></a>. We will call that concept as
+**First-Class Delegation Links** from now on, and so we
 argue why our concept is safe against such problems.
 
 _Concatenation-based prototypical inheritance_ is also safe against these
@@ -95,7 +97,9 @@ or the value in the link's target selector to create _Behavioral Modes_ à la Se
 
 Now we will show you the proof-of-concept below:
 
+\[[Skip the code]({{site.url}}{{page.url}}#skip-the-code)\] <a name="skip-the-code-back"></a> <br/>
 <script src="https://gist.github.com/marcoonroad/e4704111b06e22fb1fb99d7f95845cc5.js"></script>
+<br/> <a name="skip-the-code"></a> \[[Take me back]({{site.url}}{{page.url}}#skip-the-code-back)\]
 
 We are using the well-known _copy on write_ technique for code optimization
 of the concatenative approach of object inheritance. As you can see, we also
@@ -119,10 +123,10 @@ may be sufficient.
 
 <a name="prone-to-fragile-base-class"> </a>
 ¹ - 'Cause they're frequently used with inheritance.
-[Back](#prone-to-fragile-base-class-back) <br/>
+\[[Take me back]({{site.url}}{{page.url}}#prone-to-fragile-base-class-back)\] <br/>
 <a name="external-method-renaming"> </a>
 ² - Which doesn't also rename the self-sends without the proper expensive code recompilation.
-[Back](#external-method-renaming-back)
+\[[Take me back]({{site.url}}{{page.url}}#external-method-renaming-back)\]
 
 ### Further reading
 
