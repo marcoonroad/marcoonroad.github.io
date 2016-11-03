@@ -85,7 +85,9 @@ code.
 <script src="https://gist.github.com/marcoonroad/a9791d5656482ecd85a78fdad0fe0210.js"></script>
 
 Our code relies mostly in the `debug.getlocal` function. If you have read the entire Lua's manual, you can already
-know that the `debug` API (almost unsafe) cannot deal with Tail-call Optimization properly (this is not the fault
+know that the `debug` API (almost unsafe) cannot deal with
+[Tail-call Optimization](http://wiki.c2.com/?TailCallOptimization)
+properly (this is not the fault
 of the minds behind the Lua language, this is intrinsic to TCO per se). So, the programmer must pay attention in
 her code against TCOs to avoid unexpected issues/side-effects while using this library. We're still thinking in
 some better solution for that...
@@ -102,9 +104,11 @@ to expose for who, but are prone to an increasing complexity in the implementati
 relative roles of objects (who knows if we can achieve something else with an investigation about Design Patterns?).
 
 There are still many relative scopes to implement by hand (based on our "specification"), a painful task together with
-some careful design choices. Nevertheless, Subjective Programming can be the light in the end of tunnel, the only left
+some careful design choices. Nevertheless,
+[Subject-oriented Programming](https://en.wikipedia.org/wiki/Subject-oriented_programming)
+can be the light in the end of tunnel, the only left
 question is how to integrate that in a well-designed system with strong encapsulation policies. Of course, we must
-generalize our thought concept.
+generalize our concept.
 
 Have you enjoyed this post? Want to write something about that suggestion, too? Please, make a reference for this blog
 entry into your article's footnote (of course, if you can). Thanks, anyway.
