@@ -54,12 +54,14 @@ enough for that, too). When I achieve something worth to show, I'll update this 
 
 In our proof-of-concept, we've considered only Message-Passing, Static Inheritance and Static Ownership for a matter
 of simplicity. So, our relative scopes are:
-* `self`, when sender = receiver
-* `child`, when parent(sender) = receiver
-* `parent`, when sender = parent(receiver)
-* `owned`, when owner(sender) = receiver
-* `owner`, when sender = owner(receiver)
-* `default`, the default scope
+<ul>
+<li> <b>self</b>, when sender = receiver </li>
+<li> <b>child</b>, when parent(sender) = receiver </li>
+<li> <b>parent</b>, when sender = parent(receiver) </li>
+<li> <b>owned</b>, when owner(sender) = receiver </li>
+<li> <b>owner</b>, when sender = owner(receiver) </li>
+<li> <b>default</b>, the default scope </li>
+</ul>
 
 Notice that we haven't the analogue of the `protected` scope (that is, roughly, the symmetric sum of `self` with
 `child`[¹](#protected-analogue)<a name="protected-analogue-back"></a>).
@@ -109,4 +111,4 @@ entry into your article's footnote (of course, if you can). Thanks, anyway.
 
 ### Notes
 
-<a name="proteceted-analogue"></a> ¹ - Although our system publicly leaks the parent's child scope into child object due the system semantics. \[[Take me back](#protected-analogue-back)\]
+<a name="protected-analogue"></a> ¹ - Although our system publicly leaks the parent's child scope into child object due the system semantics. \[[Take me back](#protected-analogue-back)\]
