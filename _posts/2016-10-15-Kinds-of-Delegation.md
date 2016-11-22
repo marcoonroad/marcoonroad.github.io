@@ -86,8 +86,8 @@ all). When the lookup stops by halting or by failure, it redispatchs the selecti
 method, which is expected to deal with non-existent properties.
 
   Finally, we export an immutable alias of the `prototype` to prevent external modifications into this object. If you
-are paying attention enough, you may noticed that it disallows us to call `extend` directly into `prototype` ('cause
-we can't modify the already set `protected` property), this is due the fact that prototype plays the role of an
+are paying attention enoughly, you may have noticed that it disallows us to call `extend` directly into `prototype`
+('cause we can't modify the already set `protected` property), this is due the fact that prototype plays the role of an
 _abstract object_ to provide a small set of behaviors while also being a factory of objects through the `clone`
 operation. Observe also that, despite being immutable, the external reference of prototype can, without problems,
 create mutable instances. It's also valid for every kind of immutable
