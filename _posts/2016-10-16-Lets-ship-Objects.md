@@ -25,7 +25,7 @@ Objects assume _relative roles_ in these relations:
 The most important thing to realize is that we can generalize these roles into visibility scopes (which are commonly
 enumerated as `public`, `private` and `protected`). Relationship roles generalized as visibility scopes are more flexible
 and extensible than the today's visibility scopes known in the Java/C++ world. Also, 'cause these roles are relative,
-they can be overloaded (but not overridden with some kind of super-sends that will break encapsulation) through
+they can be overloaded (but not overridden with some kind of super-sends that would break encapsulation) through
 subjective/contextual mechanisms.
 
 For example, suppose that we want to restrict state mutation only to owner object, then we just define setters visible
