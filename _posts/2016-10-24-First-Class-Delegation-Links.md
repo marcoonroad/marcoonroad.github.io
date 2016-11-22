@@ -24,7 +24,7 @@ argue why our concept is safe against such problems.
 _Concatenation-based prototypical inheritance_ is also safe against these
 problems, but a new issue arises here: the issue of
 _repetitive explicit sharing_. The programmer must ensure the copy of every
-value that she wants to share into her target objects. In the words of Antero
+value that she wants to share into his target objects. In the words of Antero
 Taivalsaari (extracted from his paper called
 _Simplifying JavaScript with Concatenation-Based Prototype Inheritance_):
 
