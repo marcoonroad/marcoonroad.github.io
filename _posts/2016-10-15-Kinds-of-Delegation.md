@@ -6,7 +6,7 @@ tags: [prototype-based, oop, delegation, lua]
 refs: [ delegation-as-sharing, programs-without-classes ]
 ---
 
-  In my first post, I want do discuss how interestingly delegation can be thought in terms of object structure. My major
+  In my first post, I want to discuss how interestingly delegation can be thought in terms of object structure. My major
 reference here is the paper _Delegation as a Sharing Relation: Characterization and Interpretation_ (made by
 _Daniel Bardou_). But, first and foremost, let's discuss what is intrinsic to all object structures.
 
