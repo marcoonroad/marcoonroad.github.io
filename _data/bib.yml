@@ -1,14 +1,43 @@
 - id: programs-without-classes
   title: Organizing Programs Without Classes
   year: 1991
-  authors: [ David Ungar, Craig Chambers, Bay-Wei Chang, Urs Hölzle ]
+  authors: [ "David Ungar", "Craig Chambers", "Bay-Wei Chang", "Urs Hölzle" ]
 
 - id: delegation-as-sharing
   title: "Delegation as a Sharing Relation: Characterization and Interpretation"
   year: 1996
-  authors: [ Daniel Bardou ]
+  authors: [ "Daniel Bardou" ]
 
 - id: concatenation-based-js
   title: "Simplifying JavaScript with Concatenation-Based Prototype Inheritance"
   year: 2009
   authors: [ Antero Taivalsaari ]
+
+- id: capability-myths-demolished
+  title: "Capability Myths Demolished"
+  year: 2003
+  authors: [ "Mark S. Miller", "Ka-Ping Yee", "Jonathan Shapiro" ]
+
+- id: protection-in-proglangs
+  title: "Protection in Programming Languages"
+  year: 1973
+  month: "January"
+  authors: [ "James H. Morris Jr." ]
+  volume: 16
+  number: 1
+
+- id: protection
+  title: "Protection"
+  year: 1971
+  month: "March"
+  authors: [ "B. W. Lampson" ]
+  conference: "Proc. Fifth Princeton Symposium on Information Sciences and Systems"
+  place: "Princeton University"
+  page: "473-443"
+  type: "conference-paper"
+  reprinted:
+    type: "article"
+    journal: "Operating Systems Review"
+    month: "January"
+    year: 1974
+    page: "18-24"

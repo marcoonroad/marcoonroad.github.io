@@ -1,0 +1,38 @@
+<script>
+        function toggleVisibility (entityID, imageID) {
+                var entity = document.getElementById (entityID);
+                var image  = document.getElementById (imageID);
+
+                if (entity.style.display == "block") {
+                        entity.style.display = "none";
+                        upsideDownOff (imageID);
+                }
+                else {
+                        entity.style.display = "block";
+                        upsideDownOn (imageID);
+                }
+        }
+
+        function upsideDownOn (id) {
+                var img = document.getElementById (id);
+
+                if (img.getAttribute ("class") == null) {
+                        img.setAttribute ("class", "");
+                }
+
+                if (! img.getAttribute ("class").contains ("upside-down")) {
+                        img.setAttribute ("class", img.getAttribute ("class") + " upside-down");
+                }
+        }
+
+        function upsideDownOff (id) {
+                var img = document.getElementById (id);
+
+                if (img.getAttribute ("class").contains (" upside-down")) {
+                        img.setAttribute ("class", img.getAttribute ("class").replace (" upside-down", ""));
+                }
+                else if (img.class.contains ("upside-down ")) {
+                        img.setAttribute ("class", img.getAttribute ("class").replace ("upside-down ", ""));
+                }
+        }
+</script>

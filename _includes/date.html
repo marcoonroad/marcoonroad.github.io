@@ -1,0 +1,9 @@
+{% unless page.draft %}
+<div class="date">
+  Written on {{ page.date | date: "%B %e, %Y" }}
+
+  {% if page.updated %} <br/>
+  Updated on {{ page.updated | date: "%B %e, %Y" }}
+  {% endif %}
+</div>
+{% endunless %}

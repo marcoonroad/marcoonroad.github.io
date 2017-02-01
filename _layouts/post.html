@@ -3,29 +3,25 @@ layout: default
 ---
 
 <article class="post">
-  <h1>{{ page.title }}</h1>
-
-  {% include tags.html %}
-  <h5> Tagged with: </h5>
-  <ul>
-  {% for pagetag in pagetags %} <li> {{ pagetag }} </li> {% endfor %}
-  </ul>
-
-  <div class="entry">
-    {{ content }}
-  </div>
-
-  {% if page.refs %}
-  {% include refs.html %}
-  <h3> References: </h3>
-  <ol>
-  {% for pageref in pagerefs %} <li> {{ pageref }} </li> {% endfor %}
-  </ol>
+  {% if page.slides %}
+    {% include slides.html %}
   {% endif %}
 
-  <div class="date">
-    Written on {{ page.date | date: "%B %e, %Y" }}
-  </div>
+<h1>{{ page.title }} {% if page.draft %} <span class="draft-tag"> [Draft] </span> {% endif %} </h1>
 
-  {% include disqus.html %}
+  {% if page.tags %}
+    {% include tags.html %}
+  {% endif %}
+
+  <div class="entry"> {{ content }} </div>
+
+  {% if page.refs %}  {% include refs.html %}  {% endif %}
+  {% if page.links %} {% include links.html %} {% endif %}
+
+  {% unless page.draft %}
+    {% if page.date %}     {% include date.html   %} {% endif %}
+    {% if page.comments %} {% include disqus.html %} {% endif %}
+  {% endunless %}
 </article>
+
+{% include loaded.html %}

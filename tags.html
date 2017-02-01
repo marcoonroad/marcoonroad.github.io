@@ -1,0 +1,101 @@
+---
+layout: page
+title: Tags
+author: marcoonroad
+foot-icons: true
+permalink: /tags/
+analytics: false
+---
+
+<h3> Used tags </h3>
+
+Below is an enumerated and sorted list of the all current tags linked in this blog (it's planned
+improvements on that tag list with category classification beforehand):
+
+{% assign rawtags = "" %}
+{% for post in site.posts %}
+        {% for tag in post.tags %}
+                {% if rawtags == "" %}
+                        {% assign rawtags = tag %}
+                {% else %}
+                        {% assign rawtags = rawtags | append: '|' | append: tag %}
+                {% endif %}
+        {% endfor %}
+{% endfor %}
+
+{% assign rawtags = rawtags | split: '|' | sort %}
+
+{% assign tags = "" %}
+{% for tag in rawtags %}
+        {% if tags == "" %}
+                {% assign tags = [ tag ] %}
+        {% endif %}
+
+        {% unless tags contains tag %}
+                {% assign tags = tags | join: '|' | append: '|' | append: tag | split: '|' %}
+        {% endunless %}
+{% endfor %}
+
+<ol>
+{% for tag in tags %}
+        {% if tag != "" %}
+                <li> <a href="#{{ tag | slugify }}"> {{ tag }} </a> </li>
+        {% endif %}
+{% endfor %}
+</ol>
+
+<hr />
+
+<h3> Related posts </h3>
+
+The "toggle-like" list of associated posts and sibling tags follows (click on post title to open given link or
+click in the "triangle" part to show other linked tags in the same post):
+
+<ol>
+{% for tag in tags %}
+        {% if tag != "" %}
+        {% assign current = tag %}
+        <li>
+        <h3 id="{{ tag | slugify }}"> {{ tag }} <img src="{{ site.data.conf.path.icons }}/show-black.png"
+                width="16" height="16" id="{{ tag | slugify }}-image"
+                onclick="return toggleVisibility ('{{ tag | slugify }}-list', '{{ tag | slugify }}-image')" /> </h3>
+        <div class="invisible" id="{{ tag | slugify }}-list">
+        <ul>
+                {% for post in site.posts %}
+                        {% if post.tags contains tag %}
+                                {% assign posttitle  = post.title | slugify %}
+                                {% assign currenttag = current | slugify %}
+                                {% assign list       = posttitle | append: "-by-" | append: currenttag %}
+
+                                <li>
+                                <h4>
+                                        <a href="{{ post.url }}" class="title-link">{{ post.title }}</a> <img
+                                        src="{{ site.data.conf.path.icons }}/show-black.png"
+                                        width="16" height="16" id="{{ list }}-image"
+                                        onclick="return toggleVisibility ('{{ list }}', '{{ list }}-image')" /></h4>
+
+                                <div id="{{ list }}" class="invisible">
+                                        <hr />
+
+                                        Other related tags:
+                                        <ul class="image-list communist-black-list">
+                                        {% for tag in post.tags %}
+                                                {% if current != tag %}
+                                                        <li>
+                                                                <a class="tag" href="{{ site.baseurl }}/tags/#{{ tag | slugify }}"> {{ tag }}</a>
+                                                        </li>
+                                                {% endif %}
+                                        {% endfor %}
+                                        </ul>
+
+                                        <hr />
+                                </div>
+                                </li>
+                        {% endif %}
+                {% endfor %}
+        </ul>
+        </div>
+        </li>
+        {% endif %}
+{% endfor %}
+</ol>

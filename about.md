@@ -1,7 +1,10 @@
 ---
 layout: page
 title: About
+author: marcoonroad
 permalink: /about/
+foot-icons: false
+analytics: true
 ---
 
 ### About this blog
@@ -15,4 +18,4 @@ A newcomer in the constantly evolving (although not always) Computer Science fie
 
 ### Contact
 
-[marcoonroad@gmail.com](mailto:marcoonroad@gmail.com)
+[GMail](mailto:marcoonroad@gmail.com) \| [Facebook](http://fb.me/marcoonroad) \| [GitHub](http://github.com/marcoonroad)

@@ -1,0 +1,11 @@
+<div id="slide-div" class="visible">
+        <hr width="97%" style="color: black; display: inline-block;" class="float-left"/>
+
+        <img src="{{ site.data.conf.path.icons }}/delete-black.png" width="16" height="16" class="float-right" id="delete-slides"
+        onmouseover="document.getElementById ('delete-slides').src = '{{ site.data.conf.path.icons }}/delete-blue.png';"
+        onmouseout="document.getElementById ('delete-slides').src  = '{{ site.data.conf.path.icons }}/delete-black.png';"
+        onclick="return disposeSlides ( );"/>
+
+        <img id="slide-img" class="dont-float"/>
+        <hr width="100%" style="color: black;"/>
+</div>

@@ -18,14 +18,14 @@ avatar: https://scontent-gru2-1.xx.fbcdn.net/v/t1.0-9/fr/cp0/e15/q65/75941_68403
 # Includes an icon in the footer for each username you enter
 footer-links:
   dribbble:
-  email:
-  facebook:
+  email: marcoonroad@gmail.com
+  facebook: marcoonroad
   flickr:
-  github: marcoonroad/marcoonroad.github.io # barryclark/jekyll-now
+  github: marcoonroad # barryclark/jekyll-now
   instagram:
   linkedin:
   pinterest:
-  rss: # just type anything here for a working RSS icon
+  rss: feed # just type anything here for a working RSS icon
   twitter: # jekyllrb
   stackoverflow: # your stackoverflow profile, e.g. "users/50476/bart-kiers"
   youtube: # channel/<your_long_string> or user/<user-name>
@@ -41,7 +41,7 @@ google_analytics: UA-41209773-2
 
 # Your website URL (e.g. http://barryclark.github.io or http://www.barryclark.co)
 # Used for Sitemap.xml and your RSS feed
-url: http://marcoonroad.github.io
+url: "http://marcoonroad.github.io"
 
 # If you're hosting your site at a Project repository on GitHub pages
 # (http://yourusername.github.io/repository-name)
@@ -70,12 +70,16 @@ kramdown:
 
 # Set the Sass partials directory, as we're using @imports
 sass:
-  style: :expanded # You might prefer to minify using :compressed
+  style: :compressed # :expanded # You might prefer to minify using :compressed
 
 # Use the following plug-ins
 gems:
   - jekyll-sitemap # Create a sitemap using the official Jekyll sitemap gem
   - jekyll-feed # Create an Atom feed using the official Jekyll feed gem
+  - jekyll-mentions
+  - jekyll-redirect-from
+  - jekyll-seo-tag
+# - jekyll-press
 
 # Exclude these files from your production _site
 exclude:

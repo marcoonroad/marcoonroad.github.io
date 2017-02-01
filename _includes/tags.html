@@ -1,1 +1,12 @@
 {% assign pagetags = page.tags | sort %}
+
+<a name="page-tags"> </a>
+<h5> Page Tags <img src="{{ site.data.conf.path.icons }}/show-black.png" id="page-tags-img" height="16" width="16"
+        onclick="return toggleVisibility ('page-tags', 'page-tags-img')" /> </h5>
+<div class="invisible" id="page-tags">
+<ul>
+        {% for pagetag in pagetags %} <li>
+        <a href="{{ site.baseurl }}/tags/#{{ pagetag }}"> {{ pagetag }} </a>
+        </li> {% endfor %}
+</ul>
+</div>

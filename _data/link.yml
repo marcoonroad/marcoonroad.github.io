@@ -1,0 +1,55 @@
+- id: you-dont-understand-delegation
+  title: "The Gang Of Four Is Wrong And You Dont Understand Delegation"
+  url: "http://www.saturnflyer.com/blog/jim/2012/07/06/the-gang-of-four-is-wrong-and-you-dont-understand-delegation/"
+
+- id: understanding-prototypes-delegation-and-composition
+  title: "Understanding Prototypes, Delegation & Composition"
+  url: "http://www.datchley.name/understanding-prototypes-delegation-composition"
+
+- id: using-prototypical-objects
+  title: "Using Prototypical Objects to Implement Shared Behavior in Object Oriented Systems"
+  url: "http://web.media.mit.edu/~lieber/Lieberary/OOP/Delegation/Delegation.html"
+
+- id: delegation-is-everything
+  title: Delegation Is Everything And Inheritance Does Not Exist
+  url: "http://www.saturnflyer.com/blog/jim/2013/11/18/delegation-is-everything-and-inheritance-does-not-exist"
+
+- id: understanding-javascript-oop
+  title: "Understanding JavaScript OOP"
+  url: "http://robotlolita.me/2011/10/09/understanding-javascript-oop.html"
+
+- id: prototype-based-languages
+  title: "Prototype Based Programming Languages"
+  url: "http://bluishcoder.co.nz/2009/07/16/prototype-based-programming-languages.html"
+
+- id: why-composition-is-immune
+  title: "Why Composition is Immune to Fragile Base Class Problem"
+  url: "http://medium.com/@_ericelliott/why-composition-is-immune-to-fragile-base-class-problem-8dfc6a5272aa#.p9w3pcvqt"
+
+- id: the-heart-and-soul-of-prototypal-oo
+  title: "The Heart & Soul of Prototypal OO: Concatenative Inheritance"
+  url: "http://medium.com/javascript-scene/the-heart-soul-of-prototypal-oo-concatenative-inheritance-a3b64cb27819#.a5hoe59og"
+
+- id: objects-as-secure-capabilities
+  title: "Objects as Secure Capabilities"
+  url: "http://joeduffyblog.com/2015/11/10/objects-as-secure-capabilities/"
+
+- id: what-is-a-capability-anyway
+  title: "What is a Capability, Anyway?"
+  url: "ftp://164.41.45.4/pub/os/eros/essays/capintro.html"
+
+- id: where-capabilities-come-from
+  title: "Where Capabilites Come From"
+  url: "ftp://164.41.45.4/pub/os/eros/essays/wherefrom.html"
+
+- id: comparing-acls-and-capabilities
+  title: "Comparing ACLs and Capabilities"
+  url: "ftp://164.41.45.4/pub/os/eros/essays/ACLSvCaps.html"
+
+- id: the-confused-deputy
+  title: "The Confused Deputy"
+  url: "http://www.skyhunter.com/marcs/capabilityIntro/confudep.html"
+
+- id: confused-deputy-resolved
+  title: "Confused Deputy Resolved"
+  url: "http://www.skyhunter.com/marcs/capabilityIntro/sysxfix.html"

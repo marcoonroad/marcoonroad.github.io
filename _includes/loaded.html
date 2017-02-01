@@ -1,0 +1,54 @@
+{% if page.slides %}
+<script>
+        var slide   = document.getElementById ("slide-img");
+        var counter = 0;
+        var gallery = [ ];
+
+        var index  = 0;
+        var images = document.getElementsByTagName ("img");
+        var image  = images[ index ];
+
+        while (image !== undefined) {
+                if (image.alt !== "") {
+                        console.log ("[PUSH] " + image.src);
+                        gallery.push (image);
+                }
+                else {
+                        console.log ("[IGNORE] " + image.src)
+                }
+
+                index += 1;
+                image  = images[ index ];
+        }
+
+        if (gallery[ counter ] === undefined) {
+                throw ("What have happened?");
+        }
+
+        if (gallery.length > 2) {
+                slide.src = gallery[ counter ].src;
+
+                var seconds = 3000;
+                var process = setInterval (function ( ) {
+                        counter += 1;
+
+                        if (gallery[ counter ] !== undefined) {
+                                slide.src = gallery[ counter ].src;
+                        }
+                        else {
+                                counter   = 0;
+                                slide.src = gallery[ 0 ].src;
+                        }
+                }, seconds);
+        }
+        else {
+                document.getElementById ("slide-div").style.display = "none";
+        }
+
+        function disposeSlides ( ) {
+                clearInterval (process);
+
+                document.getElementById ("slide-div").style.display = "none";
+        }
+</script>
+{% endif %}

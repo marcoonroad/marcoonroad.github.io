@@ -18,7 +18,7 @@ html {
 }
 
 body {
-	background: $white;
+  background: $white;
   font: 18px/1.4 $helvetica;
   color: $darkGray;
 }
@@ -74,6 +74,13 @@ a {
 	cursor: pointer;
   &:hover, &:active {
     color: $blue;
+    text-decoration: underline;
+  }
+}
+
+a.title-link {
+  &:hover, &:active {
+    text-decoration: none;
   }
 }
 
@@ -96,6 +103,10 @@ ol ul, ul ol, ul ul, ol ol {
 
 ul ul, ol ul {
   list-style-type: circle;
+}
+
+ol ul ul {
+  list-style-type: square;
 }
 
 em, i {
@@ -287,3 +298,4 @@ footer {
 // ... Otherwise it really bloats up the top of the CSS file and makes it difficult to find the start
 @import "highlights";
 @import "svg-icons";
+@import "mixins";

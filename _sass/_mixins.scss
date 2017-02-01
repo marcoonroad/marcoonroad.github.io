@@ -1,0 +1,147 @@
+.invisible {
+        display: none;
+
+        @include mobile {
+                display: block;
+        }
+}
+
+.visible {
+        display: block;
+
+        @include mobile {
+                display: none;
+        }
+}
+
+.dont-float {
+        display: block;
+        clear: both;
+}
+
+.float-left {
+        display: block;
+        float: left;
+}
+
+.float-right {
+        display: block;
+        float: right;
+}
+
+.align-left {
+        position: relative;
+        left: 0px;
+}
+
+.align-right {
+        position: relative;
+        right: 0px;
+}
+
+p {
+        text-align: justify;
+}
+
+.image-list {
+        /* TO DO */
+}
+
+.communist-black-list {
+        list-style-image: url("/images/icons/black/small/rounded-square.png");
+}
+
+.communist-red-list {
+        list-style-image: url("/images/icons/red-communism.png");
+}
+
+@mixin font-normal {
+        font-weight:     normal;
+        font-style:      normal;
+        text-decoration: none;
+        text-transform:  none;
+}
+
+@mixin font-small-caps {
+        font-variant: small-caps;
+}
+
+.draft-tag {
+        @include font-normal;
+        @include font-small-caps;
+}
+
+@mixin full-gray {
+        -webkit-filter: grayscale(100%);
+        -moz-filter:    grayscale(100%);
+        -o-filter:      grayscale(100%);
+        -ms-filter:     grayscale(100%);
+        filter:         grayscale(100%);
+}
+
+@mixin rotate-right {
+        transform:         rotate(90deg);
+        -ms-transform:     rotate(90deg);
+        -webkit-transform: rotate(90deg);
+}
+
+@mixin rotate-left {
+        transform:         rotate(270deg);
+        -ms-transform:     rotate(270deg);
+        -webkit-transform: rotate(270deg);
+}
+
+.upside-down {
+        transform:         rotate(180deg);
+        -ms-transform:     rotate(180deg);
+        -webkit-transform: rotate(180deg);
+}
+
+#slide-img {
+        @include full-gray;
+
+        height: 300px;
+        width: 100%;
+        object-fit: contain;
+
+        margin:  auto;
+        opacity: 0.75;
+        filter:  alpha(opacity=75);
+}
+
+#slide-img:hover {
+        filter:         grayscale(0%);
+        -moz-filter:    grayscale(0%);
+        -ms-filter:     grayscale(0%);
+        -o-filter:      grayscale(0%);
+        filter:         none;
+        zoom:           1;
+        -webkit-filter: grayscale(0%);
+}
+
+div.important-note {
+        border-width: 2px;
+        border-style: solid;
+        border-color: red;
+        -moz-border-radius-topleft: 15px;
+        -moz-border-radius-topright: 15px;
+        -moz-border-radius-bottomleft: 15px;
+        -moz-border-radius-bottomright: 15px;
+        border-top-left-radius: 15px;
+        border-top-right-radius: 15px;
+        border-bottom-left-radius: 15px;
+        border-bottom-right-radius: 15px;
+        padding: 5px;
+}
+
+div.important-note span:before {
+        content: "Important Note:";
+        text-transform: uppercase;
+        font-weight: bold;
+        color: black;
+        display: block;
+}
+
+div.important-note span {
+        display: block;
+}
