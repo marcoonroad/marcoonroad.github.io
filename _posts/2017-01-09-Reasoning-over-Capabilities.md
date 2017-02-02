@@ -21,6 +21,7 @@ links: [ objects-as-secure-capabilities,
          the-confused-deputy,
          confused-deputy-resolved ]
 draft: true
+sitemap: false
 ---
 
 TODO

@@ -21,6 +21,7 @@ links: [ objects-as-secure-capabilities,
          the-confused-deputy,
          confused-deputy-resolved ]
 draft: true
+sitemap: false
 ---
 
 The Capability systems and models variations date since middle half 60's. Despite being classical, this model still needs to conquer widespread use today,
