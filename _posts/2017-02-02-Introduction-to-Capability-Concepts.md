@@ -100,7 +100,7 @@ The classical `open` function is also an example of undesirable public API, beca
 filesystem through the `..` notation (which change the current directory to one above) -- but only if you have the proper rights (and it's
 possible for a malicious user to acquire the same rights of someone else through authentication). If you want to know why the `..` notation, the
 absolute directory lookup or even the `$HOME` lookup are really bad, just google
-[PHP Remote File Inclusion](http://google.com/?q=php-remote-file-inclusion) to take a glimpse of the incoming answer. These notations are just
+[PHP Remote File Inclusion](http://google.com/?q=php+remote+file+inclusion) to take a glimpse of the incoming answer. These notations are just
 good examples of Ambient Authority.
 
 Ambient Authority arises due the separation of _designation_ from _authority_. This separation is the rule of thumb in ACL-based systems, where
