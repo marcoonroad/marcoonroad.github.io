@@ -41,3 +41,11 @@
     month: "January"
     year: 1974
     page: "18-24"
+
+- id: robust-composition
+  title: "Robust Composition: Towards a Unified Approach to Access Control and Concurrency Control"
+  authors: [ "Mark Samuel Miller" ]
+  year: 2006
+  month: "May"
+  place: "Johns Hopkins University"
+  type: "phd-thesis"

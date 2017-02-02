@@ -9,9 +9,9 @@ layout: default
 
 <h1>{{ page.title }} {% if page.draft %} <span class="draft-tag"> [Draft] </span> {% endif %} </h1>
 
-  {% if page.tags %}
-    {% include tags.html %}
-  {% endif %}
+  {% unless page.draft %}
+    {% if page.tags %} {% include tags.html %} {% endif %}
+  {% endunless %}
 
   <div class="entry"> {{ content }} </div>
 

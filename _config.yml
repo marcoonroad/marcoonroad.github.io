@@ -78,6 +78,7 @@ gems:
   - jekyll-feed # Create an Atom feed using the official Jekyll feed gem
   - jekyll-mentions
   - jekyll-redirect-from
+  - jekyll-gist
   - jekyll-seo-tag
 # - jekyll-press
 

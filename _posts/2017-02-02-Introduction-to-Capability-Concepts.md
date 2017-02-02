@@ -13,7 +13,8 @@ foot-icons: true
 author: marcoonroad
 refs: [ capability-myths-demolished,
         protection,
-        protection-in-proglangs ]
+        protection-in-proglangs,
+        robust-composition ]
 links: [ objects-as-secure-capabilities,
          what-is-a-capability-anyway,
          where-capabilities-come-from,
@@ -25,7 +26,7 @@ sitemap: false
 ---
 
 The Capability systems and models variations date since middle half 60's. Despite being classical, this model still needs to conquer widespread use today,
-due its straightforward reasoning properties and trusted communication patterns (even among untrusted sources). For those who don't know that model,
+due its straightforward reasoning properties and trusted communication patterns (even among mutually suspicious sources). For those who don't know that model,
 this post suits well as a complete introduction and essay (in some sense) about Capabilities, related terms/concepts and design issues. So, let's
 explore this Capability world together!
 
@@ -84,27 +85,30 @@ We'll defer the analysis of many choice impacts along this post, but the trivial
 By "Orthogonal access graph" and "Unified access graph", we mean how naturally seem these pointers. In the Capability Model, the
 Access Graph is unified with the Reference Graph, thus, an external security mechanism/feature to control the access isn't necessary.
 On the other side, the ACL Model requires beforehand a global identification together with some administrator of these accounts (is the duty of
-the administrator to amplify, grant or revoke rights). Therefore, dynamic/ephemeral subjects aren't feasible in the ACL Model anyways due the
-explicit labeled authentication of subject names/identifiers.
+the administrator to amplify, grant or revoke rights -- these administration rights are known as a `control`/`owner` privilege). Therefore,
+dynamic/ephemeral subjects aren't feasible in the ACL Model anyways due the explicit labeled authentication of subject names/identifiers.
 
 Speaking of nominal things, there are a feature in which we want to avoid in all the cost. This (anti-)feature is called _Ambient Authority_.
 
 <a name="ambient-authority"> </a>
 ### Ambient Authority
 
-A system contains Ambient Authority when some subject just use an (almost) unique name to access anything. This occurs frequently in ACL-based
-security, for instance, when we open a file. It also occurs on global/public APIs taking too much responsibilities & privileges, e.g, Reflection
-APIs. The classical `open` function is also an example of undesirable public API, because it gives you the power to open any file in the
+A system contains Ambient Authority when some subject just use an (almost) unique & freely available name to access anything. This occurs
+frequently in ACL-based security, for instance, when we open a file. It also occurs on global/public APIs taking too much responsibilities &
+privileges, e.g, Reflection APIs.
+The classical `open` function is also an example of undesirable public API, because it gives you the power to open any file in the
 filesystem through the `..` notation (which change the current directory to one above) -- but only if you have the proper rights (and it's
-feasible for a malicious user to acquire the same rights of someone else through authentication). If you want to know why the `..` notation, the
+possible for a malicious user to acquire the same rights of someone else through authentication). If you want to know why the `..` notation, the
 absolute directory lookup or even the `$HOME` lookup are really bad, just google
 [PHP Remote File Inclusion](http://google.com/?q=php-remote-file-inclusion) to take a glimpse of the incoming answer. These notations are just
 good examples of Ambient Authority.
 
 Ambient Authority arises due the separation of _designation_ from _authority_. This separation is the rule of thumb in ACL-based systems, where
-you can acquire a reference without the authority to use it. It's important to remember that authority doesn't mean permission: someone else can
-steal your key, this person have the permission to use it to open your door (as long as your door's lock "accepts" the key), but not the proper
-authority (which must be explicitly granted by you).
+you can acquire rights over a reference without the permission to use it. It's important to remember that authority doesn't mean permission: authority is a
+generalization of permission. Where permission stands for the **direct** means to acquire rights over a resource, authority also includes the
+**potential effects** for "abuse" of **indirect** means to acquire that same rights. That is, permission deals directly with the _identity_ of the
+sender/owner subject, where authority will also pay attention on the indirect means to bypass security through message-passing. In the message-passing
+layer, if you don't trust someone else, you will often deliver revocable references/proxies to this guy.
 
 Although "Capability-based" implies "Non-Ambient Authority", it's worth to note that "Non-Ambient Authority" doesn't imply "Capability-based".
 Ambient Authority must be eliminated from the system 'cause it is prone to two major problems:
@@ -138,15 +142,27 @@ pattern manifests itself, such as:
 * [Sibling communication](#sibiling-communication)
 * [Sealing/branding pairs](#sealing-pairs)
 * Identity/equality comparison
+* And even in the introduction of capabilities (a.k.a, delegation of capabilities)
 
 Informally (I mean, not a standard / official / literature-based classification), I will give 3 kinds of synergy classified as below:
 * _Mutual Synergy_, some capability introduces itself to another capability and also is introduced for this other one
-* _Paired Synergy_, the introduction of 2 capabilities results into a new held capability
+* _Paired Synergy_, the introduction of 2 capabilities results into a new held capability for the subject
 * _Mutually-Paired Synergy_, the subject introduces both capabilities to themselves and acquire the result capability
 
 The image below may help you to understand that:
 
 ![Kinds of Synergy]({{ site.baseurl }}/images/Introduction-to-Capability-Concepts/kinds-of-synergy.jpg)
+
+<div class="important-note"> <span>
+Although synergy is classified as a composition of capabilities, not always capabilities are generated as a result of these dynamic interactions.
+When such capability is not a result of that composition, there's a loophole in the synergy which can be used to bypass the Capability model.
+Frequently, interactions increase the general authority among parties, if this resulting authority is not represented as a resulting capability,
+it turns out itself into an anonymous side-effect represented by an invisible capability. <p/>
+
+However, these notes doesn't hold for the delegation of capabilities 'cause this is the core idea of the Capability model -- you want such kind
+of side-effect to control explicitly which resources can be accessed and which can't. <u>In the end, you'are acting like an Access Matrix for
+all of your known fellows and comrades.</u>
+</span> </div>
 
 An good example of synergy can be a file handler: when we have both readable and writable views of a handler, it's possible to
 acquire a third view of that handler (one performing `append`). A simple ("Sure?") & expressive ("Enough!") code in an unexpected & unsafe language
@@ -281,12 +297,18 @@ Capability Revocation, etc. Comparison on primitives such numbers and strings ar
 
 ![Rights Amplification]({{ site.baseurl }}/images/Introduction-to-Capability-Concepts/rights-amplification.jpg)
 
-TODO
+Rights amplification occurs when we provide additional authority over some system resource through a new capability. The image above captures
+pretty well that idea.
 
 <a name="sibling-communication"> </a>
 ### Sibling Communication
 
-TODO
+This name may sound like a kind of message-passing protocol, but it's just an alias for closures in the Object Capability Model. By closures,
+I mean the most accurate thing to the used definition: 2 parties sharing the same behavior set. If this behavior (set of methods, on most cases)
+results from the evaluation of another behavior set (that is, they are closures), it means that they share the internal state of this super-behavior.
+Thus, the "siblings" are aware of performed changes on one of these "secretly shared" states. This, therefore, is a form of secure communication (if
+no loopholes are freely accessible, such as the reflection for debuggers inspecting the call stack), and also a kind of "lexical" Synergy. Siblings are
+often used to build other forms of Synergy, though.
 
 <a name="sealing-pairs"> </a>
 ### Sealing Pairs
@@ -296,6 +318,9 @@ Also known as _seals_ (and introduced in the classical paper _Protection in Prog
 language context, there's no such encryption mechanism, an encrypted message is just an unique object with an _empty interface_. 'Cause this
 unique object provides an unique identity, we can use internal hash comparison, together with Sibling Communication (i.e, closures) to
 implement sealing pairs, and, therefore, achieve [Rights Amplification](#rights-amplification) with that.
+
+Note that, however, identity is not a requirement to build sealing pairs: the programming language Noether itself uses unique alpha-renames on the
+'Static Names' mechanism to provide safe compile-time encapsulation of resources.
 
 ![Sealing Pairs]({{ site.baseurl }}/images/Introduction-to-Capability-Concepts/sealing-pairs.jpg)
 
@@ -333,7 +358,29 @@ function sealing (label) {
 }
 ```
 
-I must also give you some advice, though. <u>Don't abuse of the Rights Amplification concept unless you want to be prone to Luring Attacks</u>, right?
+I must also give you some advice, though. <u>Don't abuse of the Rights Amplification concept unless you want to be prone to Luring Attacks</u> (do
+you remind the said loopholes in synergy?), right?
+
+### Notes on implementations
+
+Implementations of the Object Capability Model in the PLT (Programming Language Theory) field frequently are either pure new programming languages or
+subsets of already existent ones. The subset design provides a "tamed" API together with a "Powerbox". The tamed API stands for the "Capability-safe"
+set of functions, classes, etc. that can be exposed globally without further problems (that is, they describes resources of the programming language itself
+rather than Operating System resources, for example: vectors, lists, sets, bags and maps data types). Resources who must be encoded as Capabilities are
+passed explicitly through message-passing (e.g, an object dealing with the sensible business logic, such as passwords, telephones, emails, and so on). On
+the other side, the Powerbox means a description of prone-to-be-accessed Operating System's resources, this description list itself acts like a white-list
+approach for sandboxing.
+
+In the Capability model, rather than providing a complete set of security mechanisms, we provide minimal abstractions to build high-level security abstractions
+enforcing policies on top of these "primitive" ones. This idea works in the same way of layered abstraction of modules. The great profit and
+benefits of that security approach is the possibility of decouple and compose abstractions in diverse ways as they were LEGO's building blocks.
+
+In his PhD thesis _Robust Composition_, Mark S. Miller discuss about loader isolation (i.e, environment-based `eval`). It turns out that every language
+providing these kind of loader functions, can also provide a modular Capability integration of code (only if _magic names_ aren't resolved implicitly
+such as namespace/package-level identifiers). Some languages fit these requirements, for example the Scheme and Lua programming languages. Otherwise, the
+'Meta-Circular Interpreter' "pattern" known in the Lisp's world can be used to "reveal" the internals of a Programming Language and, thus, tweak a
+runtime resolution of unbound names (although this pattern is not feasible on languages without "unified" syntax in the same sense of Lisp/Forth syntax --
+a.k.a, a syntax without keywords). Compile-time type systems and bytecode monitoring can also be used to enforce minimal and safe Capability policies, anyways.
 
 <a name="final-remarks"> </a>
 ### Final remarks
