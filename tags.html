@@ -59,7 +59,7 @@ click in the "triangle" part to show other linked tags in the same post):
         {% assign current = tag %}
         <li>
         <h3 id="{{ tag | slugify }}"> {{ tag }} <img src="{{ site.data.conf.path.icons }}/show-black.png"
-                width="16" height="16" id="{{ tag | slugify }}-image"
+                width="16" height="16" id="{{ tag | slugify }}-image" class="default-rotation"
                 onclick="return toggleVisibility ('{{ tag | slugify }}-list', '{{ tag | slugify }}-image')" /> </h3>
         <div class="invisible" id="{{ tag | slugify }}-list">
         <ul>
@@ -74,7 +74,7 @@ click in the "triangle" part to show other linked tags in the same post):
                                 <h4>
                                         <a href="{{ post.url }}" class="title-link">{{ post.title }}</a> <img
                                         src="{{ site.data.conf.path.icons }}/show-black.png"
-                                        width="16" height="16" id="{{ list }}-image"
+                                        width="16" height="16" id="{{ list }}-image" class="default-rotation"
                                         onclick="return toggleVisibility ('{{ list }}', '{{ list }}-image')" /></h4>
 
                                 <div id="{{ list }}" class="invisible">

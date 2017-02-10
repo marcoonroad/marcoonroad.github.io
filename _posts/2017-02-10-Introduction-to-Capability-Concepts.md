@@ -88,7 +88,7 @@ On the other side, the ACL Model requires beforehand a global identification tog
 the administrator to amplify, grant or revoke rights -- these administration rights are known as a `control`/`owner` privilege). Therefore,
 dynamic/ephemeral subjects aren't feasible in the ACL Model anyways due the explicit labeled authentication of subject names/identifiers.
 
-Speaking of nominal things, there are a feature in which we want to avoid in all the cost. This (anti-)feature is called _Ambient Authority_.
+Speaking of nominal things, there is a feature in which we want to avoid in all the cost. This (anti-)feature is called _Ambient Authority_.
 
 <a name="ambient-authority"> </a>
 ### Ambient Authority
@@ -104,8 +104,9 @@ absolute directory lookup or even the `$HOME` lookup are really bad, just google
 good examples of Ambient Authority.
 
 Ambient Authority arises due the separation of _designation_ from _authority_. This separation is the rule of thumb in ACL-based systems, where
-you can acquire rights over a reference without the permission to use it. It's important to remember that authority doesn't mean permission: authority is a
-generalization of permission. Where permission stands for the **direct** means to acquire rights over a resource, authority also includes the
+you can acquire an implicit authority over a reference without the known permission to use it.
+It's important to remember that authority doesn't mean permission: authority is a "generalization" of permission in some way.
+Where permission stands for the **direct** means to acquire rights over a resource, authority also includes the
 **potential effects** for "abuse" of **indirect** means to acquire that same rights. That is, permission deals directly with the _identity_ of the
 sender/owner subject, where authority will also pay attention on the indirect means to bypass security through message-passing. In the message-passing
 layer, if you don't trust someone else, you will often deliver revocable references/proxies to this guy.
@@ -372,15 +373,16 @@ the other side, the Powerbox means a description of prone-to-be-accessed Operati
 approach for sandboxing.
 
 In the Capability model, rather than providing a complete set of security mechanisms, we provide minimal abstractions to build high-level security abstractions
-enforcing policies on top of these "primitive" ones. This idea works in the same way of layered abstraction of modules. The great profit and
+(that is, enforcing policies on top of these "primitive" ones). This idea works in the same way of layered abstraction of modules. The great profit and
 benefits of that security approach is the possibility of decouple and compose abstractions in diverse ways as they were LEGO's building blocks.
 
 In his PhD thesis _Robust Composition_, Mark S. Miller discuss about loader isolation (i.e, environment-based `eval`). It turns out that every language
 providing these kind of loader functions, can also provide a modular Capability integration of code (only if _magic names_ aren't resolved implicitly
 such as namespace/package-level identifiers). Some languages fit these requirements, for example the Scheme and Lua programming languages. Otherwise, the
 'Meta-Circular Interpreter' "pattern" known in the Lisp's world can be used to "reveal" the internals of a Programming Language and, thus, tweak a
-runtime resolution of unbound names (although this pattern is not feasible on languages without "unified" syntax in the same sense of Lisp/Forth syntax --
-a.k.a, a syntax without keywords). Compile-time type systems and bytecode monitoring can also be used to enforce minimal and safe Capability policies, anyways.
+runtime resolution of unbound names (although this pattern is very hard -- if not impossible -- on languages without "unified" syntax in the same sense
+of Lisp/Forth syntax -- a.k.a, a syntax without keywords). Compile-time type systems and bytecode monitoring can also be used to enforce minimal and safe
+Capability policies, anyways, but the control over such accesses is in the hands of the implementation rather than user's hands.
 
 <a name="final-remarks"> </a>
 ### Final remarks

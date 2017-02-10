@@ -1,38 +1,98 @@
 <script>
+        function checkAttribute (entity, attribute) {
+                if (entity.getAttribute (attribute) === null) {
+                        entity.setAttribute (attribute, "");
+                }
+        }
+
+        function removeClass (entity, className) {
+                checkAttribute (entity, "class");
+
+                var after  = " " + className;
+                var before = className + " ";
+
+                if (entity.getAttribute ("class").contains (before)) {
+                        entity.setAttribute ("class", entity.getAttribute ("class").replace (before, ""));
+                        return true;
+                }
+                else if (entity.getAttribute ("class").contains (after)) {
+                        entity.setAttribute ("class", entity.getAttribute ("class").replace (after, ""));
+                        return true;
+                }
+                else {
+                        return false;
+                }
+
+        }
+
+        function extendClass (entity, className) {
+                checkAttribute (entity, "class");
+
+                if (! entity.getAttribute ("class").contains (className)) {
+                        entity.setAttribute ("class", className + " " + entity.getAttribute ("class"));
+                }
+                else if (removeClass (entity, className)) {
+                        extendClass (entity, className);
+                }
+
+        }
+
+        function appendClass (entity, className) {
+                checkAttribute (entity, "class");
+
+                if (! entity.getAttribute ("class").contains (className)) {
+                        entity.setAttribute ("class", entity.getAttribute ("class") + " " + className);
+                }
+                else if (removeClass (entity, className)) {
+                        appendClass (entity, className);
+                }
+        }
+
+        function changeClass (entity, current, next) {
+                checkAttribute (entity, "class");
+
+                entity.setAttribute ("class", entity.getAttribute ("class").replace (current, next));
+        }
+
         function toggleVisibility (entityID, imageID) {
                 var entity = document.getElementById (entityID);
                 var image  = document.getElementById (imageID);
 
-                if (entity.style.display == "block") {
+                checkAttribute (entity, "class");
+                checkAttribute (image, "class");
+
+                if (entity.style.display === "none") {
+                        entity.style.display = "block";
+                        upsideDownOn (imageID);
+                }
+                else if (entity.style.display === "block") {
                         entity.style.display = "none";
                         upsideDownOff (imageID);
                 }
-                else {
-                        entity.style.display = "block";
+                else if (entity.getAttribute ("class").contains ("invisible")) {
+                        changeClass (entity, "invisible", "visible");
                         upsideDownOn (imageID);
+                }
+                else if (entity.getAttribute ("class").contains ("visible")) {
+                        changeClass (entity, "visible", "invisible");
+                        upsideDownOff (imageID);
+                }
+                else {
+                        entity.style.display = "none";
+                        upsideDownOff (imageID);
+
                 }
         }
 
         function upsideDownOn (id) {
                 var img = document.getElementById (id);
 
-                if (img.getAttribute ("class") == null) {
-                        img.setAttribute ("class", "");
-                }
-
-                if (! img.getAttribute ("class").contains ("upside-down")) {
-                        img.setAttribute ("class", img.getAttribute ("class") + " upside-down");
-                }
+                changeClass (img, "default-rotation", "upside-down-rotation");
         }
 
         function upsideDownOff (id) {
                 var img = document.getElementById (id);
 
-                if (img.getAttribute ("class").contains (" upside-down")) {
-                        img.setAttribute ("class", img.getAttribute ("class").replace (" upside-down", ""));
-                }
-                else if (img.class.contains ("upside-down ")) {
-                        img.setAttribute ("class", img.getAttribute ("class").replace ("upside-down ", ""));
-                }
+                changeClass (img, "upside-down-rotation", "default-rotation");
         }
 </script>

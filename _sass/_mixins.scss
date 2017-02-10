@@ -1,9 +1,7 @@
 .invisible {
         display: none;
 
-        @include mobile {
-                display: block;
-        }
+        @include mobile { display: block; }
 }
 
 .visible {
@@ -91,10 +89,28 @@ p {
         -webkit-transform: rotate(270deg);
 }
 
-.upside-down {
+.upside-down-rotation {
         transform:         rotate(180deg);
         -ms-transform:     rotate(180deg);
         -webkit-transform: rotate(180deg);
+
+        @include mobile {
+                transform:         rotate(0deg);
+                -ms-transform:     rotate(0deg);
+                -webkit-transform: rotate(0deg);
+        }
+}
+
+.default-rotation {
+        transform:         rotate(0deg);
+        -ms-transform:     rotate(0deg);
+        -webkit-transform: rotate(0deg);
+
+        @include mobile {
+                transform:         rotate(180deg);
+                -ms-transform:     rotate(180deg);
+                -webkit-transform: rotate(180deg);
+        }
 }
 
 #slide-img {
