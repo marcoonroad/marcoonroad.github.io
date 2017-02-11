@@ -20,6 +20,7 @@ links: [ you-dont-understand-delegation,
 foot-icons: true
 comments: true
 analytics: true
+updated: '2017-02-10'
 ---
 
 Today we'll show you guys an interesting concept that we have developed,
@@ -131,6 +132,7 @@ An example of code showing how to use the library follows:
 <noscript>Please enable JavaScript to see the Gist code.</noscript>
 
 <a name="conclusion"> </a>
+
 ### Conclusion
 
 First-Class Delegation Links are an interesting alternative for sharing, not only
@@ -139,6 +141,7 @@ as a whole. We want to analyze further consequences of that approach, but by now
 may be sufficient.
 
 <a name="notes"> </a>
+
 ### Notes
 
 <span></span>

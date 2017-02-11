@@ -11,7 +11,7 @@ author: marcoonroad
 foot-icons: true
 comments: true
 analytics: true
-updated: "2017-01-09"
+updated: "2017-02-10"
 ---
 
   In my first post, I want to discuss how interestingly delegation can be thought in terms of object structure. My major
@@ -19,6 +19,7 @@ reference here is the paper _Delegation as a Sharing Relation: Characterization 
 _Daniel Bardou_). But, first and foremost, let's discuss what is intrinsic to all object structures.
 
 <a name="specification"> </a>
+
 ### Specification
 
   We can sketch an object in terms of a table: let's call the first column as the **selector** and the second one as
@@ -64,6 +65,7 @@ web of dependencies. For the rule of thumb, use property sharing when the state 
 sharing when your object is not taking too much methods in its behavior.
 
 <a name="implementation"> </a>
+
 ### Implementantion
 
   To implement a proof of concept, I have chosen the Lua language. The code is shown below (don't worry, I'll explain

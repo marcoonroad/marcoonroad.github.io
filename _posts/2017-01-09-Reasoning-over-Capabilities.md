@@ -27,6 +27,7 @@ sitemap: false
 TODO
 
 <a name="reasoning-properties"> </a>
+
 ### Reasoning Properties
 
 Being a delimited & composable model turns the programming activity restricted yet expressive. It turns out that we can easily
@@ -89,6 +90,7 @@ classification also isn't official).
 Have classified such thing, we can move forward our analysis... TODO
 
 <a name="implementation"></a>
+
 ### Implementation
 
 Almost any dynamic programming language with support to "environment-driven `eval`" (that is, dynamic code evaluation taking an explicit
@@ -115,6 +117,7 @@ due the often ACL model requirement of global subject identification).
 ![Lua-Capability Conversion Boundary]({{ site.baseurl }}/images/Introduction-to-Capability-Concepts/lua-capability-conversion-boundary.jpg)
 
 <a name="conclusion"> </a>
+
 ### Conclusion
 
 TODO

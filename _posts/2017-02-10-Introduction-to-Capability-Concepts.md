@@ -44,6 +44,7 @@ Before we dive in such model, we must know how systems are built around security
 is all about _who_ will/can access _what_ and _how_. An important tool to reason about said concern is known as _Access Matrix_.
 
 <a name="access-matrix"> </a>
+
 ### Access Matrix
 
 The Access Matrix is a table where columns are resources (i.e, _what_) and rows are subjects (i.e, _who_ -- in the classical literature they are
@@ -91,6 +92,7 @@ dynamic/ephemeral subjects aren't feasible in the ACL Model anyways due the expl
 Speaking of nominal things, there is a feature in which we want to avoid in all the cost. This (anti-)feature is called _Ambient Authority_.
 
 <a name="ambient-authority"> </a>
+
 ### Ambient Authority
 
 A system contains Ambient Authority when some subject just use an (almost) unique & freely available name to access anything. This occurs
@@ -117,6 +119,7 @@ Ambient Authority must be eliminated from the system 'cause it is prone to two m
 * The break of the _Principle of Least Privilege_
 
 <a name="least-privilege-principle"> </a>
+
 ### Principle of Least Privilege
 
 This principle states that subjects must only use the minimum, needed and _legitimate_ resources to complete an ongoing task. This principle also
@@ -125,6 +128,7 @@ resources) in favor of explicit communication/message-passing. When this princip
 on a bunch of passed privileges being enough and properly used by the subject.
 
 <a name="confused-deputy-problem"> </a>
+
 ### Confused Deputy Problem
 
 Also known as _Luring Attack_, the _Confused Deputy Problem_ stands for the fooling of a deputy (here, a subject carrying some possibly sensible
@@ -134,6 +138,7 @@ due the trust relation being abused: the Capability model can't eliminate this p
 ACL model is very prone to this problem.
 
 <a name="synergy"> </a>
+
 ### Synergy
 
 Synergy is an implicit pattern that often occurs in Object-Capability Systems. This pattern is very important on such systems, because it states
@@ -270,6 +275,7 @@ they yield the file `move` operation. We have already seen how to compose small 
 small building blocks with _facets_.
 
 <a name="facets"> </a>
+
 ### Facets
 
 Facets are a kind of first-class (Re-)Decorators, which provide a subset of decorated capability's interface (may it be an Adaptor which
@@ -294,6 +300,7 @@ is, capability comparison/discrimination on the programmer-side) while we still 
 Capability Revocation, etc. Comparison on primitives such numbers and strings are needed in some way, so the ban here doesn't count.
 
 <a name="rights-amplification"> </a>
+
 ### Rights Amplification
 
 ![Rights Amplification]({{ site.baseurl }}/images/Introduction-to-Capability-Concepts/rights-amplification.jpg)
@@ -302,6 +309,7 @@ Rights amplification occurs when we provide additional authority over some syste
 pretty well that idea.
 
 <a name="sibling-communication"> </a>
+
 ### Sibling Communication
 
 This name may sound like a kind of message-passing protocol, but it's just an alias for closures in the Object Capability Model. By closures,
@@ -312,6 +320,7 @@ no loopholes are freely accessible, such as the reflection for debuggers inspect
 often used to build other forms of Synergy, though.
 
 <a name="sealing-pairs"> </a>
+
 ### Sealing Pairs
 
 Also known as _seals_ (and introduced in the classical paper _Protection in Programming Languages_), sealing pairs are a pair of functions
@@ -362,6 +371,8 @@ function sealing (label) {
 I must also give you some advice, though. <u>Don't abuse of the Rights Amplification concept unless you want to be prone to Luring Attacks</u> (do
 you remind the said loopholes in synergy?), right?
 
+<a name="notes-on-implementations"> </a>
+
 ### Notes on implementations
 
 Implementations of the Object Capability Model in the PLT (Programming Language Theory) field frequently are either pure new programming languages or
@@ -385,6 +396,7 @@ of Lisp/Forth syntax -- a.k.a, a syntax without keywords). Compile-time type sys
 Capability policies, anyways, but the control over such accesses is in the hands of the implementation rather than user's hands.
 
 <a name="final-remarks"> </a>
+
 ### Final remarks
 
 The Capability Model is a great model that deserves some attention. It can be an useful feature in Operating Systems and Programming Languages.

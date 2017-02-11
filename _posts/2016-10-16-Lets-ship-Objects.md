@@ -15,7 +15,7 @@ tags: [ oop,
         language-design ]
 comments: true
 analytics: true
-updated: '2017-02-01'
+updated: '2017-02-10'
 ---
 
 This post is just a suggestion for language designers of Object-oriented systems. Nothing really new except my new
@@ -24,6 +24,7 @@ with all the sort of **Relationships** among objects. These relations are alread
 *Delegation*, *Composition*, *Ownership*, *Cloning*, *Message-Passing* (yes, it also counts) and so on.
 
 <a name="discussion"> </a>
+
 ### Discussion
 
 Objects assume _relative roles_ in these relations:
@@ -65,6 +66,7 @@ enough for that, too). When I achieve something worth to show, I'll update this 
 (using Gist if the code is not too long).~~
 
 <a name="implementation"> </a>
+
 ### Implementation
 
 In our proof-of-concept, we've considered only Message-Passing, Static Inheritance and Static Ownership for a matter
@@ -114,6 +116,7 @@ The examples below show a simple usage of this library:
 <noscript>Please enable JavaScript to see the Gist code.</noscript>
 
 <a name="conclusion"> </a>
+
 ### Conclusion
 
 The concept of relative scopes are really interesting and similar to subjective/contextual programming in some sense.
@@ -132,6 +135,7 @@ Have you enjoyed this post? Want to write something about that suggestion, too? 
 entry into your article's footnote (of course, if you can). Thanks, anyway.
 
 <a name="notes"> </a>
+
 ### Notes
 
 <a name="protected-analogue"></a> ¹ - Although our system publicly leaks the parent's child scope into child object due the system semantics. \[[Take me back](#protected-analogue-back)\]
