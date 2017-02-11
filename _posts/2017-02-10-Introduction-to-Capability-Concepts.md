@@ -76,6 +76,7 @@ themselves are fine-grained access control mechanisms. These subjects interpreta
 requirements, we're out of the respective security model.
 
 We'll defer the analysis of many choice impacts along this post, but the trivial impact/implication is that:
+
 * The ACL model is very static, orthogonal-to-the-system and nominal in its nature, while;
 * The Capability model is rather dynamic, unified-into-the-system and structural in its own right
 
@@ -115,6 +116,7 @@ layer, if you don't trust someone else, you will often deliver revocable referen
 
 Although "Capability-based" implies "Non-Ambient Authority", it's worth to note that "Non-Ambient Authority" doesn't imply "Capability-based".
 Ambient Authority must be eliminated from the system 'cause it is prone to two major problems:
+
 * The [_Confused Deputy Problem_](#confused-deputy) (the PHP Remote File Inclusion is also an instance of this problem)
 * The break of the _Principle of Least Privilege_
 
@@ -144,6 +146,7 @@ ACL model is very prone to this problem.
 Synergy is an implicit pattern that often occurs in Object-Capability Systems. This pattern is very important on such systems, because it states
 that the composition of 2 introduced capabilities results into a new one. There are many forms appearing in Capability-based systems in which this
 pattern manifests itself, such as:
+
 * [Rights amplification](#rights-amplification)
 * [Sibling communication](#sibiling-communication)
 * [Sealing/branding pairs](#sealing-pairs)
@@ -151,6 +154,7 @@ pattern manifests itself, such as:
 * And even in the introduction of capabilities (a.k.a, delegation of capabilities)
 
 Informally (I mean, not a standard / official / literature-based classification), I will give 3 kinds of synergy classified as below:
+
 * _Mutual Synergy_, some capability introduces itself to another capability and also is introduced for this other one
 * _Paired Synergy_, the introduction of 2 capabilities results into a new held capability for the subject
 * _Mutually-Paired Synergy_, the subject introduces both capabilities to themselves and acquire the result capability

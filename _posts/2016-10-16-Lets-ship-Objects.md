@@ -28,14 +28,14 @@ with all the sort of **Relationships** among objects. These relations are alread
 ### Discussion
 
 Objects assume _relative roles_ in these relations:
-<ul>
-<li> In Inheritance, there is a parent object and there is a child one. </li>
-<li> In Ownership, there is an owner object and there is an owned one. </li>
-<li> In Delegation, there is a delegate object and there is a delegated one. </li>
-<li> In Message-Passing, there is the sender object and there is the receiver one. </li>
-<li> In Composition, there is the whole object and there is the part one. </li>
-<li> In Cloning, there is the prototype object and there is the clone one. </li>
-</ul>
+
+* In Inheritance, there is a parent object and there is a child one.
+* In Ownership, there is an owner object and there is an owned one.
+* In Delegation, there is a delegate object and there is a delegated one.
+* In Message-Passing, there is the sender object and there is the receiver one.
+* In Composition, there is the whole object and there is the part one.
+* In Cloning, there is the prototype object and there is the clone one.
+
 
 The most important thing to realize is that we can generalize these roles into visibility scopes (which are commonly
 enumerated as `public`, `private` and `protected`). Relationship roles generalized as visibility scopes are more flexible
@@ -49,16 +49,14 @@ without the need to invert control with dependency injection just to workaround 
 
 Of course, some design restrictions are needed, for instance, any object can't own itself. We can implement the
 classical `public`, `protected` and `private` visibilities with these roles, too.
-<ul>
-<li> Private slots are slots only accessed through self-sends, that is, when the sender object and the receiver one are
-the same (or, better, when an object sends a message to itself). Notice also that <b>self</b> may be aliased to other
-variables, but that fact must not break the system reasoning. If the self-alias escapes its self's scope, it is turned
-into a common object reference. </li>
-<li> The protected visibility may be thought as the parent/delegated giving access of some slots to its
-children/delegates. </li>
-<li> Public visibility is the most simple, it just don't impose any constraints for who is sending a message to an
-object. </li>
-</ul>
+
+* Private slots are slots only accessed through self-sends, that is, when the sender object and the receiver one are the
+  same (or, better, when an object sends a message to itself). Notice also that <b>self</b> may be aliased to other
+  variables, but that fact must not break the system reasoning. If the self-alias escapes its self's scope, it is turned
+  into a common object reference.
+* The protected visibility may be thought as the parent/delegated giving access of some slots to its children/delegates.
+* Public visibility is the most simple, it just don't impose any constraints for who is sending a message to an object.
+
 
 ~~By the way, I'm still thinking in a proof of concept implemented in a highly reflexive language such as Lua, Self or
 Smalltalk. This is due my laziness to implement a language with my own suggestion (I lack the compiling background
@@ -71,14 +69,14 @@ enough for that, too). When I achieve something worth to show, I'll update this 
 
 In our proof-of-concept, we've considered only Message-Passing, Static Inheritance and Static Ownership for a matter
 of simplicity. So, our relative scopes are:
-<ul>
-<li> <b>self</b>, when sender = receiver </li>
-<li> <b>child</b>, when parent(sender) = receiver </li>
-<li> <b>parent</b>, when sender = parent(receiver) </li>
-<li> <b>owned</b>, when owner(sender) = receiver </li>
-<li> <b>owner</b>, when sender = owner(receiver) </li>
-<li> <b>default</b>, the default scope </li>
-</ul>
+
+* <b>self</b>, when sender = receiver
+* <b>child</b>, when parent(sender) = receiver
+* <b>parent</b>, when sender = parent(receiver)
+* <b>owned</b>, when owner(sender) = receiver
+* <b>owner</b>, when sender = owner(receiver)
+* <b>default</b>, the default scope
+
 
 Notice that we haven't the analogue of the `protected` scope (that is, roughly, the symmetric sum of `self` with
 `child`[¹](#protected-analogue)<a name="protected-analogue-back"></a>).
