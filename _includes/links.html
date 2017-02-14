@@ -4,8 +4,9 @@
   {% if ids contains entry.id %}
     {% assign title     = entry.title %}
     {% assign url       = entry.url %}
-    {% assign link      = "<a href='" | append: url       | append: "' class='text-link'>" | append: title | append: "</a>" %}
-    {% assign pagelinks = pagelinks   | append: "|"       | append: link %}
+    {% assign link      = title | append: "=====" | append: url %}
+
+    {% assign pagelinks = pagelinks | append: "|" | append: link %}
   {% endif %}
 {% endfor %}
 {% assign pagelinks = pagelinks | remove_first: "|" | split: "|" %}
@@ -16,7 +17,17 @@
 <div id="external-links-list" class="invisible">
     <ul>
       {% for pagelink in pagelinks %}
-        <li> {{ pagelink }} </li>
+        {% assign entry = pagelink | split: "=====" %}
+        {% assign title = entry[0] %}
+        {% assign url   = entry[1] %}
+        <li>
+        <a href="{{ url }}" class="text-link"
+            onmouseover = "document.getElementById ('{{ url }}').src = '{{ site.data.conf.path.icons }}/external-link-blue.png';"
+            onmouseout  = "document.getElementById ('{{ url }}').src = '{{ site.data.conf.path.icons }}/external-link.png';">
+            {{ title }}
+            <img src="{{ site.data.conf.path.icons }}/external-link.png" width="16" height="16" id='{{ url }}'/>
+          </a>
+        </li>
       {% endfor %}
     </ul>
 </div>

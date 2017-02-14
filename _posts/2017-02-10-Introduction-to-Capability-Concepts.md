@@ -26,7 +26,7 @@ sitemap: false
 ---
 
 The Capability systems and models variations date since middle half 60's. Despite being classical, this model still needs to conquer widespread use today,
-due its straightforward reasoning properties and trusted communication patterns (even among mutually suspicious sources). For those who don't know that model,
+due its straightforward reasoning properties and secure communication patterns (even among mutually suspicious parties). For those who don't know that model,
 this post suits well as a complete introduction and essay (in some sense) about Capabilities, related terms/concepts and design issues. So, let's
 explore this Capability world together!
 
@@ -71,7 +71,7 @@ possibly never through this name). The Capability model, on the other hand, is a
 Authorization (i.e, sharing/delegation of resources to other subjects).
 
 It's also important to remind: Capability models have a _subjects-as-processes_ interpretation instead of the _subjects-as-users_ interpretation known
-in the ACL model. Due this reason, you can easily conclude that ACL models provide coarse-grained access control while Capabilities
+in the ACL model. Due this reason, you can easily conclude that the ACL model provides coarse-grained access control while Capabilities
 themselves are fine-grained access control mechanisms. These subjects interpretations are <u>requirements</u> for both models, once we have leaved these
 requirements, we're out of the respective security model.
 
@@ -124,7 +124,8 @@ Ambient Authority must be eliminated from the system 'cause it is prone to two m
 
 ### Principle of Least Privilege
 
-This principle states that subjects must only use the minimum, needed and _legitimate_ resources to complete an ongoing task. This principle also
+Also known as _Principle of Least Authority_ (POLA),
+this principle states that subjects must only use the minimum, needed and _legitimate_ resources to complete an ongoing task. This principle also
 reduces the probability of misuse of resources. To achieve that principle, we must ban Ambient Authority (which provides implicitly passed
 resources) in favor of explicit communication/message-passing. When this principle is not achieved (i.e, broken), it's a matter of faith to rely
 on a bunch of passed privileges being enough and properly used by the subject.
@@ -249,6 +250,13 @@ Thanks and sorry about that.
 
 </span> </div>
 
+Although the passed views can point to unrelated system resources, once they're put together, they're seen as just one thing.
+Surely, you may ask yourself if it's safe to use this capability possibly made of distinct/different capabilities, but it's one
+of the general ideas of the Capability model. If we pass a writable view to the `null` device, the effects of the `null` device
+will be propagated to the `append` operation, that is, this won't cause any interference on the composed readable view. You will never
+known, anyway, if any introduced capability is either a virtual or concrete one -- this gives the power to the client run your code
+in an isolated environment for testing or sandboxing, it's only you responsibility to believe that the introduced capabilities are
+real system resources (but don't rely on it).
 
 Notice that `ReadableStream` and `WritableStream` capabilities _imply also_ `AppendableStream`, but not the other way around.
 It means that synergy is not a symmetrical/reversible arrow (except -- in some sense -- if facets are living around), although
@@ -282,12 +290,12 @@ small building blocks with _facets_.
 
 ### Facets
 
-Facets are a kind of first-class (Re-)Decorators, which provide a subset of decorated capability's interface (may it be an Adaptor which
+Facets are a kind of first-class "redecorators", which provide a subset of decorated capability's interface (may it be an "adaptor" which
 reduces the exposed interface to the minimum and needed?). This mechanism
 fulfills some part of the [Least Privilege Principle](#principle-of-least-privilege) (the non [Ambient Authority](#ambient-authority)
 fulfills the rest), and, thus, reduces the occurrences of the [Confused Deputy Problem](#confused-deputy-problem). Facets can
 also act like Proxies and, almost any Object Oriented Programming Language support this kind of pattern, either explicitly or implicitly,
-through object wrappers.
+through object wrappers. The use of facets to restrict interfaces (and also behaviors) from Capabilities is often called as _attenuation_.
 
 ![Capability Facets]({{ site.baseurl }}/images/Introduction-to-Capability-Concepts/capability-facets.jpg)
 
@@ -391,10 +399,10 @@ In the Capability model, rather than providing a complete set of security mechan
 (that is, enforcing policies on top of these "primitive" ones). This idea works in the same way of layered abstraction of modules. The great profit and
 benefits of that security approach is the possibility of decouple and compose abstractions in diverse ways as they were LEGO's building blocks.
 
-In his PhD thesis _Robust Composition_, Mark S. Miller discuss about loader isolation (i.e, environment-based `eval`). It turns out that every language
-providing these kind of loader functions, can also provide a modular Capability integration of code (only if _magic names_ aren't resolved implicitly
+In his PhD thesis _Robust Composition_, Mark S. Miller discusses about loader isolation (i.e, "environment-based" `eval`). It turns out that every language
+providing this kind of loader as function, can also provide a modular Capability integration of code (only if _magic names_ aren't resolved implicitly
 such as namespace/package-level identifiers). Some languages fit these requirements, for example the Scheme and Lua programming languages. Otherwise, the
-'Meta-Circular Interpreter' "pattern" known in the Lisp's world can be used to "reveal" the internals of a Programming Language and, thus, tweak a
+_Meta-Circular Interpreter_ "pattern" known in the Lisp's world can be used to "reveal" the internals of a given Programming Language and, thus, tweak a
 runtime resolution of unbound names (although this pattern is very hard -- if not impossible -- on languages without "unified" syntax in the same sense
 of Lisp/Forth syntax -- a.k.a, a syntax without keywords). Compile-time type systems and bytecode monitoring can also be used to enforce minimal and safe
 Capability policies, anyways, but the control over such accesses is in the hands of the implementation rather than user's hands.
