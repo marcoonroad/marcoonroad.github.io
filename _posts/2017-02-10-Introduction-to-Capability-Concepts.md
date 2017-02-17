@@ -14,7 +14,9 @@ author: marcoonroad
 refs: [ capability-myths-demolished,
         protection,
         protection-in-proglangs,
-        robust-composition ]
+        robust-composition,
+        how-emily-tamed-the-caml,
+        the-oz-e-project ]
 links: [ objects-as-secure-capabilities,
          what-is-a-capability-anyway,
          where-capabilities-come-from,
@@ -170,9 +172,16 @@ When such capability is not a result of that composition, there's a loophole in 
 Frequently, interactions increase the general authority among parties, if this resulting authority is not represented as a resulting capability,
 it turns out itself into an anonymous side-effect represented by an invisible capability. <p/>
 
+Even if the result authority is represented by an unique capability, it is separated from the expected designation -- that is, it isn't an
+authority owned by the deputy, neither delegated by a client. So, if the deputy can't know the source of a given capability, it can be
+easily lured/confused by an attacker. Therefore, synergy will provide a kind of <u>local/private ambient authority</u> into your system if it is being
+abused to the point where almost all of your subjects are relying on this pattern. <p/>
+
 However, these notes doesn't hold for the delegation of capabilities 'cause this is the core idea of the Capability model -- you want such kind
 of side-effect to control explicitly which resources can be accessed and which can't. <u>In the end, you'are acting like an Access Matrix for
-all of your known fellows and comrades.</u>
+all of your known fellows and comrades.</u> <p/>
+
+For the rule of thumb, only use this pattern when <i>really</i> needed, right?
 </span> </div>
 
 An good example of synergy can be a file handler: when we have both readable and writable views of a handler, it's possible to
@@ -182,7 +191,7 @@ follows (the code below is assumed to be slow, but a buffered implementation wil
 ```java
 package marcoonroad.capability.synergy.filehandler;
 
-interface ReadableStream {
+public interface ReadableStream {
         public String read ( );
 }
 ```
@@ -204,7 +213,7 @@ public interface AppendableStream {
 ```
 
 ```java
-package marcoonroad.capability.synergy.example.filehandler;
+package marcoonroad.capability.synergy.filehandler;
 
 public final class SinergyStream
 implements ReadableStream, WritableStream, AppendableStream {
@@ -254,7 +263,7 @@ Although the passed views can point to unrelated system resources, once they're 
 Surely, you may ask yourself if it's safe to use this capability possibly made of distinct/different capabilities, but it's one
 of the general ideas of the Capability model. If we pass a writable view to the `null` device, the effects of the `null` device
 will be propagated to the `append` operation, that is, this won't cause any interference on the composed readable view. You will never
-known, anyway, if any introduced capability is either a virtual or concrete one -- this gives the power to the client run your code
+know, anyway, if any introduced capability is either a virtual or concrete one -- this gives the power to the client run your code
 in an isolated environment for testing or sandboxing, it's only you responsibility to believe that the introduced capabilities are
 real system resources (but don't rely on it).
 
@@ -270,8 +279,8 @@ module type ICapability = sig
         type capability (* capability is abstract *)
 end
 
-module type ISynergy (Capability : ICapability) = sig
-        type capability = Capability.capability
+module type ISynergy = sig
+        include ICapability
 
         (* internal structural type aliases *)
         type 'value pair   = 'value * 'value
@@ -366,7 +375,7 @@ function sealing (label) {
         }
 
         result.unseal = function (sealed) {
-                var object = map[ sealed ];
+                let object = map[ sealed ];
 
                 if (object === undefined || object === null) {
                         throw "Invalid sealed reference!";
@@ -392,8 +401,14 @@ subsets of already existent ones. The subset design provides a "tamed" API toget
 set of functions, classes, etc. that can be exposed globally without further problems (that is, they describes resources of the programming language itself
 rather than Operating System resources, for example: vectors, lists, sets, bags and maps data types). Resources who must be encoded as Capabilities are
 passed explicitly through message-passing (e.g, an object dealing with the sensible business logic, such as passwords, telephones, emails, and so on). On
-the other side, the Powerbox means a description of prone-to-be-accessed Operating System's resources, this description list itself acts like a white-list
-approach for sandboxing.
+the other side, the Powerbox is the bridge which fulfills the gap between the tamed API and the OS environment. It may be thought like the "entry-point" of
+the application (more specifically, like the injector of the well-known Dependency Injection pattern), but sometimes it is also a revocable introduced
+capability (a kind of mediator in the Mediator design pattern).
+The Powerbox will often carry a description of prone-to-be-accessed Operating System's resources, this description list itself acts like a white-list
+approach for sandboxing. So, every external code is loaded as if it was a client module attached with deferred requirements -- the role of the Powerbox is
+to resolve explicitly these requirements with some parcel of its full authority.
+
+![Kinds of Powerboxes]({{ site.baseurl }}/images/Introduction-to-Capability-Concepts/kinds-of-powerboxes.jpg)
 
 In the Capability model, rather than providing a complete set of security mechanisms, we provide minimal abstractions to build high-level security abstractions
 (that is, enforcing policies on top of these "primitive" ones). This idea works in the same way of layered abstraction of modules. The great profit and

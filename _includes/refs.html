@@ -14,14 +14,14 @@
 
 <a name="references"> </a>
 <h3> References <img src="{{ site.data.conf.path.icons }}/show-black.png" width="16" height="16" id="references-image"
-        onclick="return toggleVisibility ('references-list', 'references-image')" class="default-rotation"/> </h3>
-<div id="references-list" class="invisible">
+        onclick="return toggleVisibility ('references-list', 'references-image')" class="animated-element default-rotation"/> </h3>
+<div id="references-list" class="animated-element invisible">
   <ol>
     {% for pageref in pagerefs %}
     {% assign linkref = pageref   | split: ' ' | remove: "<i>" | remove: "</i>" | remove: "<b>" | remove: "</b>" |
                         join: ' ' | slugify    | split: '-'       | join: '+' %}
     <li> {{ pageref }} <a href="http://google.com/?q={{ linkref }}+pdf">
-            <img id="{{ linkref }}" src="{{ site.data.conf.path.icons }}/search-black.png" width="16" height="16"
+            <img id="{{ linkref }}" src="{{ site.data.conf.path.icons }}/search-black.png" width="16" height="16" class="animated-element"
             onmouseover = "document.getElementById ('{{ linkref }}').src = '{{ site.data.conf.path.icons }}/search-blue.png';"
             onmouseout  = "document.getElementById ('{{ linkref }}').src = '{{ site.data.conf.path.icons }}/search-black.png';"/>
       </a> </li>

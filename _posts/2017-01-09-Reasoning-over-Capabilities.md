@@ -83,9 +83,9 @@ such as the well-known ones in the Ownership Model (e.g, Crossing Handlers, Owne
 will help us to reason over the held capabilities and how they are introduced/delegated (just a side note, this Capability Delegation
 classification also isn't official).
 
-![Send-side Delegation]({{ site.baseurl }}/images/Introduction-to-Capability-Concepts/send-side-delegation.jpg)
+![Send-side Delegation]({{ site.baseurl }}/images/Reasoning-over-Capabilities/send-side-delegation.jpg)
 
-![Reply-side Delegation]({{ site.baseurl }}/images/Introduction-to-Capability-Concepts/reply-side-delegation.jpg)
+![Reply-side Delegation]({{ site.baseurl }}/images/Reasoning-over-Capabilities/reply-side-delegation.jpg)
 
 Have classified such thing, we can move forward our analysis... TODO
 
@@ -114,7 +114,7 @@ into the OS environment are converted from the Capability view into an ACL one. 
 (Sandboxes themselves are mechanisms to control the Authority flowing around into the ambient, but sometimes breaking the Least Privilege Principle
 due the often ACL model requirement of global subject identification).
 
-![Lua-Capability Conversion Boundary]({{ site.baseurl }}/images/Introduction-to-Capability-Concepts/lua-capability-conversion-boundary.jpg)
+![Lua-Capability Conversion Boundary]({{ site.baseurl }}/images/Reasoning-over-Capabilities/lua-capability-conversion-boundary.jpg)
 
 <a name="conclusion"> </a>
 

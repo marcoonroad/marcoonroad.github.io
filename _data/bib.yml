@@ -49,3 +49,18 @@
   month: "May"
   place: "Johns Hopkins University"
   type: "phd-thesis"
+
+- id: how-emily-tamed-the-caml
+  title: "How Emily Tamed the Caml"
+  authors: [ "Marc Stiegler", "Mark Miller" ]
+  month: "August"
+  day: 11
+  year: 2006
+  place: "Hewlett-Packard Laboratories"
+  categories: [ "security", "programming", "performance" ]
+
+- id: the-oz-e-project
+  title: "The Oz-E Project: Design Guidelines for a Secure Multiparadigm Programming Language"
+  authors: [ "Fred Spiessens", "Peter Van Roy" ]
+  place: "Université catholique de Louvain"
+  year: "?"

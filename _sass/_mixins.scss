@@ -158,6 +158,22 @@ div.important-note span:before {
         display: block;
 }
 
-div.important-note span {
+div.important-note > span {
         display: block;
+}
+
+.title-link {
+  @include smooth;
+}
+
+.read-more {
+  @include smooth;
+}
+
+.read-more:hover {
+  color: $darkGray;
+}
+
+.animated-element {
+  @include smooth;
 }

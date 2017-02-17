@@ -13,8 +13,8 @@
 
 <a name="external-links"> </a>
 <h3> Further reading (external links) <img src="{{ site.data.conf.path.icons }}/show-black.png" width="16" height="16" id="external-links-image"
-    onclick="return toggleVisibility ('external-links-list', 'external-links-image')" class="default-rotation"/> </h3>
-<div id="external-links-list" class="invisible">
+    onclick="return toggleVisibility ('external-links-list', 'external-links-image')" class="animated-element default-rotation"/> </h3>
+<div id="external-links-list" class="animated-element invisible">
     <ul>
       {% for pagelink in pagelinks %}
         {% assign entry = pagelink | split: "=====" %}
@@ -25,7 +25,7 @@
             onmouseover = "document.getElementById ('{{ url }}').src = '{{ site.data.conf.path.icons }}/external-link-blue.png';"
             onmouseout  = "document.getElementById ('{{ url }}').src = '{{ site.data.conf.path.icons }}/external-link.png';">
             {{ title }}
-            <img src="{{ site.data.conf.path.icons }}/external-link.png" width="16" height="16" id='{{ url }}'/>
+            <img src="{{ site.data.conf.path.icons }}/external-link.png" width="16" height="16" id='{{ url }}' class="animated-element"/>
           </a>
         </li>
       {% endfor %}
