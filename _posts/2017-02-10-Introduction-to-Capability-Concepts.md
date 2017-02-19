@@ -16,7 +16,8 @@ refs: [ capability-myths-demolished,
         protection-in-proglangs,
         robust-composition,
         how-emily-tamed-the-caml,
-        the-oz-e-project ]
+        the-oz-e-project,
+        permission-and-authority ]
 links: [ objects-as-secure-capabilities,
          what-is-a-capability-anyway,
          where-capabilities-come-from,
@@ -109,12 +110,22 @@ absolute directory lookup or even the `$HOME` lookup are really bad, just google
 good examples of Ambient Authority.
 
 Ambient Authority arises due the separation of _designation_ from _authority_. This separation is the rule of thumb in ACL-based systems, where
-you can acquire an implicit authority over a reference without the known permission to use it.
-It's important to remember that authority doesn't mean permission: authority is a "generalization" of permission in some way.
+you can acquire an implicit authority over a reference without the known introduction beforehand to use it (that is, your client can't deny, revoke,
+amplify, control, enable or disable what you are willing to take from him). Permissions here are useless,
+'cause they often deal directly with the right to access,
+not with the right to exercise authority.
+~~It's important to remember that authority doesn't mean permission: authority is a "generalization" of permission in some way.
 Where permission stands for the **direct** means to acquire rights over a resource, authority also includes the
 **potential effects** for "abuse" of **indirect** means to acquire that same rights. That is, permission deals directly with the _identity_ of the
 sender/owner subject, where authority will also pay attention on the indirect means to bypass security through message-passing. In the message-passing
-layer, if you don't trust someone else, you will often deliver revocable references/proxies to this guy.
+layer, if you don't trust someone else, you will often deliver revocable references/proxies to this guy.~~
+
+<div class="update-note"> <span>
+Contrary to the common belief, permission is not a subset of authority, they're just non-disjoint concepts. The proof lies in the fact where you
+can have permission to access something, but when this thing is immutable and pure, you won't cause any effects on such thing. On the other hand,
+you can have authority to cause effects in some capability, but when this capability is inaccessible directly for you, you have no such permission to
+access that. For the formal proofs of that fact, see the paper called something like <i>Permission and Authority</i> in the references section.
+</span> </div>
 
 Although "Capability-based" implies "Non-Ambient Authority", it's worth to note that "Non-Ambient Authority" doesn't imply "Capability-based".
 Ambient Authority must be eliminated from the system 'cause it is prone to two major problems:
@@ -399,7 +410,7 @@ you remind the said loopholes in synergy?), right?
 Implementations of the Object Capability Model in the PLT (Programming Language Theory) field frequently are either pure new programming languages or
 subsets of already existent ones. The subset design provides a "tamed" API together with a "Powerbox". The tamed API stands for the "Capability-safe"
 set of functions, classes, etc. that can be exposed globally without further problems (that is, they describes resources of the programming language itself
-rather than Operating System resources, for example: vectors, lists, sets, bags and maps data types). Resources who must be encoded as Capabilities are
+rather than Operating System resources, for example: vectors, lists, sets, bags and maps data types). Resources which must be encoded as Capabilities are
 passed explicitly through message-passing (e.g, an object dealing with the sensible business logic, such as passwords, telephones, emails, and so on). On
 the other side, the Powerbox is the bridge which fulfills the gap between the tamed API and the OS environment. It may be thought like the "entry-point" of
 the application (more specifically, like the injector of the well-known Dependency Injection pattern), but sometimes it is also a revocable introduced

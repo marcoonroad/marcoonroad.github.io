@@ -7,6 +7,8 @@ foot-icons: false
 analytics: true
 ---
 
+![Blog Logo](/images/author/marcoonroad-medium.jpg)
+
 ### About this blog
 
 Frequently (if God gives me the precious time), Type Theory stuff, Functional things, Compiler engineering, Computation
@@ -18,4 +20,4 @@ A newcomer in the constantly evolving (although not always) Computer Science fie
 
 ### Contact
 
-[GMail](mailto:marcoonroad@gmail.com) \| [Facebook](http://fb.me/marcoonroad) \| [GitHub](http://github.com/marcoonroad)
+[GMail](mailto:marcoonroad@gmail.com) \| [GitHub](http://github.com/marcoonroad)

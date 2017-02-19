@@ -11,11 +11,11 @@
                 var after  = " " + className;
                 var before = className + " ";
 
-                if (entity.getAttribute ("class").contains (before)) {
+                if (entity.getAttribute ("class").match (before)) {
                         entity.setAttribute ("class", entity.getAttribute ("class").replace (before, ""));
                         return true;
                 }
-                else if (entity.getAttribute ("class").contains (after)) {
+                else if (entity.getAttribute ("class").match (after)) {
                         entity.setAttribute ("class", entity.getAttribute ("class").replace (after, ""));
                         return true;
                 }
@@ -28,7 +28,7 @@
         function extendClass (entity, className) {
                 checkAttribute (entity, "class");
 
-                if (! entity.getAttribute ("class").contains (className)) {
+                if (! entity.getAttribute ("class").match (className)) {
                         entity.setAttribute ("class", className + " " + entity.getAttribute ("class"));
                 }
                 else if (removeClass (entity, className)) {
@@ -40,7 +40,7 @@
         function appendClass (entity, className) {
                 checkAttribute (entity, "class");
 
-                if (! entity.getAttribute ("class").contains (className)) {
+                if (! entity.getAttribute ("class").match (className)) {
                         entity.setAttribute ("class", entity.getAttribute ("class") + " " + className);
                 }
                 else if (removeClass (entity, className)) {
@@ -69,11 +69,11 @@
                         entity.style.display = "none";
                         upsideDownOff (imageID);
                 }
-                else if (entity.getAttribute ("class").contains ("invisible")) {
+                else if (entity.getAttribute ("class").match ("invisible")) {
                         changeClass (entity, "invisible", "visible");
                         upsideDownOn (imageID);
                 }
-                else if (entity.getAttribute ("class").contains ("visible")) {
+                else if (entity.getAttribute ("class").match ("visible")) {
                         changeClass (entity, "visible", "invisible");
                         upsideDownOff (imageID);
                 }

@@ -1,3 +1,66 @@
+@mixin rounded-border {
+        border-top-left-radius: 5%;
+        border-top-right-radius: 5%;
+        border-bottom-left-radius: 5%;
+        border-bottom-right-radius: 5%;
+
+        -moz-border-radius-topleft: 5%;
+        -moz-border-radius-topright: 5%;
+        -moz-border-radius-bottomleft: 5%;
+        -moz-border-radius-bottomright: 5%;
+
+        -webkit-border-top-left-radius: 5%;
+        -webkit-border-top-right-radius: 5%;
+        -webkit-border-bottom-left-radius: 5%;
+        -webkit-border-bottom-right-radius: 5%;
+}
+
+@mixin shadow {
+        box-shadow: 0px 0px 15px #777;
+        -moz-box-shadow: 0px 0px 15px #777;
+        -webkit-box-shadow: 0px 0px 15px #777;
+}
+
+@mixin padding {
+        font-size: 0.85em;
+        padding-left: 0.2em;
+        padding-right: 0.2em;
+        padding-top: 0.15em;
+        padding-bottom: 0.15em;
+}
+
+.page-tags > ul {
+        list-style-type: none;
+}
+
+.page-tags > ul > li {
+        display: inline-block;
+        margin-right: 0.25em;
+        margin-bottom: 0.15em;
+}
+
+.page-tags > ul > li > a {
+        color: white;
+        background-color: #333;
+        display: inline-block;
+
+        @include rounded-border;
+        @include smooth;
+        @include padding;
+}
+
+.page-tags > ul > li > a:hover {
+        text-decoration: none;
+        color: white;
+        background-color: #555;
+
+        @include shadow;
+}
+
+.page-tags {
+        clear: both;
+}
+
 .invisible {
         display: none;
 
@@ -135,10 +198,9 @@ p {
         -webkit-filter: grayscale(0%);
 }
 
-div.important-note {
+@mixin side-note {
         border-width: 2px;
         border-style: solid;
-        border-color: red;
         -moz-border-radius-topleft: 15px;
         -moz-border-radius-topright: 15px;
         -moz-border-radius-bottomleft: 15px;
@@ -148,32 +210,47 @@ div.important-note {
         border-bottom-left-radius: 15px;
         border-bottom-right-radius: 15px;
         padding: 5px;
+
+        > span:before {
+                text-transform: uppercase;
+                font-weight: bold;
+                color: black;
+                display: block;
+        }
+
+        > span {
+                display: block;
+        }
 }
 
-div.important-note span:before {
-        content: "Important Note:";
-        text-transform: uppercase;
-        font-weight: bold;
-        color: black;
-        display: block;
-}
+div.important-note { @include side-note; border-color: red;   }
+div.update-note    { @include side-note; border-color: green; }
 
-div.important-note > span {
-        display: block;
-}
+div.important-note > span:before { content: "Important Note:"; }
+div.update-note    > span:before { content: "Update Note:";    }
 
 .title-link {
-  @include smooth;
+        @include smooth;
 }
 
 .read-more {
-  @include smooth;
+        text-decoration: none;
+        color: white;
+        background-color: #333;
+
+        @include padding;
+        @include rounded-border;
+        @include smooth;
 }
 
 .read-more:hover {
-  color: $darkGray;
+        text-decoration: none;
+        color: white;
+        background-color: #555;
+
+        @include shadow;
 }
 
 .animated-element {
-  @include smooth;
+        @include smooth;
 }

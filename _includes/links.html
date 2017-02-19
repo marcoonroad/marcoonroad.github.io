@@ -21,7 +21,7 @@
         {% assign title = entry[0] %}
         {% assign url   = entry[1] %}
         <li>
-        <a href="{{ url }}" class="text-link"
+        <a href="{{ url }}" class="text-link" target="_blank"
             onmouseover = "document.getElementById ('{{ url }}').src = '{{ site.data.conf.path.icons }}/external-link-blue.png';"
             onmouseout  = "document.getElementById ('{{ url }}').src = '{{ site.data.conf.path.icons }}/external-link.png';">
             {{ title }}

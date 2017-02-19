@@ -63,4 +63,11 @@
   title: "The Oz-E Project: Design Guidelines for a Secure Multiparadigm Programming Language"
   authors: [ "Fred Spiessens", "Peter Van Roy" ]
   place: "Université catholique de Louvain"
-  year: "?"
+  year: 2005
+
+- id: permission-and-authority
+  title: "Permission and Authority Revisited towards a formalisation"
+  authors: [ "Sophia Drossopoulou", "James Noble", "Toby Murray", "Mark S. Miller" ]
+  year: 2016
+  month: "July"
+  day: 19
