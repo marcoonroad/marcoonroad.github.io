@@ -24,8 +24,8 @@ links: [ objects-as-secure-capabilities,
          comparing-acls-and-capabilities, 
          the-confused-deputy,
          confused-deputy-resolved ]
-draft: true
-sitemap: false
+analytics: true
+comments: true
 ---
 
 The Capability systems and models variations date since middle half 60's. Despite being classical, this model still needs to conquer widespread use today,
@@ -111,7 +111,7 @@ good examples of Ambient Authority.
 
 Ambient Authority arises due the separation of _designation_ from _authority_. This separation is the rule of thumb in ACL-based systems, where
 you can acquire an implicit authority over a reference without the known introduction beforehand to use it (that is, your client can't deny, revoke,
-amplify, control, enable or disable what you are willing to take from him). Permissions here are useless,
+amplify, control, restrict or disable what you are willing to take from him). Permissions here are useless,
 'cause they often deal directly with the right to access,
 not with the right to exercise authority.
 ~~It's important to remember that authority doesn't mean permission: authority is a "generalization" of permission in some way.
@@ -124,7 +124,29 @@ layer, if you don't trust someone else, you will often deliver revocable referen
 Contrary to the common belief, permission is not a subset of authority, they're just non-disjoint concepts. The proof lies in the fact where you
 can have permission to access something, but when this thing is immutable and pure, you won't cause any effects on such thing. On the other hand,
 you can have authority to cause effects in some capability, but when this capability is inaccessible directly for you, you have no such permission to
-access that. For the formal proofs of that fact, see the paper called something like <i>Permission and Authority</i> in the references section.
+access that. For the formal proofs of that fact, see the paper called <i>Permission and Authority Revisited</i> in the references section. <p/>
+
+So, permission in this post will not mean only the right to access, but mostly also the <i>direct right to observe effects</i> (while authority, on the other
+side, stands for the <i>indirect right to trigger effects</i>). By direct and indirect rights, we mean how things are propagated: direct rights are fully
+associated with the subject identity, while indirect rights are propagated up the reference access graph -- this is why the entry-point of capability-based
+applications is said to have full authority. The authority of a subject is equals to the sum of current authorities of its held capabilities, in mathematical
+notation (where the permission can be thought as the length of the c-list, if this c-list is only made of pure values, so the authority is null):
+
+<img src="{{ site.baseurl }}/images/Introduction-to-Capability-Concepts/authority-rank.png" alt="Authority rank"/>
+
+Let's represent pure capabilities as green nodes in the reference graph and impure capabilities as orange ones. A fact that we can derive from this is that
+green nodes can't point to orange ones, otherwise they must be impure, and thus, orange instead green (remember that authority is propagated up to the
+graph). But it's not true on real cases, 'cause if there is a permission to access the source of authority, this permission embodies the source of authority
+and <u>the subject becomes another source for this authority</u>. As you can see, it is possible to exist many sources of the same authority so long as the
+respective permissions reveal them. In other words, you can expose a pure object pointing to an impure one, the pure object is pure if it will never access
+any impure parts of its held impure objects -- the pure object has none authority (despite the held sources of authority) 'cause it is ensured to never
+exercise any authority, <u>even the authority to delegate these authorities</u>.
+Back to the reference graph, it is even possible to turn this graph into an hierarchical tree, we must only transitively split shared
+capabilities into different nodes, but identify them with the same label and provide unique labels for different capabilities. It, thus, give us the power
+to represent aliases (edges pointing to shared nodes) as objects (nodes sharing an identity).
+
+<img src="{{ site.baseurl }}/images/Introduction-to-Capability-Concepts/reference-graph-as-tree.jpg" alt="Reference Graph as Tree"/>
+
 </span> </div>
 
 Although "Capability-based" implies "Non-Ambient Authority", it's worth to note that "Non-Ambient Authority" doesn't imply "Capability-based".
@@ -416,14 +438,15 @@ the other side, the Powerbox is the bridge which fulfills the gap between the ta
 the application (more specifically, like the injector of the well-known Dependency Injection pattern), but sometimes it is also a revocable introduced
 capability (a kind of mediator in the Mediator design pattern).
 The Powerbox will often carry a description of prone-to-be-accessed Operating System's resources, this description list itself acts like a white-list
-approach for sandboxing. So, every external code is loaded as if it was a client module attached with deferred requirements -- the role of the Powerbox is
-to resolve explicitly these requirements with some parcel of its full authority.
+approach for sandboxing (note that the sandbox and powerbox differs somehow, while the former controls the access for the environment, the latter
+embodies the environment as a capability). So, every external code is loaded as if it were a client module attached with deferred requirements -- the
+role of the Powerbox is to resolve explicitly these requirements with some parcel of its full authority.
 
 ![Kinds of Powerboxes]({{ site.baseurl }}/images/Introduction-to-Capability-Concepts/kinds-of-powerboxes.jpg)
 
 In the Capability model, rather than providing a complete set of security mechanisms, we provide minimal abstractions to build high-level security abstractions
 (that is, enforcing policies on top of these "primitive" ones). This idea works in the same way of layered abstraction of modules. The great profit and
-benefits of that security approach is the possibility of decouple and compose abstractions in diverse ways as they were LEGO's building blocks.
+benefits of that security approach is the possibility of decouple and compose abstractions in diverse ways as if they were LEGO's building blocks.
 
 In his PhD thesis _Robust Composition_, Mark S. Miller discusses about loader isolation (i.e, "environment-based" `eval`). It turns out that every language
 providing this kind of loader as function, can also provide a modular Capability integration of code (only if _magic names_ aren't resolved implicitly
