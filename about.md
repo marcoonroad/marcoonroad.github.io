@@ -1,13 +1,13 @@
 ---
 layout: page
-title: About
+title: "About"
 author: marcoonroad
 permalink: /about/
 foot-icons: false
 analytics: true
 ---
 
-![Blog Logo](/images/author/marcoonroad-medium.jpg)
+<center> <img alt="Blog Logo" src="/images/author/marcoonroad-medium.jpg"/> </center>
 
 ### About this blog
 

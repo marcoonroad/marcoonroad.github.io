@@ -26,6 +26,7 @@ links: [ objects-as-secure-capabilities,
          confused-deputy-resolved ]
 analytics: true
 comments: true
+updated: "2017-05-05"
 ---
 
 The Capability systems and models variations date since middle half 60's. Despite being classical, this model still needs to conquer widespread use today,
@@ -53,7 +54,7 @@ is all about _who_ will/can access _what_ and _how_. An important tool to reason
 The Access Matrix is a table where columns are resources (i.e, _what_) and rows are subjects (i.e, _who_ -- in the classical literature they are
 called as domains). Every entry in this table
 denotes a resource privilege (i.e _how_) associated with given subject. The privileges enforce how a resource is manipulated by the subject. Also,
-subjects can't use no more privileges than the described in their associated set of privileges. Below, an illustration of such Access
+subjects cannot use more privileges than the described in their associated set of privileges. Below, an illustration of such Access
 Matrix with the most basic privileges (`read` and `write`):
 
 ![Lampson's Access Matrix]({{ site.baseurl }}/images/Introduction-to-Capability-Concepts/access-matrix.jpg)
@@ -113,7 +114,7 @@ Ambient Authority arises due the separation of _designation_ from _authority_. T
 you can acquire an implicit authority over a reference without the known introduction beforehand to use it (that is, your client can't deny, revoke,
 amplify, control, restrict or disable what you are willing to take from him). Permissions here are useless,
 'cause they often deal directly with the right to access,
-not with the right to exercise authority.
+not with the right to exercise such authority.
 ~~It's important to remember that authority doesn't mean permission: authority is a "generalization" of permission in some way.
 Where permission stands for the **direct** means to acquire rights over a resource, authority also includes the
 **potential effects** for "abuse" of **indirect** means to acquire that same rights. That is, permission deals directly with the _identity_ of the
@@ -297,7 +298,7 @@ Surely, you may ask yourself if it's safe to use this capability possibly made o
 of the general ideas of the Capability model. If we pass a writable view to the `null` device, the effects of the `null` device
 will be propagated to the `append` operation, that is, this won't cause any interference on the composed readable view. You will never
 know, anyway, if any introduced capability is either a virtual or concrete one -- this gives the power to the client run your code
-in an isolated environment for testing or sandboxing, it's only you responsibility to believe that the introduced capabilities are
+in an isolated environment for testing or sandboxing, it's only your responsibility to believe that the introduced capabilities are
 real system resources (but don't rely on it).
 
 Notice that `ReadableStream` and `WritableStream` capabilities _imply also_ `AppendableStream`, but not the other way around.
@@ -336,12 +337,12 @@ Facets are a kind of first-class "redecorators", which provide a subset of decor
 reduces the exposed interface to the minimum and needed?). This mechanism
 fulfills some part of the [Least Privilege Principle](#principle-of-least-privilege) (the non [Ambient Authority](#ambient-authority)
 fulfills the rest), and, thus, reduces the occurrences of the [Confused Deputy Problem](#confused-deputy-problem). Facets can
-also act like Proxies and, almost any Object Oriented Programming Language support this kind of pattern, either explicitly or implicitly,
+also act like Proxies and, almost any Object Oriented Programming Language supports this kind of pattern, either explicitly or implicitly,
 through object wrappers. The use of facets to restrict interfaces (and also behaviors) from Capabilities is often called as _attenuation_.
 
 ![Capability Facets]({{ site.baseurl }}/images/Introduction-to-Capability-Concepts/capability-facets.jpg)
 
-In the image above, facets are like "restricted views" of some capability. Facets can also "wrap" other facets, it's is due the fact
+In the image above, facets are like "restricted views" of some capability. Facets can also "wrap" other facets, it is due the fact
 that facets (i.e, decorators/proxies) and capabilities (i.e, objects) are seamlessly indistinguishable. For this reason, identity
 comparison is considered bad due, for example, two distinct facets sharing the same decorated object, so:
 

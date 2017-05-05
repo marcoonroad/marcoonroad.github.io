@@ -15,7 +15,7 @@ tags: [ oop,
         language-design ]
 comments: true
 analytics: true
-updated: '2017-02-10'
+updated: '2017-05-05'
 ---
 
 This post is just a suggestion for language designers of Object-oriented systems. Nothing really new except my new
@@ -43,7 +43,7 @@ and extensible than the today's visibility scopes known in the Java/C++ world. A
 they can be overloaded (but not overridden with some kind of super-sends that would break encapsulation) through
 subjective/contextual mechanisms.
 
-For example, suppose that we want to restrict state mutation only to owner object, then we just define setters visible
+For example, suppose that we want to restrict state mutation only to the owner object, then we just define setters visible
 only for the current owner object. In this way, fine-grained control over *what to expose for who* is easily achieved
 without the need to invert control with dependency injection just to workaround encapsulation leaking.
 

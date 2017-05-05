@@ -11,7 +11,7 @@ author: marcoonroad
 foot-icons: true
 comments: true
 analytics: true
-updated: "2017-02-10"
+updated: "2017-05-05"
 ---
 
   In my first post, I want to discuss how interestingly delegation can be thought in terms of object structure. My major
@@ -30,7 +30,7 @@ _unique_ selector pointing to any value.
 
   Selectors in any table (i.e, object) can't change, otherwise the uniqueness of object's selection (accessing the
 state or sending some message) is broken. In SQL terms, this column will be the _primary key_. 'Cause state mutations
-occur frequently, our value row is also writable. Pay attention that, despite selectors being read-only, they can be
+occur frequently, our value column is also writable. Pay attention that, despite selectors being read-only, they can be
 removed if the whole entry (that is, the property) is also removed. This property erasing mechanism may be performed
 while setting a special value, such as `null`, `nil`, `undefined` or whatever, but in our discussion it will be
 `erase` (I'm reserving `nil` to trigger lookup in parent objects).
@@ -101,7 +101,7 @@ method, which is expected to deal with non-existent properties.
 
   Finally, we export an immutable alias of the `prototype` to prevent external modifications into this object. If you
 are paying attention enough, you may have noticed that it disallows us to call `extend` directly into `prototype`
-('cause we can't modify the already set `protected` property), this is due the fact that prototype plays the role of an
+('cause we can't modify the already set `protected` property), this is due the fact that the prototype plays the role of an
 _abstract object_ to provide a small set of behaviors while also being a factory of objects through the `clone`
 operation. Observe also that, despite being immutable, the external reference of prototype can, without problems,
 create mutable instances. It's also valid for every kind of immutable
