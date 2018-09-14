@@ -20,6 +20,8 @@ avatar: https://scontent-gru2-1.xx.fbcdn.net/v/t1.0-9/fr/cp0/e15/q65/75941_68403
 footer-links:
   dribbble:
   email: marcoonroad@gmail.com
+  ethereum: "0x90bA4040199C9E099C4ec9Bc7Af953926F91839A"
+  bitcoin: "1PEpBFvkKQtSHj56dCGgDFQBwz45VpMTTQ"
   facebook: # marcoonroad
   flickr:
   github: marcoonroad # barryclark/jekyll-now
@@ -31,7 +33,6 @@ footer-links:
   stackoverflow: # your stackoverflow profile, e.g. "users/50476/bart-kiers"
   youtube: # channel/<your_long_string> or user/<user-name>
   googleplus: # anything in your profile username that comes after plus.google.com/
-
 
 # Enter your Disqus shortname (not your username) to enable commenting on posts
 # You can find your shortname on the Settings page of your Disqus account
