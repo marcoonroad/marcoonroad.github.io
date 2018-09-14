@@ -30,7 +30,7 @@ improvements on that tag list with category classification beforehand):
 {% assign tags = "" %}
 {% for tag in rawtags %}
         {% if tags == "" %}
-                {% assign tags = [ tag ] %}
+                {% assign tags = tag | split: "," %}
         {% endif %}
 
         {% unless tags contains tag %}

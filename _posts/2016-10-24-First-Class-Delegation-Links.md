@@ -140,6 +140,8 @@ in the concatenation-based inheritance model, but also in the Object-oriented wo
 as a whole. We want to analyze further consequences of that approach, but by now it
 may be sufficient.
 
+{% include twitter.html %}
+
 <a name="notes"> </a>
 
 ### Notes

@@ -21,7 +21,7 @@ refs: [ capability-myths-demolished,
 links: [ objects-as-secure-capabilities,
          what-is-a-capability-anyway,
          where-capabilities-come-from,
-         comparing-acls-and-capabilities, 
+         comparing-acls-and-capabilities,
          the-confused-deputy,
          confused-deputy-resolved ]
 analytics: true
@@ -466,3 +466,5 @@ System Designers should be aware of that, in the end, the gains overcome the cos
 enjoyed this post (despite my worse English vocabulary), and, if possible, thought with care about the whole thing. Who knows, you may also
 wish to implement a Capability System, either as a Programming Language subset framework or, even a new Programming Language with the needed
 support from scratch?
+
+{% include twitter.html %}

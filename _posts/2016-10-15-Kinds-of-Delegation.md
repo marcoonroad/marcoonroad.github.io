@@ -113,3 +113,5 @@ view of an object...
 <noscript>Please enable JavaScript to see the Gist code.</noscript>
 
   Oh God, I am tired... stay tuned on for further posts here. Thanks.
+
+{% include twitter.html %}

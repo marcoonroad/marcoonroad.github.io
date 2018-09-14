@@ -132,6 +132,8 @@ generalize our concept.
 Have you enjoyed this post? Want to write something about that suggestion, too? Please, make a reference for this blog
 entry into your article's footnote (of course, if you can). Thanks, anyway.
 
+{% include twitter.html %}
+
 <a name="notes"> </a>
 
 ### Notes
