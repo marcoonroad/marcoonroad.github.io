@@ -1,0 +1,12 @@
+<a href="#" class="title-link dropdown-link-trigger">Projects</a>
+<ul class="dropdown-menu">
+  {% assign github-projects = site.github-projects | sort %}
+  {% for project in github-projects %}
+  <li class="dropdown-entry">
+    <a
+      class="title-link dropdown-link"
+      href="{{ project | absolute_url }}"
+    >{{ project }}</a>
+  </li>
+  {% endfor %}
+</ul>

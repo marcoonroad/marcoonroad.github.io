@@ -336,6 +336,89 @@ nav {
   background-color: $lightGray;
 }
 
+nav.main-nav {
+  margin-top: 0px;
+  padding-right: 0.5em;
+  padding-left: 0em;
+}
+
+ul.main-menu {
+  list-style: none;
+  float: left;
+  padding-right: 0.5em;
+  padding-left: 0em;
+
+  li {
+    float: left;
+  }
+}
+
+ul.dropdown-menu {
+  transition: 0.5s;
+  background-color: $white !important;
+  padding-top: 0em;
+  padding-left: 0em;
+  list-style: none;
+  display: none;
+  float: none;
+  position: absolute;
+  z-index: 1;
+  margin-top: 1.25em;
+  margin-left: 0.5em;
+  width: 6em;
+  border-radius: 1px !important;
+  border-width: 1px !important;
+  border-color: $darkGray !important;
+  border-style: solid !important;
+  box-shadow: 1px 1px 5px $black;
+
+  li.dropdown-entry {
+    position: relative;
+    display: block;
+    background-color: $white;
+    text-align: left;
+    // border-radius: 10%;
+    padding: 0.20em;
+    width: 100%; // hack
+
+    a.dropdown-link {
+      font-size: 0.90em;
+      padding-left: 0;
+      margin-left: 0;
+      // display: inline;
+      // width: 7em;
+      // text-align: center;
+      // display: block;
+      // border-radius: 10%;
+    }
+  }
+}
+
+li.dropdown-menu-trigger:hover {
+  ul.dropdown-menu {
+    display: block;
+  }
+
+  ul.dropdown-menu:hover {
+    li.dropdown-entry:hover {
+      background-color: $gray !important;
+      a.dropdown-link {
+        color: $white !important;
+      }
+    }
+  }
+}
+
+a.hidden-link {
+  color: $darkGray !important;
+  text-decoration: none !important;
+
+  &:hover, &:active {
+    color: $darkGray !important;
+    text-decoration: none !important;
+  }
+}
+
 footer {
   padding: 20px 0;
   text-align: center;

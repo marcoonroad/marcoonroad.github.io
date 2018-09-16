@@ -15,6 +15,23 @@
         -webkit-border-bottom-right-radius: 5%;
 }
 
+@mixin full-circle {
+  border-top-left-radius: 50%;
+  border-top-right-radius: 50%;
+  border-bottom-left-radius: 50%;
+  border-bottom-right-radius: 50%;
+
+  -moz-border-radius-topleft: 50%;
+  -moz-border-radius-topright: 50%;
+  -moz-border-radius-bottomleft: 50%;
+  -moz-border-radius-bottomright: 50%;
+
+  -webkit-border-top-left-radius: 50%;
+  -webkit-border-top-right-radius: 50%;
+  -webkit-border-bottom-left-radius: 50%;
+  -webkit-border-bottom-right-radius: 50%;
+}
+
 @mixin shadow {
         box-shadow: 0px 0px 15px #777;
         -moz-box-shadow: 0px 0px 15px #777;
@@ -233,6 +250,20 @@ div.update-note    > span:before { content: "Update Note:";    }
         @include smooth;
 }
 
+.post-excerpt {
+  @include mobile {
+    display: none;
+  }
+}
+
+.post-excerpt-short {
+  display: none;
+
+  @include mobile {
+    display: block;
+  }
+}
+
 .read-more {
         text-decoration: none;
         color: white;
@@ -241,6 +272,10 @@ div.update-note    > span:before { content: "Update Note:";    }
         @include padding;
         @include rounded-border;
         @include smooth;
+
+        @include mobile {
+          display: none;
+        }
 }
 
 .read-more:hover {
@@ -253,4 +288,12 @@ div.update-note    > span:before { content: "Update Note:";    }
 
 .animated-element {
         @include smooth;
+}
+
+
+.svg-icon:hover {
+  @include rotate-left;
+  @include smooth;
+  @include shadow;
+  @include full-circle;
 }

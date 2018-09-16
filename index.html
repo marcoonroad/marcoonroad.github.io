@@ -12,7 +12,13 @@ analytics: true
 
         <h1><a href="{{ site.baseurl }}{{ post.url }}" class="title-link">{{ post.title }}</a></h1>
 
-        <div class="entry"> {{ post.excerpt }} </div>
+        <div class="post-excerpt entry"> {{ post.excerpt }} </div>
+
+        <!-- lets twitter a bit -->
+        <div class="post-excerpt-short entry">
+          <a href="{{ site.baseurl }}{{ post.url }}"
+            class="hidden-link">{{ post.excerpt | strip_html | truncate: 140, "..." }}</a>
+        </div>
 
         <a href="{{ site.baseurl }}{{ post.url }}" class="read-more">Read More</a>
       </article>

@@ -10,7 +10,13 @@ title: Marco Aurélio da Silva
 description: Zzzzzz...
 
 # URL of your avatar or profile pic (you could use your GitHub profile pic)
-avatar: https://scontent-gru2-1.xx.fbcdn.net/v/t1.0-9/fr/cp0/e15/q65/75941_684038581685637_5336390958017503811_n.jpg?efg=eyJpIjoiYiJ9&oh=86f594ae941da4319af9356b76552d14&oe=589DEB67
+# avatar: https://scontent-gru2-1.xx.fbcdn.net/v/t1.0-9/fr/cp0/e15/q65/75941_684038581685637_5336390958017503811_n.jpg?efg=eyJpIjoiYiJ9&oh=86f594ae941da4319af9356b76552d14&oe=589DEB67
+avatar: https://avatars3.githubusercontent.com/u/3820407?s=460&v=4
+
+github-projects:
+  - modest
+  - families
+  - talents
 
 #
 # Flags below are optional
