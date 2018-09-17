@@ -17,6 +17,7 @@ github-projects:
   - modest
   - families
   - talents
+  - cuid
 
 #
 # Flags below are optional

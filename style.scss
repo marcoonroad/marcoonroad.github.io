@@ -382,9 +382,11 @@ ul.dropdown-menu {
     width: 100%; // hack
 
     a.dropdown-link {
+      text-align: left;
       font-size: 0.90em;
       padding-left: 0;
       margin-left: 0;
+      width: 100%;
       // display: inline;
       // width: 7em;
       // text-align: center;

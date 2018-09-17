@@ -169,6 +169,12 @@ p {
         -webkit-transform: rotate(270deg);
 }
 
+@mixin rotate-full {
+  transform:         rotate(360deg);
+  -ms-transform:     rotate(360deg);
+  -webkit-transform: rotate(360deg);
+}
+
 .upside-down-rotation {
         transform:         rotate(180deg);
         -ms-transform:     rotate(180deg);
@@ -292,7 +298,7 @@ div.update-note    > span:before { content: "Update Note:";    }
 
 
 .svg-icon:hover {
-  @include rotate-left;
+  @include rotate-full;
   @include smooth;
   @include shadow;
   @include full-circle;
