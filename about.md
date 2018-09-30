@@ -11,7 +11,7 @@ analytics: true
 
 ### About this blog
 
-Frequently (if God gives me the precious time), Type Theory stuff, Functional things, Compiler engineering, Computation
+Frequently (if God gives me the precious time), Type Theory stuff, Functional things, Compiler engineering, Computational
 models, Concurrency features, Prototype-based discussion and Forth-like related posts will arise here.
 
 ### About me
