@@ -81,7 +81,8 @@ Multiparty Computations "generalize" Zero-Knowledge Proofs (which Vitalik is
 planning to use to improve the Ethereum scalability & performance),
 [Homomorphic encryption](https://en.wikipedia.org/wiki/Homomorphic_encryption),
 Coin Tossing/Flipping protocols and
-[Functional Encryption](https://en.wikipedia.org/wiki/Functional_encryption).
+[Functional Encryption](https://en.wikipedia.org/wiki/Functional_encryption)
+(this last one allows us to obfuscate the source code of our smart contracts).
 They are implemented (mostly) with the
 [Secret Sharing/Splitting](https://en.wikipedia.org/wiki/Secret_sharing) idea.
 Some Blockchains (such as Elixxir and Enigma) are already investing efforts and
@@ -106,7 +107,9 @@ you can be fired in just one day, but your promotion only comes, at least, after
 5 months). In this sense, the delayed reward becomes a "Stake" for the miner akin
 to bakers on the Proof-of-Stake consensus protocol. The
 [Delayed Blockchain Protocols](https://arxiv.org/abs/1804.06836)
-paper discuss such sort of delayed rewards idea.
+paper discuss such sort of delayed rewards idea. The both controversial EOS and
+IOTA blockchains also implement zero fee / feeless transactions (although in EOS
+you pay with inflation).
 
 <figure>
   <p/>
@@ -221,6 +224,13 @@ alternatives to protect us from such "Quantum attacks". They're
 signatures (based on the Quantum computationally-proven secure Lattice-based cryptography)
 and Quantum Key Distribution + Quantum Coin Flipping Protocol + One-time Pads (this last one
 is theoretically-proven secure).
+
+_Learning With Errors_, in special, is the most promising signature algorithm.
+Because QKD+OTP demand a Quantum Computer beforahand to protect us from such Quantum
+Attacks on existing signature algorithms (and Quantum Hybrid Machines would be
+really expensive initially), the only feasible solution is a Quantum-resistant
+cryptography running on Classical machines. The Next Blockchains must look forward
+the Lattice-based cryptography, or else, a huge risk would hit them.
 
 <figure>
   <p/>
