@@ -432,7 +432,7 @@ you remind the said loopholes in synergy?), right?
 
 Implementations of the Object Capability Model in the PLT (Programming Language Theory) field frequently are either pure new programming languages or
 subsets of already existent ones. The subset design provides a "tamed" API together with a "Powerbox". The tamed API stands for the "Capability-safe"
-set of functions, classes, etc. that can be exposed globally without further problems (that is, they describes resources of the programming language itself
+set of functions, classes, etc. that can be exposed globally without further problems (that is, they describe resources of the programming language itself
 rather than Operating System resources, for example: vectors, lists, sets, bags and maps data types). Resources which must be encoded as Capabilities are
 passed explicitly through message-passing (e.g, an object dealing with the sensible business logic, such as passwords, telephones, emails, and so on). On
 the other side, the Powerbox is the bridge which fulfills the gap between the tamed API and the OS environment. It may be thought like the "entry-point" of
