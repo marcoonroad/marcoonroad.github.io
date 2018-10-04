@@ -99,7 +99,9 @@ miners (or bakers, whatever you say). In fact, _block rewards must be the only
 incentive for them_. It's just a matter to reduce the high-entry barrier on the
 Miners' Party and thus, increase the miners' decentralization and supply. Some
 guy have implemented something like that feeless idea
-[here](https://github.com/bitclave/Feeless).
+[here](https://github.com/bitclave/Feeless). The both controversial EOS and
+IOTA blockchains also implement zero fee / feeless transactions (although in EOS
+you pay with inflation).
 
 We can also delay such reward to incentive long-lived good/honest/loyal behavior on
 them, while applying immediate punishments (it's not different of a job, where
@@ -107,9 +109,7 @@ you can be fired in just one day, but your promotion only comes, at least, after
 5 months). In this sense, the delayed reward becomes a "Stake" for the miner akin
 to bakers on the Proof-of-Stake consensus protocol. The
 [Delayed Blockchain Protocols](https://arxiv.org/abs/1804.06836)
-paper discuss such sort of delayed rewards idea. The both controversial EOS and
-IOTA blockchains also implement zero fee / feeless transactions (although in EOS
-you pay with inflation).
+paper discuss such sort of delayed rewards idea.
 
 <figure>
   <p/>
