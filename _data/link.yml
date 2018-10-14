@@ -53,3 +53,27 @@
 - id: confused-deputy-resolved
   title: "Confused Deputy Resolved"
   url: "http://www.skyhunter.com/marcs/capabilityIntro/sysxfix.html"
+
+- id: network-effects-of-stores-of-value
+  title: "On the Network Effects of Stores of Value"
+  url: "https://multicoin.capital/2018/05/09/on-the-network-effects-of-stores-of-value/"
+
+- id: incentivized-relay-networks
+  title: "Incentivized Relay Networks"
+  url: "https://medium.com/@drstone/incentivized-relay-networks-74635c2ed83"
+
+- id: blockchains-should-not-be-democracies
+  title: "Blockchains shouldn't be Democracies"
+  url: "https://hackernoon.com/blockchains-should-not-be-democracies-14379e0e23ad"
+
+- id: blockchains-are-not-startups
+  title: "Blockchains aren't Startups"
+  url: "https://medium.com/tezos/blockchains-are-not-startups-16449e210a61"
+
+- id: there-is-no-need-for-hard-forks
+  title: "There's no need for Hard Forks"
+  url: "https://medium.com/tezos/there-is-no-need-for-hard-forks-86b68165e67d"
+
+- id: vote-buying-and-dark-daos
+  title: "On-Chain Vote Buying and the Rise of Dark DAOs"
+  url: "http://hackingdistributed.com/2018/07/02/on-chain-vote-buying/"

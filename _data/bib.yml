@@ -71,3 +71,36 @@
   year: 2016
   month: "July"
   day: 19
+
+- id: tezos-white-paper
+  title: "Tezos - a self-amending crypto-ledger (White paper)"
+  authors: [ "L. M. Goodman" ]
+  year: 2014
+  month: "September"
+  day: 2
+
+- id: aeternity-whitepaper
+  title: "AEternity blockchain"
+  authors: [ "Zackary Hess", "Yanislav Malahov", "Jack Pettersson" ]
+  year: 2017
+  month: "January"
+  day: 23
+
+- id: delayed-blockchain-protocols
+  title: "Delayed Blockchain Protocols"
+  authors: [ "Drew Stone" ]
+  year: 2018
+  month: "April"
+  day: 18
+
+- id: ethereum-yellow-paper
+  title: "Ethereum: A Secure Decentralised Generalised Transaction Ledger"
+  authors: [ "Dr. Gavin Wood" ]
+  year: 2017
+  month: "August"
+  day: 7
+
+- id: enigma-paper
+  title: "Enigma: Decentralized Computation Platform with Guaranteed Privacy"
+  authors: [ "Guy Zyskind", "Oz Nathan", "Alex 'Sandy' Pentland" ]
+  year: 2015
