@@ -30,7 +30,7 @@ The Crypto-currency world has expanded so much that it is being applied _even_
 outside its currency domain. The first "Revolution" / spin-off of the
 Crypto-currencies was Ethereum, promised to ease the implementation of new
 Crypto-currency assets (a.k.a tokens) by dropping away all the complexity of
-Swarm protocols, Consensus algorithms, etc from the average programmers (us).
+P2P protocols, Consensus algorithms, etc from the average programmers (us).
 Due the Turing-completeness of the EVM, it also allowed the implementation of
 arbitrary business rules, the so-called _Smart Contracts_. In this article, we
 analyze and even guess some features for the next blockchains (some already
@@ -68,13 +68,13 @@ Therefore, due the enabled parallelism, DAGs can handle more transactions per
 second, and lower fees likewise.
 
 An example of crypto-currency using DAGs is the controversial IOTA. Due the low
-number of nodes, it is susceptible/prone to colluding attacks. By now, to avoid
+number of nodes, it is susceptible / prone to colluding attacks. By now, to avoid
 that, IOTA is still centralized. DAGs resemble much the Git than Blockchains
 themselves, in fact, the whole different types of consensus algorithms (e.g,
 Proof-of-Work, Proof-of-Stake, etc...) may be unnecessary here.
 There's still much research to be made on this field, and
 [Conflict-free Replicated Data Types](https://en.wikipedia.org/wiki/Conflict-free_replicated_data_type)
-could make a perfect couple/match with DAG-based crypto-currencies.
+could make a perfect couple / match with DAG-based crypto-currencies.
 
 <figure>
   <p/>
@@ -89,11 +89,11 @@ could make a perfect couple/match with DAG-based crypto-currencies.
 ## 2. Secure Multiparty Computations
 
 The general idea of SMC is to play a "game" without any player revealing their
-own secrets. A certain percentage of dishonest/colluding players is acceptable.
+own secrets. A certain percentage of dishonest / colluding players is acceptable.
 Multiparty Computations "generalize" Zero-Knowledge Proofs (which Vitalik is
 planning to use to improve the Ethereum scalability & performance),
 [Homomorphic encryption](https://en.wikipedia.org/wiki/Homomorphic_encryption),
-Coin Tossing / Flipping protocols (a.k.a public/deterministic randomness) and
+Coin Tossing / Flipping protocols (a.k.a public / deterministic randomness) and
 [Functional Encryption](https://en.wikipedia.org/wiki/Functional_encryption)
 (this last one allows us to obfuscate the source code of our smart contracts).
 They are implemented (mostly) with the
@@ -126,7 +126,7 @@ EOS and IOTA blockchains also implement zero fee / feeless transactions
   </figcaption>
 </figure>
 
-Due the sequential mining nature, transaction fees work as a priority index for
+Due the sequential mining nature, transaction fees work as a priority index to
 miners order transaction orders to mine. In the end, transaction fees turn the
 Blockchain into a priority queue for background processing, resembling somehow
 existing Message Queues such as RabbitMQ and ZeroMQ. The only difference is that
@@ -168,7 +168,7 @@ scripts here and there.
   <figcaption>Our Smart Contract programs today (no, it's not a fungible kitty).</figcaption>
 </figure>
 
-We are running contracts and reverting everything when it run out-of-gas. We're
+We are running contracts and reverting everything when it runs out-of-gas. We're
 generating entropy without any kind of value on the other side (the contract's
 caller). It's quite _non-sense_. A solution would be to use _implicit_ `yield`
 _points_, as our contract were a coroutine / one-shot continuation. With that,
@@ -216,7 +216,7 @@ same thing under different words. Governance is one of the most discussed and
 most controversial features of the Blockchains 3.0. It's even related to DAOs.
 Self-Amendment, on the other hand, can be seen as the opposed of the initial
 idea of Ethereum (_a Marketplace for Tokens_). While Smart Contract Tokens
-compete each other horizontally for Network Effects and Price/Demand Valuation
+compete each other horizontally for Network Effects and Price-Demand Valuation
 (and due that, exchange protocols such as ERC20 were proposed), Self-Amendment
 is a way to patch the blockchain with new features vertically, akin to an
 Evolutionary process. On-chain governance only attempts to make it democratic by
@@ -261,8 +261,8 @@ all the things we have nowadays at our hands, which are:
 * Secure Multiparty Computations (by the Enigma folks)
 
 With all such tools, we can propose the On-chain Governance model of the
-Blockchain Protocols **safely**. Prediction Markets & Oracles would help to
-people choose the best proposal. Formal Verification would prove the new
+Blockchain Protocols **safely**. Prediction Markets & Oracles would help people
+to choose the best proposal. Formal Verification would prove the new
 protocol has not any kind of bug neither that it's a hidden attack vector on the
 Blockchain network. SMC would hide the votes of all the citizens, thus, avoiding
 [vote-buying schemes](http://hackingdistributed.com/2018/07/02/on-chain-vote-buying/)
@@ -292,11 +292,11 @@ replace our Government and State, Blockchains will just make them _useless_.
 <script async src="https://platform.twitter.com/widgets.js" charset="utf-8">
 </script>
 
-The whole self-amendment nature would enable novel features for the Blockchains.
+The whole self-amendment nature would unfold novel features for the Blockchains.
 Think in Git. Blockchains, all of they, suffer from eventual Split / Hard-fork.
 _Self-Amending Ledgers_ enable the _safe_, _agreed upon_ and _consistent_ merge
-of previously forked distributed ledgers. It's enable even the merge of
-_unrelated_ blockchains (without common ancestor, as is the case of forks) such
+of previously forked distributed ledgers. It enables even the merge of
+_unrelated_ blockchains (without common ancestor, unlike forks which share one) such
 as Bitcoin and Ethereum. Today, the community of developer hands & minds
 revolves around the deployment of Smart Contracts. The next community of
 developer hands & minds would aim fast iterations of additional features, and
@@ -311,8 +311,8 @@ world.
 To scale to "real-time", real-world, "instantaneous" payments, a trending on
 blockchains is to perform transfers outside the chain network. The Bitcoin's
 [Lightning Network](https://en.wikipedia.org/wiki/Lightning_Network) is the most
-famous example of that. Many Payment Providers (PoS/Gateway corporations) around
-the world are planning to open such BTC channel for their own Merchants.
+famous example of that. Many Payment Providers (PoS / Gateway corporations)
+around the world are planning to open such BTC channel for their own Merchants.
 
 There's also some Smart-Contract-based blockchains which
 perform off-chain contract code execution (for instance, AEternity's State
@@ -338,13 +338,13 @@ agrees with the Oracle contract on some ID for this question. Once the answer is
 ready, either the Oracle contract calls the interested contract passing the
 question ID + answer, or the interested contract is notified about that and then
 retrieves the answer from the Oracle by passing the ID on the Oracle's contract
-call/transaction. In simple words, he have either "pull-based" or "push-based"
+call / transaction. In simple words, he have either "pull-based" or "push-based"
 Oracle contracts.
 
 Augur and Oraclize are famous examples of companies providing Blockchain Oracles
 tools. Augur uses a token for reputation (REP) to finalize an Oracle response.
 On the other hand, Oraclize uses authenticity proofs to confirm that data was
-fetched from a genuine source and wasn't tampered. A novel approach is made by
+fetched from a genuine source and wasn't tampered with. A novel approach is made by
 the AEternity's folks, where they implement the Oracle as part of the Blockchain
 Protocol. Keep in mind that all of such approaches are made by third-party
 players, and there's no consensus mechanism to ensure the information itself is
