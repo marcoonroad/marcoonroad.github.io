@@ -34,8 +34,9 @@ footer-links:
   facebook: # marcoonroad
   flickr:
   github: marcoonroad # barryclark/jekyll-now
-  instagram:
-  linkedin:
+  instagram: marcoonroad
+  spotify: "https://open.spotify.com/user/31p6jaavqahpv6sloy2xdc7re6mi?si=iSQzkS9SShG9hAfFnFh51Q" # whole URL here
+  linkedin: marco-aurélio-da-silva-847149115
   pinterest:
   rss: feed # just type anything here for a working RSS icon
   twitter: marcoonroad
