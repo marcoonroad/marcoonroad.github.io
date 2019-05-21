@@ -20,6 +20,7 @@ github-projects:
   - cuid
   - hieroglyphs
   - sporadic
+  - nocoiner
 
 #
 # Flags below are optional
@@ -29,14 +30,14 @@ github-projects:
 footer-links:
   dribbble:
   email: marcoonroad@gmail.com
-  ethereum: "0x90bA4040199C9E099C4ec9Bc7Af953926F91839A"
-  bitcoin: "1PEpBFvkKQtSHj56dCGgDFQBwz45VpMTTQ"
+  ethereum: "0xA754911C18E5A8Ee2601715905fbCE008882caF3" # old: "0x90bA4040199C9E099C4ec9Bc7Af953926F91839A"
+  bitcoin: "18h417CACY3ksS1XPLWej7TE6hR9Eb6k34" # old: "1PEpBFvkKQtSHj56dCGgDFQBwz45VpMTTQ"
   facebook: # marcoonroad
   flickr:
   github: marcoonroad # barryclark/jekyll-now
   instagram: marcoonroad
   spotify: "https://open.spotify.com/user/31p6jaavqahpv6sloy2xdc7re6mi?si=iSQzkS9SShG9hAfFnFh51Q" # whole URL here
-  linkedin: marco-aurélio-da-silva-847149115
+  linkedin: marcoonroad
   pinterest: marcoonroad
   rss: feed # just type anything here for a working RSS icon
   twitter: marcoonroad
