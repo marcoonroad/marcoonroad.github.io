@@ -20,6 +20,7 @@ github-projects:
   - cuid
   - hieroglyphs
   - sporadic
+  - nocoiner
 
 #
 # Flags below are optional
@@ -37,7 +38,7 @@ footer-links:
   github: marcoonroad # barryclark/jekyll-now
   instagram: marcoonroad
   spotify: "https://open.spotify.com/user/31p6jaavqahpv6sloy2xdc7re6mi?si=iSQzkS9SShG9hAfFnFh51Q" # whole URL here
-  linkedin: marco-aurélio-da-silva-847149115
+  linkedin: marcoonroad
   pinterest: marcoonroad
   rss: feed # just type anything here for a working RSS icon
   twitter: marcoonroad
