@@ -29,8 +29,9 @@ github-projects:
 footer-links:
   dribbble:
   email: marcoonroad@gmail.com
-  ethereum: "0x90bA4040199C9E099C4ec9Bc7Af953926F91839A"
-  bitcoin: "1PEpBFvkKQtSHj56dCGgDFQBwz45VpMTTQ"
+  ethereum: "0x74Bd7803A3e3bA7d28baf5aD22287D0506A04b67"
+  bitcoin: "13jnVxMenKUWb1RA1pKsQkri5HY1u89o2D"
+  tezos: "tz1Y5yUPjqkc32EwpfGFmCbqNCXm7253Csu9"
   facebook: # marcoonroad
   flickr:
   github: marcoonroad # barryclark/jekyll-now
