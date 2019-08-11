@@ -1,6 +1,6 @@
-# marcoonroad.github.io
+# marcoonroad.dev
 
-My own blog about Computer Science related posts. (http://marcoonroad.github.io)
+My own blog about Computer Science related posts. (https://marcoonroad.dev)
 
 Topics, fields, features and theories that I want to cover are:
 * Object-orientation, either Class-based or Prototype-based
@@ -11,3 +11,4 @@ Topics, fields, features and theories that I want to cover are:
 * Machine Learning & AI, when I find some time to study these increasing popularity topics
 * Software engineering, the super-structure of OOP Class-based
 * Language design & Compiler engineering, but only when I grasp some background enough for that
+
