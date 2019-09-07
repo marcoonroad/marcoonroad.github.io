@@ -39,12 +39,13 @@ footer-links:
   github: marcoonroad # barryclark/jekyll-now
   instagram: marcoonroad
   spotify: "https://open.spotify.com/user/31p6jaavqahpv6sloy2xdc7re6mi?si=iSQzkS9SShG9hAfFnFh51Q" # whole URL here
+  youtubemusic: "https://music.youtube.com/playlist?list=PLd79hgAAAf3hI8rXrX0t0_LVqw4fzjQbF" # whole URL here too
   linkedin: marcoonroad
   pinterest: marcoonroad
   rss: feed # just type anything here for a working RSS icon
   twitter: marcoonroad
   stackoverflow: # your stackoverflow profile, e.g. "users/50476/bart-kiers"
-  youtube: # channel/<your_long_string> or user/<user-name>
+  youtube: user/marcoonroad7
   googleplus: # anything in your profile username that comes after plus.google.com/
 
 # Enter your Disqus shortname (not your username) to enable commenting on posts
