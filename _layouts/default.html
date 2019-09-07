@@ -37,12 +37,18 @@
 
           <nav class="main-nav">
             <ul class="main-menu">
+              <!--
               <li><a href="{{ site.baseurl }}/"      class="title-link">Blog</a></li>
+              -->
               <li><a href="{{ site.baseurl }}/tags"  class="title-link">Tags</a></li>
               <li><a href="{{ site.baseurl }}/about" class="title-link">About</a></li>
 
               {% if site.github-projects %}
               <li class="dropdown-menu-trigger">{% include github-projects.html %}</li>
+              {% endif %}
+
+              {% if site.personal-resumes %}
+              <li class="dropdown-menu-trigger">{% include personal-resumes.html %}</li>
               {% endif %}
             </ul>
           </nav>

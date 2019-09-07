@@ -1,0 +1,12 @@
+<a href="#" class="title-link dropdown-link-trigger">Curriculum</a>
+<ul class="dropdown-menu">
+  {% assign personal-resumes = site.personal-resumes %}
+  {% for resume in personal-resumes %}
+  <li class="dropdown-entry">
+    <a
+      class="title-link dropdown-link"
+      href="{{ resume.path | absolute_url }}"
+    >{{ resume.label }}</a>
+  </li>
+  {% endfor %}
+</ul>
