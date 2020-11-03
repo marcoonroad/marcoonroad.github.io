@@ -25,9 +25,13 @@ github-projects:
 
 personal-resumes:
   - path: assets/resume-en-us.pdf
-    label: "Resume [en-us]"
+    label: "Resume EN-US"
   - path: assets/curriculo-pt-br.pdf
-    label: "Currículo [pt-br]"
+    label: "Currículo PT-BR"
+  - path: assets/cover-letter-en-us.pdf
+    label: "Cover Letter EN-US"
+  - path: assets/carta-de-apresentacao-pt-br.pdf
+    label: "Carta Apres. PT-BR"
 
 #
 # Flags below are optional
