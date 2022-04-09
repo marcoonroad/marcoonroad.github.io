@@ -62,7 +62,7 @@ click in the "triangle" part to show other linked tags in the same post):
         <li>
         <h3 id="{{ tag | slugify }}"> {{ tag }} <img src="{{ site.data.conf.path.icons }}/show-black.png"
                 width="16" height="16" id="{{ tag | slugify }}-image" class="animated-element default-rotation"
-                onclick="return toggleVisibility ('{{ tag | slugify }}-list', '{{ tag | slugify }}-image')" /> </h3>
+                onclick="toggleVisibility ('{{ tag | slugify }}-list', '{{ tag | slugify }}-image')" /> </h3>
         <div class="animated-element invisible" id="{{ tag | slugify }}-list">
         <ul>
                 {% for post in site.posts %}
@@ -77,7 +77,7 @@ click in the "triangle" part to show other linked tags in the same post):
                                         <a href="{{ post.url }}" class="animated-element title-link">{{ post.title }}</a> <img
                                         src="{{ site.data.conf.path.icons }}/show-black.png"
                                         width="16" height="16" id="{{ list }}-image" class="animated-element default-rotation"
-                                        onclick="return toggleVisibility ('{{ list }}', '{{ list }}-image')" /></h4>
+                                        onclick="toggleVisibility ('{{ list }}', '{{ list }}-image')" /></h4>
 
                                 <div id="{{ list }}" class="animated-element invisible page-tags">
                                         <hr />
