@@ -14,15 +14,31 @@ description: Zzzzzz...
 avatar: https://avatars3.githubusercontent.com/u/3820407?s=460&v=4
 
 github-projects:
-  - modest
-  - families
-  - talents
-  - cuid
   - hieroglyphs
   - sporadic
   - nocoiner
   - spadille
   - twostep
+
+github-projects-descriptions:
+  - name: modest
+    description: "Script/module mode detection while running/loading Lua files."
+  - name: families
+    description: "Concatenation-based prototypes implementation for Lua."
+  - name: talents
+    description: "Pluggable contextual talents implementation for Lua."
+  - name: cuid
+    description: "CUID generator for Lua."
+  - name: hieroglyphs
+    description: "Quantum-resistant, purely Hash-based, Stateful, One-Time Digital Signatures for OCaml."
+  - name: sporadic
+    description: "Composable Concurrency Abstractions for JavaScript."
+  - name: nocoiner
+    description: "A Commitment Scheme library for Coin Flipping/Tossing algorithms and sort."
+  - name: spadille
+    description: "Verifiable/deterministic fair tickets generation for lotteries, raffles and gambling games."
+  - name: twostep
+    description: "HOTP and TOTP algorithms for 2-step verification (for OCaml)."
 
 personal-resumes:
   - path: assets/resume-en-us.pdf
@@ -107,6 +123,7 @@ plugins:
   - jekyll-redirect-from
   - jekyll-gist
   - jekyll-seo-tag
+  - jemoji
 # - jekyll-press
 
 # Exclude these files from your production _site

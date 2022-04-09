@@ -20,7 +20,7 @@ analytics: true
             class="hidden-link">{{ post.excerpt | strip_html | truncate: 140, "..." }}</a>
         </div>
 
-        <a href="{{ site.baseurl }}{{ post.url }}" class="read-more">Read More</a>
+        <a href="{{ site.baseurl }}{{ post.url }}" class="read-more read-more-main-page">Read More</a>
       </article>
     {% endunless %}
   {% endfor %}

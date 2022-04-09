@@ -11,4 +11,4 @@ package.json
 *~
 *.swp
 vendor/
-
+.jekyll-cache/
