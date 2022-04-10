@@ -10,7 +10,7 @@ analytics: true
 <style>
     .github-project-name {
         font-weight: bold;
-        font-size: 1.1em;
+        font-size: 1.2em !important;
     }
 
     .github-project-item {
@@ -56,6 +56,7 @@ analytics: true
     }
     .github-project-description {
         font-style: none;
+        font-size: 0.9em;
     }
     ul.github-projects-list {
         list-style-type: none;
@@ -72,8 +73,10 @@ analytics: true
    {% assign description = project.description %}
     <li id="github-project-{{ name }}" class="github-project-item">
         <span class="github-project-name">{{ name }}</span>
+        <span style="font-size: 0.8em">
         (<a href="https://marcoonroad.dev/{{ name }}">docs</a> |
-        <a href="https://github.com/marcoonroad/{{ name }}">repo</a>) <br/>
+        <a href="https://github.com/marcoonroad/{{ name }}">repo</a>)
+        </span> <br/>
         <a href="https://github.com/marcoonroad/{{ name }}/stargazers">
             <img alt="GitHub Repo stars" src="https://img.shields.io/github/stars/marcoonroad/{{ name }}">
         </a>
