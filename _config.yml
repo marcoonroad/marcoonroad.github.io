@@ -41,13 +41,13 @@ github-projects-descriptions:
     description: "HOTP and TOTP algorithms for 2-step verification (for OCaml)."
 
 personal-resumes:
-  - path: assets/resume-en-us.pdf
+  - path: docs/resume.pdf
     label: "Resume EN-US"
-  - path: assets/curriculo-pt-br.pdf
+  - path: docs/curriculo.pdf
     label: "Currículo PT-BR"
-  - path: assets/cover-letter-en-us.pdf
+  - path: docs/cover-letter.pdf
     label: "Cover Letter EN-US"
-  - path: assets/carta-de-apresentacao-pt-br.pdf
+  - path: docs/carta-de-apresentacao.pdf
     label: "Carta Apres. PT-BR"
 
 #

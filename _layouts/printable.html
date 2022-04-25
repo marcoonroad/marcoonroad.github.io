@@ -1,0 +1,79 @@
+---
+layout: default
+---
+
+<style>
+    @media print {
+        .wrapper-masthead, .wrapper-footer {
+            display: none;
+            visibility: none;
+        }
+        .entry, .entry *, .entry > * {
+            font-size: 16px !important;
+        }
+    }
+    @media screen {
+        .entry, .entry *, .entry > * {
+            font-size: 18px !important;
+        }
+    }
+</style>
+
+<div class="entry">
+    {{ content }}
+</div>
+
+<script>
+    function printDocument() {
+        const oldTitle = document.title;
+        /*
+        const titleNode = document.querySelector(".printable-document-file-output-title");
+        if (titleNode && titleNode.textContent) {
+            document.title = titleNode.textContent;
+        }
+        */
+        const splitPath = document.location.toString().split("/").filter(item => !!item);
+        document.title = splitPath[ splitPath.length - 1 ];
+        window.print();
+        document.title = oldTitle;
+    }
+</script>
+
+<style type="text/css">
+    .printable-document-file-output-title {
+        display: none;
+        visibility: hidden;
+    }
+    #printwrapper {
+        display: block;
+        width: 100%;
+        padding-left: auto;
+        padding-right: auto;
+    }
+    #printbtn {
+        text-transform: uppercase;
+        font-size: 15px;
+        text-align: center;
+        margin-left: auto;
+        margin-right: auto;
+        width: auto;
+        display: block;
+        text-decoration: none;
+        background-color: #333;
+        color: white;
+        padding: 0.65em;
+        border-radius: 5px;
+    }
+    #printbtn:hover {
+        cursor: pointer;
+    }
+    @media print {
+        #printbtn, #printwrapper {
+            display: none;
+            visibility: hidden;
+        }
+    }
+</style>
+<div class="printwrapper">
+<input id="printbtn" type="button" value="Print Document" onclick="printDocument();" />
+</div>
