@@ -84,10 +84,10 @@ layout: printable
         <div style="" class="resume-section-content">
             <ul class="tech-skill-list">
                 <li class="tech-skill-item">
-                    Redes, administração de sistemas Linux, Git, filas de mensagem (RabbitMQ), bancos de dados não-relacionais (Redis, Mongo) e relacionais (Postgres)
+                    Redes, administração de sistemas Linux, Git, filas de mensagem (RabbitMQ e SQS), bancos de dados não-relacionais (Redis, Mongo) e relacionais (Postgres)
                 </li>
                 <li class="tech-skill-item">
-                    Linguagens C#, JavaScript/TypeScript, Java, SQL, Elixir e DSLs como GraphQL/Relay
+                    Linguagens C#, JavaScript/TypeScript, Lua, Java, SQL, Elixir e DSLs como GraphQL/Relay
                 </li>
                 <li class="tech-skill-item">
                     Test-Driven Development, Behavior-Driven Development, Testes de Integração e Ponta-a-Ponta (End-to-End)
