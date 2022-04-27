@@ -51,10 +51,10 @@ Rio de Janeiro, RJ, Brazil – +5521990569382 – <a href="mailto:contact@marcoo
         <div style="" class="resume-section-content">
             <ul class="tech-skill-list">
                 <li class="tech-skill-item">
-                    Networks, Linux sysadmin, Git, message queues (RabbitMQ), databases such as Redis, Mongo and Postgres
+                    Networks, Linux sysadmin, Git, message queues (RabbitMQ and SQS), databases such as Redis, Mongo and Postgres
                 </li>
                 <li class="tech-skill-item">
-                    General Languages such as Java, JavaScript, TypeScript, Elixir, Perl, Lua, OCaml and DSLs such as GraphQL/Relay
+                    General Languages such as C#, Java, JavaScript/TypeScript, Elixir, Perl, Lua, OCaml and DSLs such as GraphQL/Relay
                 </li>
                 <li class="tech-skill-item">
                     Test-Driven Development, Behavior-Driven Development, Integration Tests and End-to-End Testing
