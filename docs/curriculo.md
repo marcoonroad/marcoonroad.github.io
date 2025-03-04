@@ -27,10 +27,10 @@ layout: printable
                 </div>
                 <div style="width: 1px; background-color: black; min-height: 1px;"></div>
                 <div style="display: flex; flex-direction: column; padding: 0.25em; padding-top: 0em;">
-                    <div class="force-align-left">26 anos</div>
+                    <div class="force-align-left">29 anos</div>
                     <div class="force-align-left">(21) 99056-9382</div>
                     <div class="force-align-left">Rio de Janeiro, RJ</div>
-                    <div class="force-align-left">César Maia, Vargem Pequena</div>
+                    <div class="force-align-left">Vargem Grande</div>
                     <div class="force-align-left"><a href="mailto:contact@marcoonroad.dev">contact@marcoonroad.dev</a></div>
                     <div class="force-align-left"><a href="https://github.com/marcoonroad">https://github.com/marcoonroad</a></div>
                     <div class="force-align-left"><a href="https://marcoonroad.dev">https://marcoonroad.dev</a></div>
