@@ -32,5 +32,9 @@
   &.twitter       { background-image: url(/images/icons/footer/twitter.svg); }
   &.youtube 	    { background-image: url(/images/icons/footer/youtube.svg); }
   &.googleplus	  { background-image: url(/images/icons/footer/googleplus.svg); }
+  &.reddit {
+    background-size: 40px 40px;
+    background-image: url(/images/icons/footer/reddit.svg);
+  }
 
 }
