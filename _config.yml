@@ -58,9 +58,6 @@ personal-resumes:
 footer-links:
   dribbble:
   email: marcoonroad@gmail.com
-  ethereum: "0x74Bd7803A3e3bA7d28baf5aD22287D0506A04b67"
-  bitcoin: "13jnVxMenKUWb1RA1pKsQkri5HY1u89o2D"
-  tezos: "tz1Y5yUPjqkc32EwpfGFmCbqNCXm7253Csu9"
   facebook: # marcoonroad
   flickr:
   github: marcoonroad # barryclark/jekyll-now
@@ -74,6 +71,9 @@ footer-links:
   stackoverflow: # your stackoverflow profile, e.g. "users/50476/bart-kiers"
   youtube: user/marcoonroad7
   googleplus: # anything in your profile username that comes after plus.google.com/
+  # ethereum: "0x74Bd7803A3e3bA7d28baf5aD22287D0506A04b67"
+  # bitcoin: "13jnVxMenKUWb1RA1pKsQkri5HY1u89o2D"
+  # tezos: "tz1Y5yUPjqkc32EwpfGFmCbqNCXm7253Csu9"
 
 # Enter your Disqus shortname (not your username) to enable commenting on posts
 # You can find your shortname on the Settings page of your Disqus account

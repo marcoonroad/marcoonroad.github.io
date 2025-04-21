@@ -13,6 +13,6 @@
 {% if site.footer-links.stackoverflow %}<a href="http://stackoverflow.com/{{ site.footer-links.stackoverflow }}"><i class="svg-icon stackoverflow"></i></a>{% endif %}
 {% if site.footer-links.youtube %}<a href="https://youtube.com/{{ site.footer-links.youtube }}"><i class="svg-icon youtube"></i></a>{% endif %}
 {% if site.footer-links.googleplus %}<a href="https://plus.google.com/{{ site.footer-links.googleplus }}"><i class="svg-icon googleplus"></i></a>{% endif %}
-{% if site.footer-links.bitcoin %}<a href="https://www.blockchain.com/btc/address/{{ site.footer-links.bitcoin }}"><i class="svg-icon bitcoin"></i></a>{% endif %}
-{% if site.footer-links.ethereum %}<a href="https://etherscan.io/address/{{ site.footer-links.ethereum }}"><i class="svg-icon ethereum"></i></a>{% endif %}
-{% if site.footer-links.tezos %}<a href="https://tezblock.io/account/{{ site.footer-links.tezos }}"><i class="svg-icon tezos"></i></a>{% endif %}
+{% if site.footer-links.bitcoin %}<a class="conceal-element" href="https://www.blockchain.com/btc/address/{{ site.footer-links.bitcoin }}"><i class="svg-icon bitcoin"></i></a>{% endif %}
+{% if site.footer-links.ethereum %}<a class="conceal-element" href="https://etherscan.io/address/{{ site.footer-links.ethereum }}"><i class="svg-icon ethereum"></i></a>{% endif %}
+{% if site.footer-links.tezos %}<a class="conceal-element" href="https://tezblock.io/account/{{ site.footer-links.tezos }}"><i class="svg-icon tezos"></i></a>{% endif %}
