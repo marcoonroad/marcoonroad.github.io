@@ -128,6 +128,9 @@ plugins:
 # - jekyll-press
 
 include:
+  - ".well-known/"
+
+keep_files:
   - ".well-known/discord"
 
 # Exclude these files from your production _site
