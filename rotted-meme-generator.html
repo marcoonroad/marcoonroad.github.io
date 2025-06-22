@@ -570,6 +570,7 @@
             var loadedMessageSpan = document.getElementById('loadedMessage');
             var fileSize = (file.size / 1024) / 1024;
             var fileSizeText = fileSize < 1 ? Math.round(fileSize * 1024).toString() + "KB" : Math.round(fileSize).toString() + "MB";
+            if (loadedMessageSpan) loadedMessageSpan.innerText = loadedMessageSpan.innerText.split(':')[0] + ':';
             if (loadedMessageSpan) loadedMessageSpan.innerText += " " + file.name;
             if (loadedMessageSpan) loadedMessageSpan.innerText += " (" + fileSizeText + ")";
             // loadedMessageSpan.style.display = 'inline-block';
