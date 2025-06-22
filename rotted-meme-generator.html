@@ -1,0 +1,844 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title class="localized" pt-br="Gerador de Memes Apodrecidos" en-us="Rotted Meme Generator">Gerador de Memes Apodrecidos</title>
+  <style>
+    .container {
+      text-align: center;
+    }
+    body {
+      font-family: Arial, sans-serif;
+      margin: 20px;
+      background-color: #f4f4f4;
+      color: #333;
+    }
+    .container {
+      max-width: 600px;
+      margin: 0 auto;
+      background-color: #fff;
+      padding: 30px;
+      border-radius: 8px;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    }
+    h1 {
+      text-align: center;
+      color: #0056b3;
+      margin-bottom: 30px;
+      margin-top: 30px;
+    }
+    label {
+      display: block;
+      margin-bottom: 8px;
+      font-weight: bold;
+    }
+    #loadedMessage {
+      display: block;
+      margin-bottom: 8px;
+      font-weight: bold;
+      width: 100%;
+      text-align: left;
+      color: black;
+      font-weight: normal;
+      padding-top: 0em;
+      padding-bottom: 0.5em;
+      font-size: 0.8em;
+      margin-bottom: 1em;
+    }
+    input[type="file"],
+    input[type="number"] {
+      width: calc(100% - 22px);
+      padding: 10px;
+      margin-bottom: 20px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      box-sizing: border-box;
+    }
+    label#imageUploadLabel {
+      padding: 10px;
+      margin-bottom: 0.25em;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      box-sizing: border-box;
+      width: 100%;
+      background-color: #fafafa;
+      font-weight: normal;
+      padding-top: 30px;
+      padding-bottom: 30px;
+    }
+    input#imageUpload {
+      display: none;
+      visibility: hidden;
+    }
+    div.checkboxWrapper {
+      display: inline-block;
+      width: 100%;
+      margin: 0;
+      padding-bottom: 1.25em;
+    }
+    div.checkboxWrapper label {
+      display: inline-block;
+      width: 30%;
+      margin: 0;
+    }
+    input[type="range"] {
+      width: 100%;
+      margin-bottom: 20px;
+    }
+    .filter-options {
+      text-align: left;
+      margin-bottom: 20px;
+      padding: 10px;
+      border: 1px solid #eee;
+      border-radius: 5px;
+    }
+    .filter-options label {
+      display: inline-block;
+      margin-right: 15px;
+      font-weight: normal;
+    }
+    .filter-options input[type="checkbox"] {
+      margin-right: 5px;
+    }
+    button, select {
+      display: block;
+      width: 100%;
+      padding: 12px 20px;
+      margin-bottom: 15px;
+      background-color: #007bff;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      font-size: 18px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+    button:hover, select:hover {
+      color: white;
+      background-color: #0056b3;
+    }
+    button:disabled {
+      background-color: #cccccc;
+      cursor: not-allowed;
+    }
+    .progress-bar {
+      width: 100%;
+      background-color: #e0e0e0;
+      border-radius: 5px;
+      margin-top: 20px;
+      display: none;
+    }
+    .progress-bar-fill {
+      height: 20px;
+      background-color: #28a745;
+      width: 0%;
+      border-radius: 5px;
+      text-align: center;
+      color: white;
+      line-height: 20px;
+      font-size: 14px;
+    }
+    select {
+      background-color: #e9ecef;
+      color: #495057;
+      border: 1px solid #ced4da;
+      -webkit-appearance: none;
+      -moz-appearance: none;
+      appearance: none;
+      background-image: url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%204%205%22%3E%3Cpath%20fill%3D%22%23333%22%20d%3D%22M2%200L0%202h4L2%200zM2%205L0%203h4L2%205z%22%2F%3E%3C%2Fsvg%3E');
+      background-repeat: no-repeat;
+      background-position: right 0.7em top 50%, 0 0;
+      background-size: 0.65em auto, 100%;
+    }
+    #output {
+      margin-top: 30px;
+      border-top: 1px solid #eee;
+      padding-top: 20px;
+      text-align: center;
+    }
+    #output h2 {
+      color: #0056b3;
+      margin-bottom: 15px;
+    }
+    #preview {
+      max-width: 100%;
+      height: auto;
+      border: 1px solid #ddd;
+      margin-bottom: 20px;
+      display: none;
+    }
+    #downloadLink {
+      display: inline-block;
+      padding: 10px 20px;
+      background-color: #28a745;
+      color: white;
+      text-decoration: none;
+      border-radius: 4px;
+      transition: background-color 0.3s ease;
+    }
+    #downloadLink:hover {
+      background-color: #218838;
+    }
+    .info-text {
+      font-size: 0.9em;
+      color: #666;
+      margin-top: -15px;
+      margin-bottom: 15px;
+      text-align: center;
+    }
+    div.rotting-level-wrapper {
+      text-align: left;
+      vertical-align: middle;
+      align-items: center;
+      align-content: center;
+      padding-top: auto;
+      padding-bottom: auto;
+      margin-bottom: 1.25em;
+    }
+    span#rottingLevelMessage {
+      vertical-align: middle;
+      padding-top: 0.5em;
+      display: inline-block;
+    }
+    span#softLevel {
+      color: #ccc;
+      vertical-align: middle;
+      padding-top: 0.5em;
+      display: inline-block;
+    }
+    span#hardLevel {
+      font-weight: bold;
+      color: #2196F3;
+      vertical-align: middle;
+      padding-top: 0.5em;
+      display: inline-block;
+    }
+    .toggle-switch {
+      position: relative;
+      display: inline-block;
+      width: 50px; /* 60px; */
+      height: 28px; /* 34px; */
+      margin: 0;
+      padding: 0;
+    }
+    .toggle-switch input {
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+    .toggle-slider {
+      position: absolute;
+      cursor: pointer;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-color: #ccc;
+      -webkit-transition: .4s;
+      transition: .4s;
+    }
+    .toggle-slider:before {
+      position: absolute;
+      content: "";
+      height: 22px; /* 26px; */
+      width: 22px; /* 26px; */
+      left: 3px;
+      bottom: 3px;
+      background-color: white;
+      -webkit-transition: .4s;
+      transition: .4s;
+    }
+    input:checked + .toggle-slider {
+      background-color: #2196F3;
+    }
+    input:focus + .toggle-slider {
+      box-shadow: 0 0 1px #2196F3;
+    }
+    input:checked + .toggle-slider:before {
+      -webkit-transform: translateX(22px);
+      -ms-transform: translateX(22px);
+      transform: translateX(22px); /* 26px */
+    }
+    /* Rounded sliders */
+    .toggle-slider.toggle-round {
+      border-radius: 28px; /* 34px; */
+    }
+    .toggle-slider.toggle-round:before {
+      border-radius: 50%;
+    }
+    #subtitle-wrapper {
+      display: inline-block;
+      text-align: left;
+      font-size: 0.95em;
+      width: 100%;
+      padding: 0px;
+      margin-bottom: 0px;
+    }
+    #subtitle {
+      margin-bottom: 0px;
+      padding-bottom: 0px;
+      display: inline-block;
+      text-align: left;
+      color: black;
+      width: 100%;
+    }
+    .disable-text-overflow {
+      white-space: pre-wrap;
+      word-wrap: break-word;
+      text-align: left;
+    }
+    img.flag {
+      height: 20;
+      width: 30;
+    }
+    .language-selector {
+      display: flex;
+      min-width: 20%;
+      max-width: 30%;
+      position: absolute;
+      margin-left: 0;
+      margin-right: auto;
+      top: 2em;
+      right: 2em;
+      border-radius: 0.5em;
+      background-color: #dddddd;
+      border-width: 2px;
+      border-color: #555555;
+      border-style: solid;
+      overflow: hidden;
+      padding-left: 0em;
+      padding-top: 0em;
+      padding-bottom: 0em;
+      padding-right: 0em;
+      align-items: center;
+      align-content: center;
+      flex-direction: row;
+    }
+    .language-selector button:last-of-type {
+      margin-left: 0em;
+      margin-right: 0em;
+    }
+    .language-selector button:first-of-type {
+      margin-right: 0em;
+      margin-left: 0em;
+    }
+    .language-selector button {
+      text-align: center;
+      width: 50%;
+      vertical-align: center;
+      display: flex;
+      flex-direction: row;
+      color: black;
+      background-color: #dddddd;
+      transition: 0.5s;
+      font-size: 1em;
+      margin: 0;
+      border-radius: 0em;
+      margin-top: 0em !important;
+      margin-left: 0em !important;
+      margin-right: 0em !important;
+      margin-bottom: 0em !important;
+      display: flex;
+      flex-direction: row;
+    }
+    .language-selector button * {
+      font-size: 1em;
+      display: flex;
+    }
+    .language-selector button :first-child {
+      display: inline-block;
+      margin-left: auto;
+      margin-right: 0.125em;
+      text-align: right;
+    }
+    .language-selector button :last-child {
+      display: inline-block;
+      margin-left: 0.125em;
+      margin-right: auto;
+      text-align: left;
+    }
+    .language-selector button img {
+      height: 1em;
+    }
+    button.checked-language {
+      transition: 0.5s;
+      background-color: #555555 !important;
+      color: white !important;
+    }
+    @media (min-width: 1200px) {
+      .language-selector {
+        min-width: 15%;
+        max-width: 25%;
+      }
+    }
+    @media (max-width: 700px) {
+      .language-selector {
+        min-width: 25%;
+        max-width: 45%;
+      }
+      .language-selector button span {
+        visibility: hidden;
+        display: none;
+        width: 0px;
+        height: 0px;
+        background-color: transparent;
+        color: transparent;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1 class="localized" pt-br="Gerador de Memes Apodrecidos" en-us="Rotted Meme Generator">Gerador de Memes Apodrecidos</h1>
+    <div id="subtitle-wrapper" class="disable-text-overflow">
+      <span id="subtitle" class="disable-text-overflow localized"
+        pt-br="Memes ganham valor quando sua qualidade é prejudicada por repetidas compressões em redes sociais, já que isso mostra seu histórico de compartilhamentos. Porém, é possível simular artificialmente esse efeito para dar um ar mais 'orgânico' ao meme, especialmente em um mundo de imagens ultra-nítidas. Use a ferramenta abaixo para degradar seu meme e aumentar seu valor nostálgico."
+        en-us="Memes gain value when their quality is degraded by repeated compression on social media, as it reflects their sharing history. However, it's possible to artificially simulate this effect to give a meme a more 'organic' feel -- especially in a world of ultra-sharp, high-definition images. Use the tool below to degrade your meme and boost its nostalgic appeal."
+        >Memes ganham valor quando sua qualidade é prejudicada por repetidas compressões em redes sociais, já que isso mostra seu histórico de compartilhamentos. Porém, é possível simular artificialmente esse efeito para dar um ar mais 'orgânico' ao meme, especialmente em um mundo de imagens ultra-nítidas. Use a ferramenta abaixo para degradar seu meme e aumentar seu valor nostálgico.</span>
+    </div>
+
+    <label for="imageUpload" id="imageUploadLabel" class="localized" pt-br="Escolher imagem para apodrecer..." en-us="Select image to rot...">Escolher imagem para apodrecer...</label>
+    <input type="file" id="imageUpload" accept="image/*">
+
+    <span id="loadedMessage" class="localized" pt-br="Imagem carregada:" en-us="Loaded image:">Imagem carregada:</span>
+
+    <div class="filter-options">
+      <label class="localized"
+        pt-br="Escolha um filtro de cor primário (opcional):"
+        en-us="Select a primary color filter (optional):"
+        >Escolha um filtro de cor primário (opcional):</label><br>
+      <div class="checkboxWrapper">
+        <label><input type="checkbox" id="filterRed" name="colorFilter" value="red">     <span class="localized" pt-br="Vermelho" en-us="Red">Vermelho</span></label>
+        <label><input type="checkbox" id="filterGreen" name="colorFilter" value="green"> <span class="localized" pt-br="Verde"    en-us="Green">Verde</span></label>
+        <label><input type="checkbox" id="filterBlue" name="colorFilter" value="blue">   <span class="localized" pt-br="Azul"     en-us="Blue">Azul</span></label>
+      </div>
+      <label class="localized"
+        pt-br="Ou um filtro de cor secundário (opcional):"
+        en-us="Or a secondary color filter (optional):"
+        >Ou um filtro de cor secundário (opcional):</label><br>
+      <div class="checkboxWrapper">
+        <label><input type="checkbox" id="filterCyan" name="colorFilter" value="cyan">       <span class="localized" pt-br="Ciano"   en-us="Cyan">Ciano</span></label>
+        <label><input type="checkbox" id="filterMagenta" name="colorFilter" value="magenta"> <span class="localized" pt-br="Magenta" en-us="Purple">Magenta</span></label>
+        <label><input type="checkbox" id="filterYellow" name="colorFilter" value="yellow">   <span class="localized" pt-br="Amarelo" en-us="Yellow">Amarelo</span></label>
+      </div>
+    </div>
+
+    <div class="rotting-level-wrapper">
+      <span id="rottingLevelMessage" class="localized">Nível de apodrecimento:</span>
+      <span id="softLevel" class="localized">LEVE</span>
+      <label class="toggle-switch">
+        <input name="toggleSwitcher" type="checkbox" checked>
+        <span class="toggle-slider toggle-round"></span>
+      </label>
+      <span id="hardLevel" class="localized">PESADO</span>
+    </div>
+
+    <button id="processButton" disabled class="localized" pt-br="Gerar Versão Apodrecida" en-us="Generate Rotted Version">Gerar Versão Apodrecida</button>
+
+    <div class="progress-bar" id="progressBar">
+      <div class="progress-bar-fill" id="progressBarFill">0%</div>
+    </div>
+
+    <div id="output" style="padding-bottom: 1em;">
+      <h2 class="localized" pt-br="Meme Apodrecido" en-us="Rotted Meme">Meme Apodrecido</h2>
+      <img id="preview" alt="Prévia da imagem processada" />
+      <p class="localized disable-text-overflow" style="text-align: left;"
+        pt-br="Se a imagem não aparecer ou o download falhar, pode ser devido ao tamanho grande ou muitas iterações que o seu aparelho não suportaria."
+        en-us="If the image doesn't render or the download fails, it could be due the huge size or too much work that you device doesn't support."
+        >Se a imagem não aparecer ou o download falhar, pode ser devido ao tamanho grande ou muitas iterações que o seu aparelho não suportaria.</p>
+      <a id="downloadLink" href="#" download="meme_apodrecido.jpg" style="display: none;" class="localized" pt-br="Baixar Meme Apodrecido" en-us="Download Rotted Meme">Baixar Meme Apodrecido</a>
+    </div>
+
+    <div class="language-selector">
+      <button for="usa-flag" id="usa-flag-label" onclick="switchLanguage('en-US')" type="button" style="cursor: pointer;">
+        <span>USA</span>
+        <img id="usa-flag" class="flag" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAB4AAAAUCAYAAACaq43EAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAyRpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDUuMy1jMDExIDY2LjE0NTY2MSwgMjAxMi8wMi8wNi0xNDo1NjoyNyAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvIiB4bWxuczp4bXBNTT0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL21tLyIgeG1sbnM6c3RSZWY9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9zVHlwZS9SZXNvdXJjZVJlZiMiIHhtcDpDcmVhdG9yVG9vbD0iQWRvYmUgUGhvdG9zaG9wIENTNiAoTWFjaW50b3NoKSIgeG1wTU06SW5zdGFuY2VJRD0ieG1wLmlpZDpERTc5MkI3RjE3OEExMUUyQTcxNDlDNEFCRkNENzc2NiIgeG1wTU06RG9jdW1lbnRJRD0ieG1wLmRpZDpERTc5MkI4MDE3OEExMUUyQTcxNDlDNEFCRkNENzc2NiI+IDx4bXBNTTpEZXJpdmVkRnJvbSBzdFJlZjppbnN0YW5jZUlEPSJ4bXAuaWlkOkEyMTE0RjIyMTc4QTExRTJBNzE0OUM0QUJGQ0Q3NzY2IiBzdFJlZjpkb2N1bWVudElEPSJ4bXAuZGlkOkRFNzkyQjdFMTc4QTExRTJBNzE0OUM0QUJGQ0Q3NzY2Ii8+IDwvcmRmOkRlc2NyaXB0aW9uPiA8L3JkZjpSREY+IDwveDp4bXBtZXRhPiA8P3hwYWNrZXQgZW5kPSJyIj8+60cYSwAAAyhJREFUeNrElN1PU3cYxz/tOQUBD/aNymtbUAq2IOiUWXmZA40Iy2BzcW53y7JlyZLtZuE/8NaY7Gbe7WJbdJnTDOdQCbLKrERUotgCSodQ7AsFpK28yKT7rfsL2gv7JCcn+eV3zpPv5/l+H9X2xp65SqtJGfr1Fg3vNPD02SIhfwRniwP3pdvsOVxPaCHGs7+DOA/VJs8crXXEs3P48OfTfMIcU+SRaqlMzm8SNut2VuefIxvyydZIxFbWyX35iviLNZRiPZJaxdLyCkoiQUyc6cwFTPvC9FRkcbJMy7JaTrmxHIuvxaZm5xW7+Jl3NkKRaRt5OVlMjvuoqa9gwr9AgS4PvTYP78hjdtVVEAw9J+Kdxv7Td+hL8tGTeslGg8Jeexk3/riLs62O+cU441NBDjbZGbg+SlNbPYvRF9zzzHCoycFA/yhvCtRqnZbr5a1YEjGm5S2po1ZXfRHVaCTlWLODq24v1eWFGPVbuXH5Dh3vORm88xhziR5zoZ5rl9y0dx/ggS/EzGSQs5Ua3s39h7CUlbri0mKdUGzmijBXqzBXYH4Z931fsmlf7zBvd+wjIigMDI/TcbyRvt+GOSgUZ62uU3S2h8IdRgrTQK1S2T6PyhpZ+aB9LxcF2hpbCUUF27hy4S+Of/wWfUMeykuNVIin9/xNuj9qYWR8juknIc5szNC1voA/DdSypayAhlor57/vp/NEC7OBRfpveek+0cwvP/7JsfedhEWcLg8+pOtkMxfOuTjc5WSrSc+S6ymSQYtGyk5dsVT9/4zbhZmu3Z5IztggXOwSZjvSuZ+hUR9mEan/KAz+PkJb5z7GngSYdXu46T9Ho3EL6ZSKnZ9Fax0W5aFrDNuB6mROA6El7BYTnns+bPt3srK2gV+QcIjIPRLzrxL3ZkLLfB0c40udRCAd1EfFNioxaSG+Sl2NmchSnCKjwh6HBWlzk/rd1uTyMOTn8MbuctRiieyqLKbKbqXs4gSvQmFephOnRCIRFW+F11yyp/3TtD/eSKjYTM4rjcZh110yUZlDPfnVqcwovkppRhRnDrX/2x+UjKDuJXcuE4r/FWAAjBMttNdoYOEAAAAASUVORK5CYII=" />
+      </button>
+      <button for="brazil-flag" id="brazil-flag-label" onclick="switchLanguage('pt-BR')" type="button" style="cursor: pointer;" class="checked-language">
+        <img id="brazil-flag" class="flag" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAB4AAAAUCAYAAACaq43EAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAyRpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDUuMy1jMDExIDY2LjE0NTY2MSwgMjAxMi8wMi8wNi0xNDo1NjoyNyAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvIiB4bWxuczp4bXBNTT0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL21tLyIgeG1sbnM6c3RSZWY9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9zVHlwZS9SZXNvdXJjZVJlZiMiIHhtcDpDcmVhdG9yVG9vbD0iQWRvYmUgUGhvdG9zaG9wIENTNiAoTWFjaW50b3NoKSIgeG1wTU06SW5zdGFuY2VJRD0ieG1wLmlpZDpCRDhGOEMxMTE3NzIxMUUyODY3Q0FBOTFCQzlGNjlDRiIgeG1wTU06RG9jdW1lbnRJRD0ieG1wLmRpZDpCRDhGOEMxMjE3NzIxMUUyODY3Q0FBOTFCQzlGNjlDRiI+IDx4bXBNTTpEZXJpdmVkRnJvbSBzdFJlZjppbnN0YW5jZUlEPSJ4bXAuaWlkOkJEOEY4QzBGMTc3MjExRTI4NjdDQUE5MUJDOUY2OUNGIiBzdFJlZjpkb2N1bWVudElEPSJ4bXAuZGlkOkJEOEY4QzEwMTc3MjExRTI4NjdDQUE5MUJDOUY2OUNGIi8+IDwvcmRmOkRlc2NyaXB0aW9uPiA8L3JkZjpSREY+IDwveDp4bXBtZXRhPiA8P3hwYWNrZXQgZW5kPSJyIj8+TFbakQAABKdJREFUeNq8ll1sU2UYx3+n7en6uZVa1oGDwtYxnCw0EhiCxjgjH14oiV6Ampj4GRONRpQ4ZZEYvTAhwSxGjRFilO2GDy8gZuEGTAS2xUHmBvuAuVG70U0o++ranq6tz2mHc8YB48KTnL7pec/7/p////k/z3kV6h4ZAJz8v9e4SX4Wz3uZkoGEFWQgL343wE6Djj4vwJTEOpHPA64/qXIPw6Qj90yfmwdjw529N72pDjJlYufybloD52gKnOfDkk55ZpQ55+x3b8dBcjx2yxzrTJJmiFtYt2CIH9adY0VJCq5PY3ggeEXhueY1/HK9SKRPgFnujHJLxnMD64D6YmFpMCX4pOQSNRuvQKeRfYeqaOv2kpa4K/3DvPd0CwQ09p1ZQs3lMhJJG1gnwJCeK4A5gLPmsWSZbiocoK60i/LKGCe/9/HMru1Eki5MJNG3TGLGbR6j/tMjbHmpm76OPN7qXcmxcDGoU6JA7L/Ax41sXVaje3OGpeQr6qTAEqOu7AKf+3vw+KY4edBF9c7XUdIKRWoILX0VG2N4raPEkk72n6ii2tdD4OEIO8xDlNjHOT1ewGS0AEzJHHv+DkCbYayDxkWitIEdi4LsW96F1y4Ri2K4TRxsq+NseDXL3EFsihOTptLRc4X2kyEutPZzjWKqK4Y40XAAY1L2kvgjk0Z29pfz3eDSHKg1epP9DGNFSmKVbYKvy9rZXdKPQ0mTEJWMLujtdPPlkScYutjDxeYQkXCUPNWE11/A5h2VrKpeQrhjkKZujSfX9LO4YpK4mM9pzrCtSMrOHuGikBrWLGRydaSZssOUSrGq0bT6LPYFZB0bE2UMEpySD6FwHocOt4mBY7icZnpbhvkx+SsWye8Kv5fHX72f3Q1bqf8mTGjwOGt0frI2Jua2agi3CJtdzfhbH6JPwHXpc8DGKa6mjGzqWEvtkl62FEawSlrisghpTIWuKL4FThxWG+lUFNVqodCejyqsB4IR9u5qJFDp5/nabWzwecgMhciI2lapQomNU0EXe4KlhISgjqVfhpummjKmODPiYetvVbzSeR/jkmuL9AvxD+WrR6RsBgjd8OB2W9CSKWFkkFvBas9j+T0uLrRbOFa7n4X2ThTJr742LuBvdpXzaNt6fr5RSFI32HSHm+lcmenkSwP49o9Syls30jDozXrCKMO7LzQyGosRDOfjcJjErfHsnZ9vImNeKkG4eefln6BA9BUdj4YXslL2+KJ/hbDWcnv/45pdTjqKHpGAT4gZjg4V0x6zUpUeIfDYCGvdA9QfLyU46mE8qnJtTCUkKtnUNF99cICnXuxhsE/lte4Kai9XMJoSne0T0yxn1bJ2684lchNziIMn2VvWwxsPSu7OW/i4YT0dl4qkYyqU+8LUbG/CsSHG/pZFvN21komEHWzC0JCaZ+f6dwCaCJLIo9ozSP36cxRJUyI83asXwY2r8OzZAI3D94qsydyn8q579Rx9WzoHe3yX+cjfl5367Hcf7/eXSe+UMrHpsqZvBzoP4FlfKjV7CNjoDaHK/1Pig+zXSPrAHQDOOoHc+bFH39gkdaiOcfq6N2cYneXNuXmcQP4SYAD5sNLFPECeSAAAAABJRU5ErkJggg==" />
+        <span>Brasil</span>
+      </button>
+    </div>
+  </div>
+
+  <script>
+    // @ts-check
+
+    'use strict';
+
+    /**
+     * @function
+     * @param {string} elementId
+     * @returns {any}
+     */
+    function getElementById(elementId) {
+      return document.getElementById(elementId);
+    }
+
+    /** @type {HTMLInputElement | null} */
+    var imageUpload = getElementById('imageUpload');
+
+    /** @type {NodeListOf<HTMLInputElement>} */
+    var colorFilterCheckboxes = document.querySelectorAll('input[name="colorFilter"]');
+
+    /** @type {HTMLButtonElement | null} */
+    var processButton = getElementById('processButton');
+
+    /** @type {HTMLImageElement | null} */
+    var previewImage = getElementById('preview');
+
+    /** @type {HTMLAnchorElement | null} */
+    var downloadLink = getElementById('downloadLink');
+
+    const progressBar = document.getElementById('progressBar');
+    const progressBarFill = document.getElementById('progressBarFill');
+
+    let originalImageBitmap = null;
+
+    const rottingLevelParams = {
+      'SOFT': {
+        'TOTAL_ITERATIONS': 40,
+        'INITIAL_QUALITY': 99,
+        'FINAL_QUALITY': 59, // 40
+        'INITIAL_RESIZE_FACTOR': 0.99,
+        'FINAL_RESIZE_FACTOR': 0.89, // 10
+      },
+      'HARD': {
+        'TOTAL_ITERATIONS': 80,
+        'INITIAL_QUALITY': 99,
+        'FINAL_QUALITY': 19, // 80
+        'INITIAL_RESIZE_FACTOR': 0.99,
+        'FINAL_RESIZE_FACTOR': 0.79, // 20
+      },
+    };
+
+    function replaceAll(text, match, replacement) {
+      while (text.includes(match)) {
+        text = text.replace(match, replacement);
+      }
+      return text;
+    }
+
+    function cleanText(text) {
+      text = replaceAll(text, "&nbsp;", " ");
+      text = replaceAll(text, "\r", " ");
+      text = replaceAll(text, "\n", " ");
+      text = replaceAll(text, "\t", " ");
+      text = replaceAll(text, "  ", "");
+      while (text.startsWith(" ")) {
+        text = text.substr(1);
+      }
+      while (text.endsWith(" ")) {
+        text = text.substr(0, text.length - 1);
+      }
+      return text;
+    }
+
+    (function () {
+      const rottingLevelSwitcher = document.querySelector('input[name="toggleSwitcher"]');
+      rottingLevelSwitcher?.addEventListener('change', function () {
+        var hardLevelText = document.getElementById('hardLevel');
+        var softLevelText = document.getElementById('softLevel');
+        if (this.checked) {
+          if (hardLevelText !== null) hardLevelText.style.fontWeight = 'bold';
+          if (softLevelText !== null) softLevelText.style.fontWeight = 'normal';
+        }
+        else {
+          if (softLevelText !== null) softLevelText.style.fontWeight = 'bold';
+          if (hardLevelText !== null) hardLevelText.style.fontWeight = 'normal';
+        }
+      });
+    })();
+
+    // Garante que apenas um checkbox de filtro de cor seja selecionado
+    colorFilterCheckboxes.forEach(checkbox => {
+      checkbox.addEventListener('change', function () {
+        colorFilterCheckboxes.forEach(otherCheckbox => {
+          if (otherCheckbox !== this) {
+            otherCheckbox.checked = false;
+          }
+        });
+      });
+    });
+
+    if (imageUpload)
+      imageUpload.addEventListener('change', async (event) => {
+        const file = event.target ? event.target['files'][0] : null;
+        if (file) {
+          try {
+            var loadedMessageSpan = document.getElementById('loadedMessage');
+            var fileSize = (file.size / 1024) / 1024;
+            var fileSizeText = fileSize < 1 ? Math.round(fileSize * 1024).toString() + "KB" : Math.round(fileSize).toString() + "MB";
+            if (loadedMessageSpan) loadedMessageSpan.innerText += " " + file.name;
+            if (loadedMessageSpan) loadedMessageSpan.innerText += " (" + fileSizeText + ")";
+            // loadedMessageSpan.style.display = 'inline-block';
+            // loadedMessageSpan.style.visibility = 'visible';
+            // loadedMessageSpan.style.color = 'black';
+            // console.log(file);
+            originalImageBitmap = await createImageBitmap(file);
+            if (processButton) processButton.disabled = false;
+            if (previewImage) previewImage.style.display = 'none';
+            if (downloadLink) downloadLink.style.display = 'none';
+          } catch (error) {
+            console.error("Erro ao carregar ou criar bitmap da imagem:", error);
+            alert("Não foi possível carregar a imagem. Verifique o console para detalhes.");
+            originalImageBitmap = null;
+            if (processButton) processButton.disabled = true;
+          }
+        } else {
+          originalImageBitmap = null;
+          if (processButton) processButton.disabled = true;
+        }
+      });
+
+    if (processButton)
+      processButton.addEventListener('click', async () => {
+        if (!originalImageBitmap) {
+          alert("Por favor, carregue uma imagem primeiro.");
+          return;
+        }
+
+        /** @type {HTMLInputElement | null} */
+        const rottingLevelSwitcher = document.querySelector('input[name="toggleSwitcher"]');
+        const selectedRottingLevel = rottingLevelSwitcher?.checked === true ? 'HARD' : 'SOFT';
+
+        const TOTAL_ITERATIONS = rottingLevelParams[selectedRottingLevel].TOTAL_ITERATIONS;
+        const INITIAL_QUALITY = rottingLevelParams[selectedRottingLevel].INITIAL_QUALITY;
+        const FINAL_QUALITY = rottingLevelParams[selectedRottingLevel].FINAL_QUALITY;
+        const INITIAL_RESIZE_FACTOR = rottingLevelParams[selectedRottingLevel].INITIAL_RESIZE_FACTOR;
+        const FINAL_RESIZE_FACTOR = rottingLevelParams[selectedRottingLevel].FINAL_RESIZE_FACTOR;
+
+        // Cálculos para degradação de JPEG e Redimensionamento
+        const qualityDecreasePerIteration = (INITIAL_QUALITY - FINAL_QUALITY) / TOTAL_ITERATIONS;
+        const resizeRange = INITIAL_RESIZE_FACTOR - FINAL_RESIZE_FACTOR;
+        const resizeSteps = Math.round(resizeRange * 100);
+        console.log("RESIZE STEPS = ", resizeSteps);
+        const iterationsPerResizeStep = TOTAL_ITERATIONS / resizeSteps;
+        console.log("ITERATIONS PER RESIZE STEP = ", iterationsPerResizeStep);
+
+        // Cálculos para o filtro de cor
+        const COLOR_SHIFT_TOTAL = resizeSteps;
+        const COLOR_SHIFT_ITERATIONS_INTERVAL = TOTAL_ITERATIONS / 10; // COLOR_SHIFT_TOTAL / 5;
+        const COLOR_SHIFT_PER_INTERVAL = COLOR_SHIFT_TOTAL / (TOTAL_ITERATIONS / COLOR_SHIFT_ITERATIONS_INTERVAL);
+        // Ou seja:
+        // - 20 / (80 / 4) = 20 / 20 = 1. A cada 4 iterações, soma 1 na cor escolhida.
+        // - 10 / (80 / 8) = 10 / 10 = 1. A cada 8 iterações, soma 1 na cor escolhida.
+        // - 10 / (40 / 4) = 10 / 10 = 1. A cada 4 iterações, soma 1 na cor escolhida.
+        // - 10 / (80 / 8) = 10 / 10 = 1. A cada 4 iterações, soma 1 na cor escolhida.
+
+        if (processButton) processButton.disabled = true;
+        if (progressBar) progressBar.style.display = 'block';
+        if (progressBarFill) progressBarFill.style.width = '0%';
+        if (progressBarFill) progressBarFill.textContent = '0%';
+
+        /** @type {HTMLInputElement | null} */
+        const selectedFilter = document.querySelector('input[name="colorFilter"]:checked');
+        const filterType = selectedFilter ? selectedFilter.value : 'none';
+
+        try {
+          let currentCanvas = document.createElement('canvas');
+          let ctx = currentCanvas.getContext('2d');
+          if (ctx === null) throw Error("Could not find canvas context!");
+          currentCanvas.width = originalImageBitmap.width;
+          currentCanvas.height = originalImageBitmap.height;
+          ctx.drawImage(originalImageBitmap, 0, 0);
+
+          for (let i = 0; i < TOTAL_ITERATIONS; i++) {
+            // --- 1. Lógica de Qualidade JPEG e Redimensionamento ---
+            const currentQuality = Math.max(FINAL_QUALITY, INITIAL_QUALITY - i * qualityDecreasePerIteration);
+            const jpegQuality = currentQuality / 100;
+
+            const currentResizeStep = Math.floor(i / iterationsPerResizeStep);
+            const currentResizeFactor = Math.max(
+              FINAL_RESIZE_FACTOR,
+              INITIAL_RESIZE_FACTOR - (currentResizeStep * (resizeRange / resizeSteps))
+            );
+
+            const dataURL = currentCanvas.toDataURL('image/jpeg', jpegQuality);
+
+            const tempImg = new Image();
+            await new Promise(resolve => {
+              tempImg.onload = resolve;
+              tempImg.src = dataURL;
+            });
+
+            const resizedWidth = Math.max(1, Math.round(originalImageBitmap.width * currentResizeFactor));
+            const resizedHeight = Math.max(1, Math.round(originalImageBitmap.height * currentResizeFactor));
+
+            let tempCanvas = document.createElement('canvas');
+            let tempCtx = tempCanvas.getContext('2d');
+            tempCanvas.width = resizedWidth;
+            tempCanvas.height = resizedHeight;
+            if (tempCtx)
+              tempCtx.drawImage(tempImg, 0, 0, resizedWidth, resizedHeight);
+
+            ctx.clearRect(0, 0, originalImageBitmap.width, originalImageBitmap.height);
+            ctx.drawImage(tempCanvas, 0, 0, originalImageBitmap.width, originalImageBitmap.height);
+
+            // --- 2. Lógica de Filtro de Cor Acumulativo ---
+            if (filterType !== 'none' && (i + 1) % COLOR_SHIFT_ITERATIONS_INTERVAL === 0) {
+              const imageData = ctx.getImageData(0, 0, currentCanvas.width, currentCanvas.height);
+              const pixels = imageData.data;
+
+              const shiftAmount = COLOR_SHIFT_PER_INTERVAL;
+
+              for (let p = 0; p < pixels.length; p += 4) {
+                let r = pixels[p];
+                let g = pixels[p + 1];
+                let b = pixels[p + 2];
+
+                switch (filterType) {
+                  case 'red':
+                    r += shiftAmount; g -= shiftAmount; b -= shiftAmount;
+                    break;
+                  case 'green':
+                    r -= shiftAmount; g += shiftAmount; b -= shiftAmount;
+                    break;
+                  case 'blue':
+                    r -= shiftAmount; g -= shiftAmount; b += shiftAmount;
+                    break;
+                  case 'cyan': // G+B, R-
+                    r -= shiftAmount; g += shiftAmount; b += shiftAmount;
+                    break;
+                  case 'magenta': // R+B, G-
+                    r += shiftAmount; g -= shiftAmount; b += shiftAmount;
+                    break;
+                  case 'yellow': // R+G, B-
+                    r += shiftAmount; g += shiftAmount; b -= shiftAmount;
+                    break;
+                }
+
+                pixels[p] = Math.min(255, Math.max(0, r));
+                pixels[p + 1] = Math.min(255, Math.max(0, g));
+                pixels[p + 2] = Math.min(255, Math.max(0, b));
+              }
+              ctx.putImageData(imageData, 0, 0);
+            }
+
+            // --- Atualiza a barra de progresso ---
+            const progress = Math.floor(((i + 1) / TOTAL_ITERATIONS) * 100);
+            if (progressBarFill) progressBarFill.style.width = `${progress}%`;
+            if (progressBarFill) progressBarFill.textContent = `${progress}%`;
+            await new Promise(resolve => setTimeout(resolve, 0));
+          }
+
+          // --- Resultado Final ---
+          const finalDataURL = currentCanvas.toDataURL('image/jpeg');
+
+          if (previewImage) previewImage.src = finalDataURL;
+          if (previewImage) previewImage.style.display = 'block';
+          if (previewImage) previewImage.style.marginLeft = 'auto';
+          if (previewImage) previewImage.style.marginRight = 'auto';
+          if (downloadLink) downloadLink.href = finalDataURL;
+          if (downloadLink) downloadLink.download = `meme_apodrecido_${filterType}_final.jpg`;
+          if (downloadLink) downloadLink.style.display = 'inline-block';
+          if (progressBar) progressBar.style.display = 'none';
+          if (processButton) processButton.disabled = false;
+
+        } catch (error) {
+          console.error("Erro no processamento:", error);
+          alert("Ocorreu um erro ao processar a imagem. Verifique o console para detalhes.");
+          if (progressBar !== null) progressBar.style.display = 'none';
+          if (processButton !== null) processButton.disabled = false;
+        }
+      });
+
+    /**
+     * @function
+     * @param {Element} element
+     */
+    function validateElementLocalization(element) {
+      var missingPtBr = element.hasAttribute("en-us") && !element.hasAttribute("pt-br");
+      var missingEnUs = element.hasAttribute("pt-br") && !element.hasAttribute("en-us");
+      var hasMissingLocalization = missingPtBr || missingEnUs;
+      var hasLocalizationMismatch =
+        element.hasAttribute("pt-br") &&
+        element.hasAttribute("en-us") &&
+        element.innerHTML !== "" &&
+        element.innerHTML !== null &&
+        element.innerHTML !== undefined &&
+        !element.innerHTML.startsWith("Imagem carregada:") &&
+        !element.innerHTML.startsWith("Loaded image:") &&
+        replaceAll(element.innerHTML, " ", "&nbsp;") !== replaceAll(element.getAttribute("pt-br") || "", " ", "&nbsp;") &&
+        replaceAll(element.innerHTML, " ", "&nbsp;") !== replaceAll(element.getAttribute("en-us") || "", " ", "&nbsp;");
+      if (hasMissingLocalization || hasLocalizationMismatch) {
+        console.log(element);
+        throw Error("Localization mismatch/typo found: " + element.innerHTML);
+      }
+    }
+
+    /**
+     * @function
+     * @param {string} selectedLanguage
+     */
+    function switchLanguage(selectedLanguage) {
+      var translatePool = {
+        "rottingLevelMessage": {
+          "pt-BR": "Nível de apodrecimento:",
+          "en-US": "Rotting level:",
+        },
+        "softLevel": {
+          "pt-BR": "LEVE",
+          "en-US": "SOFT",
+        },
+        "hardLevel": {
+          "pt-BR": "PESADO",
+          "en-US": "HARD",
+        },
+      };
+      console.log("SELECTED LANGUAGE", selectedLanguage);
+      if (selectedLanguage === "pt-BR" || selectedLanguage === "pt") {
+        document.querySelectorAll('.localized').forEach((element) => {
+          if (!element) return;
+          var textToInsert = "";
+          if (element.id) {
+            console.log(element.id);
+            textToInsert = translatePool[element.id] ? translatePool[element.id]['pt-BR'] : '';
+          }
+          if (!textToInsert && element.hasAttribute("pt-br")) {
+            textToInsert = element.getAttribute("pt-br") || "";
+          }
+          console.log(textToInsert);
+          if (!textToInsert) return;
+          validateElementLocalization(element);
+          element.textContent = textToInsert;
+          // element.innerHTML = replaceAll(textToInsert, " ", "&nbsp;")
+
+          document.getElementById("brazil-flag-label").classList.add("checked-language");
+          document.getElementById("usa-flag-label").classList.remove("checked-language");
+        });
+      }
+      else if (selectedLanguage === "en-US" || selectedLanguage === "en") {
+        document.querySelectorAll('.localized').forEach((element) => {
+          if (!element) return;
+          var textToInsert = "";
+          if (element.id) {
+            console.log(element.id);
+            textToInsert = translatePool[element.id] ? translatePool[element.id]['en-US'] : '';
+          }
+          if (!textToInsert && element.hasAttribute("en-us")) {
+            textToInsert = element.getAttribute("en-us") || "";
+          }
+          console.log(textToInsert);
+          if (!textToInsert) return;
+          validateElementLocalization(element);
+          element.textContent = textToInsert;
+          // element.innerHTML = replaceAll(textToInsert, " ", "&nbsp;")
+
+          document.getElementById("brazil-flag-label").classList.remove("checked-language");
+          document.getElementById("usa-flag-label").classList.add("checked-language");
+        });
+      }
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      const browserLanguages = navigator.languages || [navigator.language];
+      const preferredLanguage = browserLanguages.length > 0 ? browserLanguages[0] : "en-US";
+      if (preferredLanguage !== 'pt-BR' && preferredLanguage !== 'pt') {
+        switchLanguage('en-US');
+      }
+    });
+  </script>
+</body>
+</html>
