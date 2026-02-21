@@ -557,11 +557,12 @@
         <label><input type="checkbox" id="filterYellow" name="colorFilter" value="yellow">   <span class="localized" pt-br="Amarelo" en-us="Yellow">Amarelo</span></label>
       </div>
       <label class="localized"
-        pt-br="Ou um filtro de cor negativo (opcional):"
-        en-us="Or a negative color filter (optional):"
-        >Ou um filtro de cor negativo (opcional):</label><br>
+        pt-br="Ou um filtro de cor especial (opcional):"
+        en-us="Or a special color filter (optional):"
+        >Ou um filtro de cor especial (opcional):</label><br>
       <div>
         <label><input type="checkbox" id="filterNegative" name="colorFilter" value="negative"> <span class="localized" pt-br="Negativo" en-us="Negative">Negativo</span></label>
+        <label><input type="checkbox" id="filterGrayscale" name="colorFilter" value="grayscale"> <span class="localized" pt-br="Escala cinza" en-us="Grayscale">Escala cinza</span></label>
       </div>
     </div>
 
@@ -659,7 +660,7 @@
         'INITIAL_QUALITY': 99,
         'FINAL_QUALITY': 79, // 20
         'INITIAL_RESIZE_FACTOR': 0.99,
-        'FINAL_RESIZE_FACTOR': 0.94, // 5    
+        'FINAL_RESIZE_FACTOR': 0.94, // 5
       },
       'SOFT': {
         'TOTAL_ITERATIONS': 40,
@@ -971,6 +972,10 @@
                   case 'yellow': // R+G, B-
                     r += shiftAmount; g += shiftAmount; b -= shiftAmount;
                     break;
+                  case 'grayscale':
+                    r = Math.round((0.299 * r) + (0.587 * g) + (0.114 * b));
+                    g = r; b = g;
+                    break;
                   case 'negative':
                     r = (255 - r); g = (255 - g); b = (255 - b);
                     break;
@@ -980,7 +985,8 @@
                 pixels[p + 1] = Math.min(255, Math.max(0, g));
                 pixels[p + 2] = Math.min(255, Math.max(0, b));
               }
-              if (filterType === 'negative') {
+              // NOTE: filters to apply only once and no more on further cycles
+              if (filterType === 'negative' || filterType === 'grayscale') {
                 filterType = 'none'; // NOTE: avoids any more color filter processing
               }
               ctx.putImageData(imageData, 0, 0);
