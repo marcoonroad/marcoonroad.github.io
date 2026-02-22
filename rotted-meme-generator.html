@@ -583,6 +583,7 @@
           <option value="MINIMAL" id="minimalLevel" class="localized" pt-br="MÍNIMO" en-us="MINIMAL">MÍNIMO</option>
           <option value="SOFT"    id="softLevel"    class="localized" pt-br="LEVE"   en-us="SOFT">LEVE</option>
           <option value="HARD"    id="hardLevel"    class="localized" pt-br="PESADO" en-us="HARD">PESADO</option>
+          <option value="INSANE"  id="insaneLevel"  class="localized" pt-br="INSANO" en-us="INSANE">INSANO</option>
         </select>
       </div>
     </div>
@@ -676,6 +677,13 @@
         'INITIAL_RESIZE_FACTOR': 0.99,
         'FINAL_RESIZE_FACTOR': 0.79, // 20
       },
+      'INSANE': {
+        'TOTAL_ITERATIONS': 90,
+        'INITIAL_QUALITY': 99,
+        'FINAL_QUALITY': 9, // 90
+        'INITIAL_RESIZE_FACTOR': 0.99,
+        'FINAL_RESIZE_FACTOR': 0.54, // 45
+      },
     };
 
     function replaceAll(text, match, replacement) {
@@ -762,6 +770,7 @@
               if (s.options[i].innerHTML == this.innerHTML) {
                 s.selectedIndex = i;
                 h.innerHTML = this.innerHTML;
+                h.id = this.id.replace("option-", "active-");
                 y = this.parentNode.getElementsByClassName("same-as-selected");
                 yl = y.length;
                 for (k = 0; k < yl; k++) {
@@ -1086,8 +1095,12 @@
           "pt-BR": "PESADO",
           "en-US": "HARD",
         },
+        "insaneLevel": {
+          "pt-BR": "INSANO",
+          "en-US": "INSANE",
+        },
       };
-      for (let poolId of [ 'minimalLevel', 'softLevel', 'hardLevel' ]) {
+      for (let poolId of [ 'minimalLevel', 'softLevel', 'hardLevel', 'insaneLevel' ]) {
         translatePool['active-' + poolId] = translatePool[poolId];
         translatePool['option-' + poolId] = translatePool[poolId];
       }
