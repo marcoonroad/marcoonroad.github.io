@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sigil Cover Generator — deterministic generative album art</title>
+<style>
+  :root{
+    --ink:#0b0710;
+    --ink-2:#150e1e;
+    --bone:#e8e2d8;
+    --bone-dim:#9a927f;
+    --lilac:#b9a9d9;
+    --rose:#7a3b46;
+    --line:#2a2233;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background:var(--ink);
+    color:var(--bone);
+    font-family:Georgia, 'Iowan Old Style', ui-serif, serif;
+    min-height:100vh;
+    padding:32px 20px 60px;
+  }
+  .wrap{max-width:980px;margin:0 auto;}
+  header{margin-bottom:28px;border-bottom:1px solid var(--line);padding-bottom:18px;}
+  h1{
+    font-size:1.5rem;
+    font-weight:400;
+    letter-spacing:0.14em;
+    text-transform:uppercase;
+    margin:0 0 8px;
+    color:var(--bone);
+  }
+  header p{
+    margin:0;
+    color:var(--bone-dim);
+    font-size:0.92rem;
+    max-width:640px;
+    line-height:1.5;
+  }
+  .stage{
+    display:flex;
+    gap:28px;
+    align-items:flex-start;
+    flex-wrap:wrap;
+  }
+  .art-frame{
+    width:min(480px, 100%);
+    aspect-ratio:1/1;
+    flex-shrink:0;
+    background:#000;
+    border:1px solid var(--line);
+  }
+  .art-frame svg{display:block;width:100%;height:100%;}
+  .panel{
+    flex:1 1 280px;
+    min-width:260px;
+    display:flex;
+    flex-direction:column;
+    gap:16px;
+  }
+  label{
+    display:block;
+    font-family:ui-monospace, 'SF Mono', Menlo, Consolas, monospace;
+    font-size:0.72rem;
+    letter-spacing:0.08em;
+    text-transform:uppercase;
+    color:var(--bone-dim);
+    margin-bottom:6px;
+  }
+  input[type="text"]{
+    width:100%;
+    background:var(--ink-2);
+    border:1px solid var(--line);
+    color:var(--bone);
+    padding:10px 12px;
+    font-family:ui-monospace, Menlo, Consolas, monospace;
+    font-size:0.88rem;
+  }
+  input[type="text"]:focus{outline:1px solid var(--lilac);}
+  .row{display:flex;gap:10px;flex-wrap:wrap;}
+  button{
+    background:transparent;
+    border:1px solid var(--lilac);
+    color:var(--lilac);
+    padding:9px 14px;
+    font-family:ui-monospace, Menlo, Consolas, monospace;
+    font-size:0.76rem;
+    letter-spacing:0.06em;
+    text-transform:uppercase;
+    cursor:pointer;
+    transition:background 0.15s, color 0.15s;
+  }
+  button:hover{background:var(--lilac);color:var(--ink);}
+  button.secondary{border-color:var(--line);color:var(--bone-dim);}
+  button.secondary:hover{background:var(--line);color:var(--bone);}
+  .ledger{
+    border:1px solid var(--line);
+    padding:12px 14px;
+    display:flex;
+    flex-direction:column;
+    gap:8px;
+    background:var(--ink-2);
+  }
+  .ledger div{display:flex;flex-direction:column;gap:2px;}
+  .ledger span{
+    font-family:ui-monospace, Menlo, Consolas, monospace;
+    font-size:0.68rem;
+    color:var(--bone-dim);
+    text-transform:uppercase;
+    letter-spacing:0.08em;
+  }
+  .ledger code{
+    font-family:ui-monospace, Menlo, Consolas, monospace;
+    font-size:0.76rem;
+    color:var(--bone);
+    word-break:break-all;
+    line-height:1.4;
+  }
+  footer{
+    margin-top:30px;
+    padding-top:16px;
+    border-top:1px solid var(--line);
+    color:var(--bone-dim);
+    font-size:0.78rem;
+    line-height:1.6;
+  }
+  footer code{font-family:ui-monospace, Menlo, Consolas, monospace;}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <h1>Sigil Cover Generator</h1>
+    <p>Type any nonce — a title, a version tag, a release date, a random string. It's SHA‑256 hashed, the hash seeds a deterministic PRNG, and every visual decision below is drawn from that single stream. Same nonce in, byte‑identical artwork out — forever.</p>
+  </header>
+
+  <div class="stage">
+    <div class="art-frame" id="art"></div>
+    <div class="panel">
+      <div>
+        <label for="nonceInput">Nonce / seed string</label>
+        <input id="nonceInput" type="text" value="album-nonce-0001" autocomplete="off" spellcheck="false">
+      </div>
+      <div class="row">
+        <button id="generateBtn">Generate</button>
+        <button id="randomizeBtn" class="secondary">Random nonce</button>
+      </div>
+      <div class="ledger">
+        <div><span>SHA‑256</span><code id="hashOut">—</code></div>
+        <div><span>PRNG seeds (u32 × 4)</span><code id="seedOut">—</code></div>
+        <div><span>Palette</span><code id="paletteOut">—</code></div>
+      </div>
+      <div class="row">
+        <button id="downloadSvgBtn">Download SVG</button>
+        <button id="downloadPngBtn">Download PNG 3000²</button>
+      </div>
+    </div>
+  </div>
+
+  <footer>
+    Keep the nonce (not just the exported file) if you want to regenerate the exact vector later — it's the only input this page ever reads. Everything else, including the palette, geometry, and grain, is derived from it.
+  </footer>
+</div>
+
+<script>
+/* =========================================================
+   1) NONCE → HASH → SEEDS → DETERMINISTIC PRNG
+   ========================================================= */
+
+async function sha256Hex(str) {
+  const bytes = new TextEncoder().encode(str);
+  const digest = await crypto.subtle.digest('SHA-256', bytes);
+  return [...new Uint8Array(digest)].map(b => b.toString(16).padStart(2, '0')).join('');
+}
+
+// Split the hash into four 32-bit words to seed the generator.
+function seedsFromHex(hex) {
+  const seeds = [];
+  for (let i = 0; i < 4; i++) {
+    seeds.push(parseInt(hex.slice(i * 8, i * 8 + 8), 16) >>> 0);
+  }
+  return seeds;
+}
+
+// sfc32 — small, fast, deterministic PRNG. Same 4 seeds -> same
+// infinite stream of floats in [0,1), on any machine, forever.
+function sfc32(a, b, c, d) {
+  return function () {
+    a >>>= 0; b >>>= 0; c >>>= 0; d >>>= 0;
+    let t = (a + b) | 0;
+    a = b ^ (b >>> 9);
+    b = (c + (c << 3)) | 0;
+    c = (c << 21) | (c >>> 11);
+    d = (d + 1) | 0;
+    t = (t + d) | 0;
+    c = (c + t) | 0;
+    return (t >>> 0) / 4294967296;
+  };
+}
+
+function gcd(a, b) { return b === 0 ? a : gcd(b, a % b); }
+
+/* =========================================================
+   2) THE ART — every choice below reads from rng(), nothing
+      else. Swap this function out for your own visual system;
+      the hash/seed/PRNG chain above stays the same.
+   ========================================================= */
+
+const PALETTES = [
+  { name: 'Void Indigo',   bg1: '#0b0710', bg2: '#1c1030', line: '#cbb8ea', glow: '#8f7fd6', dust: '#e8e2d8' },
+  { name: 'Bone & Ash',    bg1: '#0d0d0d', bg2: '#24201d', line: '#e8e2d8', glow: '#b9a9d9', dust: '#d8cfc0' },
+  { name: 'Blood Chapel',  bg1: '#0a0507', bg2: '#26090f', line: '#d9b8bd', glow: '#7a3b46', dust: '#e8c9c9' },
+  { name: 'Frost Requiem', bg1: '#04070d', bg2: '#0e1c2b', line: '#b7d4dc', glow: '#5f8fa0', dust: '#dceff2' },
+  { name: 'Ember Vigil',   bg1: '#0b0705', bg2: '#2a140a', line: '#e0b48a', glow: '#a85c30', dust: '#f2d9b0' },
+];
+
+function starPaths(points, k) {
+  const n = points.length;
+  const g = gcd(n, k);
+  const paths = [];
+  for (let s = 0; s < g; s++) {
+    let d = `M ${points[s].x.toFixed(2)} ${points[s].y.toFixed(2)} `;
+    let idx = s;
+    for (let step = 0; step < n / g; step++) {
+      idx = (idx + k) % n;
+      d += `L ${points[idx].x.toFixed(2)} ${points[idx].y.toFixed(2)} `;
+    }
+    d += 'Z';
+    paths.push(d);
+  }
+  return paths;
+}
+
+function buildArt(rng) {
+  const pal = PALETTES[Math.floor(rng() * PALETTES.length)];
+  const cx = 500, cy = 500;
+
+  // outer star / sigil
+  const nOuter = 6 + Math.floor(rng() * 7);
+  const kOuter = 2 + Math.floor(rng() * (nOuter - 3));
+  const rOuter = 250 + rng() * 70;
+  const rotOuter = rng() * Math.PI * 2;
+  const outerPts = Array.from({ length: nOuter }, (_, i) => {
+    const a = rotOuter + i * (2 * Math.PI / nOuter);
+    const rr = rOuter * (0.9 + 0.2 * rng());
+    return { x: cx + rr * Math.cos(a), y: cy + rr * Math.sin(a) };
+  });
+
+  // inner counter-star
+  const nInner = 5 + Math.floor(rng() * 6);
+  const kInner = 2 + Math.floor(rng() * (nInner - 3));
+  const rInner = rOuter * (0.42 + rng() * 0.18);
+  const rotInner = rng() * Math.PI * 2;
+  const innerPts = Array.from({ length: nInner }, (_, i) => {
+    const a = rotInner + i * (2 * Math.PI / nInner);
+    return { x: cx + rInner * Math.cos(a), y: cy + rInner * Math.sin(a) };
+  });
+
+  const outerPaths = starPaths(outerPts, kOuter);
+  const innerPaths = starPaths(innerPts, kInner);
+
+  // concentric ritual rings
+  const ringCount = 2 + Math.floor(rng() * 3);
+  let rings = '';
+  for (let i = 0; i < ringCount; i++) {
+    const r = rOuter * (1.08 + i * (0.12 + rng() * 0.06));
+    const dashed = rng() > 0.5;
+    const dash = dashed ? `stroke-dasharray="${(2 + rng() * 6).toFixed(1)} ${(4 + rng() * 10).toFixed(1)}"` : '';
+    rings += `<circle cx="${cx}" cy="${cy}" r="${r.toFixed(2)}" fill="none" stroke="${pal.line}" stroke-opacity="${(0.12 + rng() * 0.18).toFixed(2)}" stroke-width="${(0.6 + rng() * 1.2).toFixed(2)}" ${dash}/>`;
+  }
+
+  // scattered dust / stars, biased to the space outside the sigil
+  const dustCount = 50 + Math.floor(rng() * 70);
+  let dust = '';
+  for (let i = 0; i < dustCount; i++) {
+    const a = rng() * Math.PI * 2;
+    const r = rOuter * (1.05 + rng() * 1.3);
+    const x = cx + r * Math.cos(a);
+    const y = cy + r * Math.sin(a);
+    if (x < -10 || x > 1010 || y < -10 || y > 1010) continue;
+    const s = 0.5 + rng() * 2.2;
+    const o = (0.15 + rng() * 0.55).toFixed(2);
+    if (rng() > 0.82) {
+      dust += `<path d="M ${x.toFixed(2)} ${(y - s * 2.4).toFixed(2)} L ${x.toFixed(2)} ${(y + s * 2.4).toFixed(2)} M ${(x - s * 2.4).toFixed(2)} ${y.toFixed(2)} L ${(x + s * 2.4).toFixed(2)} ${y.toFixed(2)}" stroke="${pal.dust}" stroke-width="0.6" stroke-opacity="${o}"/>`;
+    } else {
+      dust += `<circle cx="${x.toFixed(2)}" cy="${y.toFixed(2)}" r="${s.toFixed(2)}" fill="${pal.dust}" fill-opacity="${o}"/>`;
+    }
+  }
+
+  const grainSeed = Math.floor(rng() * 1000);
+  const grainOpacity = (0.08 + rng() * 0.16).toFixed(2);
+  const glitchOffset = (1.5 + rng() * 2.5).toFixed(2);
+
+  const svg = `<svg viewBox="0 0 1000 1000" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <radialGradient id="bg" cx="50%" cy="46%" r="75%">
+      <stop offset="0%" stop-color="${pal.bg2}"/>
+      <stop offset="100%" stop-color="${pal.bg1}"/>
+    </radialGradient>
+    <filter id="glow" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="5" result="b"/>
+      <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+    <filter id="grain">
+      <feTurbulence type="fractalNoise" baseFrequency="0.85" numOctaves="2" seed="${grainSeed}" stitchTiles="stitch" result="n"/>
+      <feColorMatrix in="n" type="matrix" values="0 0 0 0 1  0 0 0 0 1  0 0 0 0 1  0 0 0 0.6 0"/>
+    </filter>
+  </defs>
+  <rect width="1000" height="1000" fill="url(#bg)"/>
+  <g opacity="0.5">${rings}</g>
+  <g filter="url(#glow)">
+    <g transform="translate(${glitchOffset} 0)" opacity="0.35">${outerPaths.map(d => `<path d="${d}" fill="none" stroke="${pal.glow}" stroke-width="1.1"/>`).join('')}</g>
+    ${outerPaths.map(d => `<path d="${d}" fill="none" stroke="${pal.line}" stroke-width="1.4" stroke-opacity="0.85"/>`).join('')}
+    ${innerPaths.map(d => `<path d="${d}" fill="none" stroke="${pal.line}" stroke-width="0.9" stroke-opacity="0.5"/>`).join('')}
+    <circle cx="${cx}" cy="${cy}" r="4" fill="${pal.glow}"/>
+  </g>
+  <g>${dust}</g>
+  <rect width="1000" height="1000" filter="url(#grain)" opacity="${grainOpacity}" style="mix-blend-mode:overlay"/>
+  <rect x="22" y="22" width="956" height="956" fill="none" stroke="${pal.line}" stroke-opacity="0.22" stroke-width="1"/>
+</svg>`;
+
+  return { svg, palName: pal.name };
+}
+
+/* =========================================================
+   3) WIRING — hash on generate, render, export
+   ========================================================= */
+
+const artEl = document.getElementById('art');
+const nonceInput = document.getElementById('nonceInput');
+const hashOut = document.getElementById('hashOut');
+const seedOut = document.getElementById('seedOut');
+const paletteOut = document.getElementById('paletteOut');
+
+let currentSvg = '', currentHash = '';
+
+async function generate() {
+  const nonce = nonceInput.value;
+  currentHash = await sha256Hex(nonce);
+  const seeds = seedsFromHex(currentHash);
+  const rng = sfc32(...seeds);
+  const { svg, palName } = buildArt(rng);
+  currentSvg = svg;
+  artEl.innerHTML = svg;
+  hashOut.textContent = currentHash;
+  seedOut.textContent = seeds.join(', ');
+  paletteOut.textContent = palName;
+}
+
+document.getElementById('generateBtn').addEventListener('click', generate);
+
+document.getElementById('randomizeBtn').addEventListener('click', () => {
+  const bytes = crypto.getRandomValues(new Uint8Array(8));
+  nonceInput.value = [...bytes].map(b => b.toString(16).padStart(2, '0')).join('');
+  generate();
+});
+
+nonceInput.addEventListener('keydown', (e) => { if (e.key === 'Enter') generate(); });
+
+document.getElementById('downloadSvgBtn').addEventListener('click', () => {
+  const blob = new Blob([currentSvg], { type: 'image/svg+xml' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `cover-${currentHash.slice(0, 10)}.svg`;
+  a.click();
+  URL.revokeObjectURL(url);
+});
+
+document.getElementById('downloadPngBtn').addEventListener('click', () => {
+  const size = 3000; // print/upload-quality square
+  const blob = new Blob([currentSvg], { type: 'image/svg+xml;charset=utf-8' });
+  const url = URL.createObjectURL(blob);
+  const img = new Image();
+  img.onload = () => {
+    const canvas = document.createElement('canvas');
+    canvas.width = size;
+    canvas.height = size;
+    const ctx = canvas.getContext('2d');
+    ctx.drawImage(img, 0, 0, size, size);
+    URL.revokeObjectURL(url);
+    canvas.toBlob((pngBlob) => {
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(pngBlob);
+      a.download = `cover-${currentHash.slice(0, 10)}.png`;
+      a.click();
+    }, 'image/png');
+  };
+  img.src = url;
+});
+
+generate();
+</script>
+</body>
+</html>
