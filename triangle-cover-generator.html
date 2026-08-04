@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Deterministic Cyberpunk Cover Generator</title>
+<style>
+body{margin:0;background:#0b0d10;color:#ddd;font:14px system-ui;display:flex;height:100vh}
+#ui{width:320px;padding:16px;background:#13161b;border-right:1px solid #2a2f38;overflow:auto}
+#view{flex:1;display:flex;justify-content:center;align-items:center;background:#08090b}
+textarea,input,select,button{width:100%;box-sizing:border-box;margin:6px 0;padding:10px;background:#1b2028;color:#eee;border:1px solid #3d4654}
+button{cursor:pointer}
+#preview{width:min(90vmin,900px);height:min(90vmin,900px);box-shadow:0 0 40px #000}
+small{color:#8aa}
+</style>
+</head>
+<body>
+<div id="ui">
+<h2>Generative Cover</h2>
+<label>Seed</label>
+<textarea id="seed" rows="5">Marco Silva
+Cyberpunk Dreams
+Track 07</textarea>
+<label>Theme</label>
+<select id="theme">
+<option>Auto</option>
+<option>Cyberpunk</option>
+<option>Darkwave</option>
+<option>Industrial</option>
+<option>Witch House</option>
+<option>Angelcore</option>
+</select>
+<button onclick="generate()">Generate</button>
+<button onclick="downloadSVG()">Download SVG</button>
+<button onclick="downloadPNG()">Download PNG</button>
+<p><small id="hash"></small></p>
+</div>
+<div id="view"><div id="preview"></div></div>
+
+<script>
+async function sha256(t){
+ const b=new TextEncoder().encode(t);
+ const h=await crypto.subtle.digest("SHA-256",b);
+ return [...new Uint8Array(h)].map(x=>x.toString(16).padStart(2,"0")).join("");
+}
+function mulberry32(a){return function(){a|=0;a=a+0x6D2B79F5|0;let t=Math.imul(a^a>>>15,1|a);t^=t+Math.imul(t^t>>>7,61|t);return((t^t>>>14)>>>0)/4294967296}}
+let svgText="";
+const themes={
+"Cyberpunk":[["#020305","#0b1020"],"#00e5ff"],
+"Darkwave":[["#050509","#16102b"],"#8d6cff"],
+"Industrial":[["#040404","#171717"],"#ff4a3d"],
+"Witch House":[["#050307","#1a0820"],"#d840ff"],
+"Angelcore":[["#060812","#0f2238"],"#9ef7ff"]
+};
+function pickTheme(rand){
+ const keys=Object.keys(themes);
+ return keys[Math.floor(rand()*keys.length)];
+}
+function hexPoints(cx,cy,r){
+ let p=[];
+ for(let i=0;i<6;i++){
+  let a=Math.PI/3*i-Math.PI/6;
+  p.push((cx+Math.cos(a)*r).toFixed(2)+","+(cy+Math.sin(a)*r).toFixed(2));
+ }
+ return p.join(" ");
+}
+async function generate(){
+ const seed=document.getElementById("seed").value;
+ const hash=await sha256(seed);
+ document.getElementById("hash").textContent=hash;
+ const rand=mulberry32(parseInt(hash.slice(0,8),16));
+ let theme=document.getElementById("theme").value;
+ if(theme==="Auto") theme=pickTheme(rand);
+ const bg=themes[theme][0], accent=themes[theme][1];
+ const size=1000,c=size/2;
+ let s=[];
+ s.push(`<svg xmlns="http://www.w3.org/2000/svg" width="${size}" height="${size}" viewBox="0 0 ${size} ${size}">`);
+ s.push(`<defs>
+<linearGradient id="bg" x1="0%" y1="0%" x2="${Math.floor(rand()*100)}%" y2="100%">
+<stop offset="0%" stop-color="${bg[0]}"/>
+<stop offset="100%" stop-color="${bg[1]}"/>
+</linearGradient>
+<filter id="glow"><feGaussianBlur stdDeviation="6" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+</defs>`);
+ s.push(`<rect width="100%" height="100%" fill="url(#bg)"/>`);
+ // scanlines
+ for(let y=0;y<size;y+=4){
+  s.push(`<line x1="0" y1="${y}" x2="${size}" y2="${y}" stroke="#fff" stroke-opacity="0.012"/>`);
+ }
+ // subtle grid
+ for(let g=0;g<=size;g+=50){
+  s.push(`<line x1="${g}" y1="0" x2="${g}" y2="${size}" stroke="${accent}" stroke-opacity="0.03"/>`);
+  s.push(`<line x1="0" y1="${g}" x2="${size}" y2="${g}" stroke="${accent}" stroke-opacity="0.03"/>`);
+ }
+ // hero
+ s.push(`<g filter="url(#glow)">`);
+ const rings=4+Math.floor(rand()*4);
+ for(let i=0;i<rings;i++){
+   let r=110+i*45;
+   s.push(`<circle cx="${c}" cy="${c}" r="${r}" fill="none" stroke="${accent}" stroke-width="${1+i%2}" stroke-opacity="${0.8-i*0.1}"/>`);
+ }
+ s.push(`<polygon points="${hexPoints(c,c,180)}" fill="none" stroke="${accent}" stroke-width="2"/>`);
+ s.push(`<polygon points="${c},${c-130} ${c+115},${c+80} ${c-115},${c+80}" fill="none" stroke="${accent}" stroke-opacity=".7"/>`);
+ s.push(`<circle cx="${c}" cy="${c}" r="8" fill="${accent}"/>`);
+ s.push(`</g>`);
+ // symmetric decorations
+ for(let i=0;i<28;i++){
+   let ang=rand()*Math.PI*2;
+   let d=220+rand()*220;
+   let x=c+Math.cos(ang)*d,y=c+Math.sin(ang)*d;
+   let x2=c-Math.cos(ang)*d,y2=c-Math.sin(ang)*d;
+   let rr=2+rand()*5;
+   s.push(`<circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="${rr}" fill="${accent}" fill-opacity=".55"/>`);
+   s.push(`<circle cx="${x2.toFixed(1)}" cy="${y2.toFixed(1)}" r="${rr}" fill="${accent}" fill-opacity=".55"/>`);
+ }
+ // circuit traces
+ for(let i=0;i<18;i++){
+   let x=50+Math.floor(rand()*18)*50;
+   let y=50+Math.floor(rand()*18)*50;
+   let dx=(rand()>.5?1:-1)*(100+Math.floor(rand()*4)*50);
+   let dy=(rand()>.5?1:-1)*(100+Math.floor(rand()*4)*50);
+   s.push(`<path d="M${x},${y} h${dx} v${dy}" fill="none" stroke="${accent}" stroke-opacity=".18"/>`);
+ }
+ // particles
+ for(let i=0;i<900;i++){
+   let x=rand()*size,y=rand()*size,o=.02+rand()*.08;
+   s.push(`<circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="${(0.2+rand()*1.3).toFixed(2)}" fill="#fff" fill-opacity="${o}"/>`);
+ }
+ s.push(`</svg>`);
+ svgText=s.join("");
+ document.getElementById("preview").innerHTML=svgText;
+}
+function downloadSVG(){
+ const b=new Blob([svgText],{type:"image/svg+xml"});
+ const a=document.createElement("a");
+ a.href=URL.createObjectURL(b);a.download="cover.svg";a.click();
+}
+function downloadPNG(){
+ const img=new Image();
+ const blob=new Blob([svgText],{type:"image/svg+xml"});
+ img.onload=()=>{
+   const c=document.createElement("canvas");
+   c.width=4096;c.height=4096;
+   c.getContext("2d").drawImage(img,0,0,4096,4096);
+   c.toBlob(b=>{
+      const a=document.createElement("a");
+      a.href=URL.createObjectURL(b);
+      a.download="cover.png";
+      a.click();
+   },"image/png");
+ };
+ img.src=URL.createObjectURL(blob);
+}
+generate();
+</script>
+</body>
+</html>
