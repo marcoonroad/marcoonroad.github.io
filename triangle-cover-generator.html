@@ -28,6 +28,13 @@ Track 07</textarea>
 <option>Industrial</option>
 <option>Witch House</option>
 <option>Angelcore</option>
+<option>Drum and Bass</option>
+<option>Breakcore</option>
+<option>Future Bass</option>
+<option>Dubstep</option>
+<option>Trance</option>
+<option>Hardcore Techno</option>
+<option>Phonk</option>
 </select>
 <button onclick="generate()">Generate</button>
 <button onclick="downloadSVG()">Download SVG</button>
@@ -49,7 +56,14 @@ const themes={
 "Darkwave":[["#050509","#16102b"],"#8d6cff"],
 "Industrial":[["#040404","#171717"],"#ff4a3d"],
 "Witch House":[["#050307","#1a0820"],"#d840ff"],
-"Angelcore":[["#060812","#0f2238"],"#9ef7ff"]
+"Angelcore":[["#060812","#0f2238"],"#9ef7ff"],
+"Drum and Bass":[["#03070a","#10232b"],"#00ff9d"],
+"Breakcore":[["#080307","#24101d"],"#ff2d75"],
+"Future Bass":[["#08051a","#182d55"],"#ff7eea"],
+"Dubstep":[["#030607","#102b2f"],"#b6ff00"],
+"Trance":[["#050817","#142b52"],"#4f9dff"],
+"Hardcore Techno":[["#080303","#2b0b0b"],"#ff5a36"],
+"Phonk":[["#080604","#21140b"],"#d89b3d"]
 };
 function pickTheme(rand){
  const keys=Object.keys(themes);
