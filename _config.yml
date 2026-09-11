@@ -138,5 +138,6 @@ exclude:
   - Gemfile.lock
   - LICENSE
   - README.md
+  - webapps/README.md
   - CNAME
   - vendor

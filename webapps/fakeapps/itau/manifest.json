@@ -1,0 +1,27 @@
+{
+  "name": "Itaú",
+  "short_name": "Itaú",
+  "id": "/webapps/fakeapps/itau/",
+  "start_url": "/webapps/fakeapps/itau/",
+  "scope": "/webapps/fakeapps/itau/",
+  "display": "standalone",
+  "background_color": "#ff6200",
+  "theme_color": "#ff6200",
+  "icons": [
+    {
+      "src": "/webapps/fakeapps/itau/favicon.ico",
+      "sizes": "64x64 48x48 32x32 24x24 16x16",
+      "type": "image/x-icon"
+    },
+    {
+      "src": "/webapps/fakeapps/itau/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "/webapps/fakeapps/itau/icon-480.png",
+      "sizes": "480x480",
+      "type": "image/png"
+    }
+  ]
+}

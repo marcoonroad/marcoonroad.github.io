@@ -1,0 +1,27 @@
+{
+  "name": "WhatsApp",
+  "short_name": "WhatsApp",
+  "id": "/webapps/fakeapps/whatsapp/",
+  "start_url": "/webapps/fakeapps/whatsapp/",
+  "scope": "/webapps/fakeapps/whatsapp/",
+  "display": "standalone",
+  "background_color": "#25d366",
+  "theme_color": "#25d366",
+  "icons": [
+    {
+      "src": "/webapps/fakeapps/whatsapp/favicon.ico",
+      "sizes": "64x64 48x48 32x32 24x24 16x16",
+      "type": "image/x-icon"
+    },
+    {
+      "src": "/webapps/fakeapps/whatsapp/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "/webapps/fakeapps/whatsapp/icon-480.png",
+      "sizes": "480x480",
+      "type": "image/png"
+    }
+  ]
+}
