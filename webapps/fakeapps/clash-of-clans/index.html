@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <base href="/webapps/fakeapps/clash-of-clans/" />
+  <link rel="shortcut icon" href="favicon.ico" />
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+  <meta name="apple-mobile-web-app-title" content="Clash of Clans" />
+  <link rel="apple-touch-icon" href="favicon.ico" />
+  <meta name="description" content="Clash of Clans" />
+  <title>Clash of Clans</title>
+  
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#000000">
+</head>
+<body>
+  <style>
+    body {
+        background-color: #000000;
+    }
+  </style>
+  <script>
+    if ('serviceWorker' in navigator) {
+      // Registers sw.js scoped to current subfolder
+      navigator.serviceWorker.register('sw.js', { scope: './' });
+    }
+
+  </script>
+</body>
+</html>
