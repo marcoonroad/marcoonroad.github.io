@@ -165,7 +165,13 @@
     </div>
 
     <div class="card">
-      <h3>3. High-Band Stereo Widener/Imaging</h3>
+      <h3>3A. Bass Mono Maker (De-stereo)</h3>
+      <div class="slider-row">
+        <div class="slider-label"><span>Mono Upper Limit</span><span id="val-mono-freq">120 Hz</span></div>
+        <input type="range" id="ctrl-mono-freq" min="80" max="160" step="10" value="120" />
+      </div>
+      <p></p>
+      <h3>3B. High-Band Stereo Widener/Imaging</h3>
       <div class="slider-row">
         <div class="slider-label"><span>Crossover Freq</span><span id="val-wide-freq">5000 Hz</span></div>
         <input type="range" id="ctrl-wide-freq" min="2000" max="8000" step="100" value="5000" />
@@ -485,7 +491,12 @@
         this.softComp.attack.value = 0.015;
         this.softComp.release.value = 0.15;
 
-        // Stage 3: High-Frequency Stereo Widener (above crossover)
+        // Stage 3A: Bass Mono Maker (below crossover)
+        this.monoIn = this.ctx.createGain();
+        this.monoOut = this.ctx.createGain();
+        this._buildMonoBass(this.monoIn, this.monoOut, this.params.monoFreq);
+
+        // Stage 3B: High-Frequency Stereo Widener (above crossover)
         this.wideIn = this.ctx.createGain();
         this.wideOut = this.ctx.createGain();
         this._buildWidener(this.wideIn, this.wideOut);
@@ -512,6 +523,8 @@
         this.input
           .connect(this.exciter)
           .connect(this.softComp)
+          .connect(this.monoIn);
+        this.monoOut
           .connect(this.wideIn);
 
         this.wideOut
@@ -524,7 +537,27 @@
       /**
        * @param {GainNode} inNode
        * @param {GainNode} outNode
-      */
+       */
+      _buildMonoBass(inNode, outNode, freq = 120) {
+        const ctx = this.ctx;
+        const splitter = ctx.createChannelSplitter(2), merger = ctx.createChannelMerger(2);
+        const mid = ctx.createGain(), side = ctx.createGain(), invR = ctx.createGain(), invSide = ctx.createGain();
+        mid.gain.value = 0.5; side.gain.value = 0.5; invR.gain.value = -1; invSide.gain.value = -1;
+        const hp1 = ctx.createBiquadFilter(), hp2 = ctx.createBiquadFilter();
+        [hp1, hp2].forEach(f => { f.type = 'highpass'; f.frequency.value = freq; f.Q.value = -3.0103; });
+        inNode.connect(splitter);
+        splitter.connect(mid, 0); splitter.connect(mid, 1);                             // M = (L+R)/2
+        splitter.connect(side, 0); splitter.connect(invR, 1); invR.connect(side);       // S = (L-R)/2
+        side.connect(hp1).connect(hp2);                                                 // high-pass the side only
+        mid.connect(merger, 0, 0); hp2.connect(merger, 0, 0);                           // L = M + S'
+        mid.connect(merger, 0, 1); hp2.connect(invSide); invSide.connect(merger, 0, 1); // R = M - S'
+        merger.connect(outNode);
+      }
+
+      /**
+       * @param {GainNode} inNode
+       * @param {GainNode} outNode
+       */
       _buildWidener(inNode, outNode) {
         this.lp1 = this.ctx.createBiquadFilter();
         this.lp2 = this.ctx.createBiquadFilter();
@@ -626,6 +659,7 @@
      * @property {number} satDrive
      * @property {number} compThresh
      * @property {number} compRatio
+     * @property {number} monoFreq
      * @property {number} wideFreq
      * @property {number} wideWidth
      * @property {number} softClipDB
@@ -642,6 +676,7 @@
       satDrive: 1.25,
       compThresh: -8.0,
       compRatio: 4.0,
+      monoFreq: 120,
       wideFreq: 5000,
       wideWidth: 1.25,
       softClipDB: -0.1,
@@ -1324,6 +1359,7 @@
     bindSlider('ctrl-sat', 'val-sat', 'satDrive', v => v.toFixed(2));
     bindSlider('ctrl-comp-thresh', 'val-comp-thresh', 'compThresh', v => `${v.toFixed(1)} dB`);
     bindSlider('ctrl-comp-ratio', 'val-comp-ratio', 'compRatio', v => `${v.toFixed(1)} : 1`);
+    bindSlider('ctrl-mono-freq', 'val-mono-freq', 'monoFreq', v => `${v} Hz`);
     bindSlider('ctrl-wide-freq', 'val-wide-freq', 'wideFreq', v => `${v} Hz`);
     bindSlider('ctrl-wide-width', 'val-wide-width', 'wideWidth', v => `${v.toFixed(2)}x`);
     bindSlider('ctrl-softclip', 'val-softclip', 'softClipDB', v => `${v.toFixed(1)} dB (${Math.pow(10, v / 20).toFixed(3)})`);
