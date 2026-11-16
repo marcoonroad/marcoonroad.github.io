@@ -1,0 +1,1341 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Web Audio Mastering Studio</title>
+  <style>
+    :root {
+      --bg: #111318;
+      --panel: #1a1d24;
+      --border: #2a2f3a;
+      --accent: #3b82f6;
+      --accent-hover: #2563eb;
+      --text: #f3f4f6;
+      --muted: #9ca3af;
+    }
+    * { box-sizing: border-box; font-family: system-ui, -apple-system, sans-serif; }
+    body {
+      margin: 0; padding: 20px;
+      background: var(--bg); color: var(--text);
+      display: flex; flex-direction: column; gap: 16px;
+    }
+    header {
+      display: flex; flex-wrap: wrap; align-items: center; justify-content: flex-start;
+      background: var(--panel); padding: 14px 18px; border-radius: 8px; border: 1px solid var(--border);
+      gap: 12px;
+    }
+    .btn-group { display: flex; gap: 10px; flex-wrap: wrap; }
+    button {
+      background: var(--accent); color: white; border: none; padding: 9px 16px;
+      border-radius: 6px; font-weight: 600; cursor: pointer; font-size: 13px;
+    }
+    button:hover:not(:disabled) { background: var(--accent-hover); }
+    button:disabled { background: #2d3340; color: #6b7280; cursor: not-allowed; }
+    button.secondary { background: #2d3340; }
+    button.secondary:hover:not(:disabled) { background: #3b4252; }
+
+    .workspace {
+      display: grid; grid-template-columns: minmax(0, 1.4fr) minmax(300px, 0.9fr); gap: 16px;
+      align-items: start;
+    }
+    .left-column { display: flex; flex-direction: column; gap: 12px; min-width: 0; }
+    .right-column { display: flex; flex-direction: column; gap: 8px; min-width: 0; }
+    .panes { display: flex; flex-direction: column; gap: 12px; }
+    .pane {
+      background: var(--panel); border: 1px solid var(--border); border-radius: 8px;
+      padding: 12px; display: flex; flex-direction: column; gap: 8px;
+    }
+    .pane-header {
+      display: flex; justify-content: space-between; align-items: center; font-size: 13px; font-weight: 600;
+    }
+    canvas {
+      width: 100%; height: 220px; background: #090a0d; border-radius: 4px; display: block;
+    }
+
+    .controls-grid {
+      display: grid; grid-template-columns: 1fr; gap: 8px;
+    }
+    .card {
+      background: var(--panel); border: 1px solid var(--border); border-radius: 8px; padding: 8px 10px;
+    }
+    .card h3 { margin: 0 0 6px 0; font-size: 11px; color: var(--accent); text-transform: uppercase; letter-spacing: 0.35px; }
+    .slider-row { display: flex; flex-direction: column; gap: 2px; margin-bottom: 5px; }
+    .slider-label { display: flex; justify-content: space-between; font-size: 10px; color: var(--muted); }
+    .slider-label span:last-child { color: var(--text); font-family: monospace; }
+    input[type="range"] { width: 100%; height: 14px; margin: 0; accent-color: var(--accent); cursor: pointer; }
+    select {
+      width: 100%; padding: 6px 8px; border: 1px solid var(--border); border-radius: 5px;
+      background: #111318; color: var(--text); font-size: 11px;
+    }
+    .export-note { margin: 6px 0 0; color: var(--muted); font-size: 10px; }
+
+    .status-bar {
+      background: var(--panel); border: 1px solid var(--border); border-radius: 8px;
+      padding: 8px 10px; font-size: 11px; color: var(--muted); display: flex; flex-wrap: wrap; gap: 6px 12px; justify-content: space-between;
+    }
+    .metrics { font-family: monospace; color: #10b981; }
+    @media (max-width: 900px) {
+      .workspace { grid-template-columns: 1fr; }
+    }
+    .spec-wrap { position: relative; }
+    .spec-axis { position: absolute; inset: 0; pointer-events: none; }
+    .spec-tick { position: absolute; left: 0; right: 0; height: 0; border-top: 1px solid rgba(255,255,255,.24); }
+    .spec-tick.nyq { border-top-color: rgba(96,165,250,.75); }
+    .spec-tick span {
+      position: absolute; left: 3px; top: -7px; padding: 0 3px;
+      font: 9px/12px system-ui, sans-serif; color: #e5e7eb; background: rgba(9,10,13,.82);
+    }
+    .spec-tick.nyq span { top: 0; } /* keep the top label inside the canvas */
+  </style>
+</head>
+<body>
+
+  <div class="workspace">
+    <div class="left-column">
+      <header>
+        <div>
+          <strong>Web Audio Mastering Chain</strong>
+          <div style="font-size: 12px; color: var(--muted);" id="file-name">No audio loaded</div>
+        </div>
+        <div class="btn-group">
+          <input type="file" id="file-input" accept="audio/*" hidden />
+          <button id="btn-import">1. Import Audio</button>
+          <button id="btn-process" disabled>2. Process Audio</button>
+          <button id="btn-play" disabled>3. Play Audio</button>
+          <button id="btn-download" class="secondary" disabled>4. Download Audio</button>
+        </div>
+      </header>
+
+      <div class="status-bar">
+        <span id="status-text" aria-live="polite">Ready. Import an audio file to begin.</span>
+        <span class="metrics" id="metrics-text">LUFS: -- | dBTP: -- | LRA: --</span>
+      </div>
+
+      <!-- TWO-PANE SPECTROGRAM COMPARISON -->
+    <div class="panes">
+      <div class="pane">
+        <div class="pane-header">
+          <span>Processed Audio Spectrogram</span>
+          <label style="font-weight: normal; font-size: 12px; color: var(--muted);">
+            <input type="radio" name="monitor" value="processed" checked /> Monitor/Listen Processed
+          </label>
+        </div>
+        <div class="spec-wrap">
+          <canvas id="spec-processed" width="600" height="220"></canvas>
+          <div class="spec-axis"></div>
+        </div>
+      </div>
+      <div class="pane">
+        <div class="pane-header">
+          <span>Original Audio Spectrogram</span>
+          <label style="font-weight: normal; font-size: 12px; color: var(--muted);">
+            <input type="radio" name="monitor" value="original" /> Monitor/Listen Original
+          </label>
+        </div>
+        <div class="spec-wrap">
+          <canvas id="spec-original" width="600" height="220"></canvas>
+          <div class="spec-axis"></div>
+        </div>
+      </div>
+    </div>
+    </div>
+
+    <div class="right-column">
+    <!-- PIPELINE SLIDERS -->
+    <div class="controls-grid">
+    <div class="card">
+      <h3>1. Soft Saturation (Harmonics Exciter)</h3>
+      <div class="slider-row">
+        <div class="slider-label"><span>Drive Amount</span><span id="val-sat">1.25</span></div>
+        <input type="range" id="ctrl-sat" min="1.0" max="4.0" step="0.05" value="1.25" />
+      </div>
+    </div>
+
+    <div class="card">
+      <h3>2. Soft Audio Compressor</h3>
+      <div class="slider-row">
+        <div class="slider-label"><span>Threshold (dB)</span><span id="val-comp-thresh">-8.0 dB</span></div>
+        <input type="range" id="ctrl-comp-thresh" min="-24" max="0" step="0.5" value="-8" />
+      </div>
+      <div class="slider-row">
+        <div class="slider-label"><span>Ratio</span><span id="val-comp-ratio">4.0 : 1</span></div>
+        <input type="range" id="ctrl-comp-ratio" min="1.2" max="6.0" step="0.1" value="4.0" />
+      </div>
+    </div>
+
+    <div class="card">
+      <h3>3. High-Band Stereo Widener/Imaging</h3>
+      <div class="slider-row">
+        <div class="slider-label"><span>Crossover Freq</span><span id="val-wide-freq">5000 Hz</span></div>
+        <input type="range" id="ctrl-wide-freq" min="2000" max="8000" step="100" value="5000" />
+      </div>
+      <div class="slider-row">
+        <div class="slider-label"><span>Stereo Width</span><span id="val-wide-width">1.25x</span></div>
+        <input type="range" id="ctrl-wide-width" min="1.0" max="2.2" step="0.05" value="1.25" />
+      </div>
+    </div>
+
+    <div class="card">
+      <h3>4 & 5. Soft-Clip & Brickwall Limiter</h3>
+      <div class="slider-row">
+        <div class="slider-label"><span>Soft-Clip Ceiling</span><span id="val-softclip">-0.1 dB (0.989)</span></div>
+        <input type="range" id="ctrl-softclip" min="-3.0" max="0.0" step="0.1" value="-0.1" />
+      </div>
+      <div class="slider-row">
+        <div class="slider-label"><span>Peak Ceiling</span><span id="val-brickwall">-1.0 dB</span></div>
+        <input type="range" id="ctrl-brickwall" min="-3.0" max="0.0" step="0.1" value="-1.0" />
+      </div>
+    </div>
+
+    <div class="card">
+      <h3>6. Loudness Target Normalization</h3>
+      <div class="slider-row">
+        <div class="slider-label"><span>Target LUFS</span><span id="val-lufs">-14.0 LUFS</span></div>
+        <input type="range" id="ctrl-lufs" min="-20" max="-8" step="0.5" value="-14" />
+      </div>
+      <div class="slider-row">
+        <div class="slider-label"><span>Max LRA</span><span id="val-lra">8.0 LU</span></div>
+        <input type="range" id="ctrl-lra" min="4" max="14" step="0.5" value="8" />
+      </div>
+    </div>
+    </div>
+
+    <div class="card">
+      <h3>WAV Export Format</h3>
+      <select id="export-format" aria-label="WAV export format">
+        <option value="48000-24">48 kHz · 24-bit</option>
+        <option value="44100-16">44.1 kHz · 16-bit (dithered)</option>
+      </select>
+      <p class="export-note">Imports use a 48 kHz / 24-bit working format. Playback and the processed spectrogram follow this selection. Heavy analysis runs in a background Worker.</p>
+    </div>
+    </div>
+  </div>
+
+  <script>
+    // @ts-check
+    'use strict';
+    /**
+     * @description 0. BACKGROUND WORKER (Blob + serialized pure functions)
+     * @summary Offloads measureLoudness + final gain/clamp so the main thread stays responsive.
+     */
+    function createMasteringWorker() {
+      // Pure functions that will live inside the worker (no closures, no DOM, no Web Audio objects)
+      /**
+       * @param {number} fs
+       */
+      function kWeightCoeffs(fs) {
+        const f1 = 1681.974450955533, G = 3.999843853973347, Q1 = 0.7071752369554196;
+        let K = Math.tan(Math.PI * f1 / fs);
+        const Vh = Math.pow(10, G / 20), Vb = Math.pow(Vh, 0.4996667741545416);
+        let a0 = 1 + K / Q1 + K * K;
+        const shelf = {
+          b: [(Vh + Vb * K / Q1 + K * K) / a0, 2 * (K * K - Vh) / a0, (Vh - Vb * K / Q1 + K * K) / a0],
+          a: [2 * (K * K - 1) / a0, (1 - K / Q1 + K * K) / a0]
+        };
+        const f2 = 38.13547087602444, Q2 = 0.5003270373238773;
+        K = Math.tan(Math.PI * f2 / fs);
+        a0 = 1 + K / Q2 + K * K;
+        const rlb = { b: [1, -2, 1], a: [2 * (K * K - 1) / a0, (1 - K / Q2 + K * K) / a0] };
+        return [shelf, rlb];
+      }
+
+      /**
+       * @param {number[][]} channels
+       * @param {number} sampleRate
+       * @param {number} length
+       */
+      function measureLoudness(channels, sampleRate, length) {
+        const chCount = channels.length;
+        const seg = Math.max(1, Math.round(sampleRate * 0.1));
+        const nSeg = Math.floor(length / seg);
+        const [s1, s2] = kWeightCoeffs(sampleRate);
+        const segPow = new Float64Array(nSeg);
+        let samplePeak = 0;
+
+        for (let ch = 0; ch < chCount; ch++) {
+          const data = channels[ch];
+          let p1 = 0, p2 = 0, q1 = 0, q2 = 0, r1 = 0, r2 = 0, t1 = 0, t2 = 0;
+          for (let j = 0; j < nSeg; j++) {
+            let acc = 0;
+            for (let k = j * seg, e = k + seg; k < e; k++) {
+              const x = data[k];
+              const y1 = s1.b[0] * x + s1.b[1] * p1 + s1.b[2] * p2 - s1.a[0] * q1 - s1.a[1] * q2;
+              p2 = p1; p1 = x; q2 = q1; q1 = y1;
+              const y2 = s2.b[0] * y1 + s2.b[1] * r1 + s2.b[2] * r2 - s2.a[0] * t1 - s2.a[1] * t2;
+              r2 = r1; r1 = y1; t2 = t1; t1 = y2;
+              acc += y2 * y2;
+            }
+            segPow[j] += acc;
+          }
+          for (let k = 0; k < length; k++) {
+            const ax = Math.abs(data[k]);
+            if (ax > samplePeak) samplePeak = ax;
+          }
+        }
+
+        /**
+         * @param {number} p
+         */
+        const toLUFS = p => -0.691 + 10 * Math.log10(Math.max(p, 1e-12));
+
+        /**
+         * @param {number[]} arr
+         */
+        const mean = arr => arr.reduce((s, v) => s + v, 0) / arr.length;
+
+        /**
+         * @param {number} n
+         */
+        const windowed = n => {
+          const out = [];
+          let sum = 0;
+          for (let j = 0; j < nSeg; j++) {
+            sum += segPow[j];
+            if (j >= n) sum -= segPow[j - n];
+            if (j >= n - 1) out.push(sum / (n * seg));
+          }
+          return out;
+        };
+
+        let integratedLUFS = -70;
+        const mom = windowed(4).filter(p => toLUFS(p) > -70);
+        if (mom.length) {
+          const gate = toLUFS(mean(mom)) - 10;
+          const gated = mom.filter(p => toLUFS(p) >= gate);
+          if (gated.length) integratedLUFS = toLUFS(mean(gated));
+        }
+
+        let lra = 0;
+        const shortTerm = windowed(30).filter(p => toLUFS(p) > -70);
+        if (shortTerm.length) {
+          const gate = toLUFS(mean(shortTerm)) - 20;
+          const l = shortTerm.filter(p => toLUFS(p) >= gate).map(toLUFS).sort((x, y) => x - y);
+          if (l.length) {
+            lra = Math.max(0, l[Math.floor((l.length - 1) * 0.95)] - l[Math.floor((l.length - 1) * 0.10)]);
+          }
+        }
+
+        // Approximate 4× true-peak (windowed-sinc, only near peaks)
+        const T = 12;
+        const kern = [1, 2, 3].map(ph => {
+          const frac = ph / 4;
+          const h = new Float64Array(2 * T);
+          for (let i = 0; i < 2 * T; i++) {
+            const t = i - (T - 1) - frac;
+            h[i] = (Math.sin(Math.PI * t) / (Math.PI * t)) * 0.5 * (1 + Math.cos(Math.PI * t / T));
+          }
+          return h;
+        });
+        let tp = samplePeak;
+        const thr = samplePeak * 0.7;
+        for (let ch = 0; ch < chCount && samplePeak > 0; ch++) {
+          const d = channels[ch];
+          for (let n = T - 1; n <= length - 1 - T; n++) {
+            if (Math.abs(d[n]) < thr && Math.abs(d[n + 1]) < thr) continue;
+            for (const h of kern) {
+              let s = 0;
+              for (let i = 0; i < 2 * T; i++) s += d[n - (T - 1) + i] * h[i];
+              if (Math.abs(s) > tp) tp = Math.abs(s);
+            }
+          }
+        }
+
+        return {
+          integratedLUFS,
+          lra,
+          truePeakDB: 20 * Math.log10(Math.max(tp, 1e-12))
+        };
+      }
+
+      /**
+       * @param {number[][]} channels
+       * @param {number} linearGain
+       * @param {number} ceilLin
+       */
+      function applyGainAndClamp(channels, linearGain, ceilLin) {
+        for (let ch = 0; ch < channels.length; ch++) {
+          const data = channels[ch];
+          for (let i = 0; i < data.length; i++) {
+            data[i] = Math.max(-ceilLin, Math.min(ceilLin, data[i] * linearGain));
+          }
+        }
+        return channels;
+      }
+
+      // Worker bootstrap
+      const workerSource = `
+        const kWeightCoeffs = ${kWeightCoeffs.toString()};
+        const measureLoudness = ${measureLoudness.toString()};
+        const applyGainAndClamp = ${applyGainAndClamp.toString()};
+
+        self.onmessage = function(e) {
+          const msg = e.data;
+          try {
+            if (msg.type === 'measure') {
+              const channels = msg.buffers.map(b => new Float32Array(b));
+              const stats = measureLoudness(channels, msg.sampleRate, msg.length);
+              self.postMessage({ type: 'measureResult', id: msg.id, stats });
+            } else if (msg.type === 'gainClamp') {
+              const channels = msg.buffers.map(b => new Float32Array(b));
+              applyGainAndClamp(channels, msg.linearGain, msg.ceilLin);
+              // Transfer the modified buffers back
+              const transfer = channels.map(c => c.buffer);
+              self.postMessage(
+                { type: 'gainClampResult', id: msg.id, buffers: transfer },
+                transfer
+              );
+            } else if (msg.type === 'measureAndGain') {
+              // Combined path used by the normal render flow
+              const channels = msg.buffers.map(b => new Float32Array(b));
+              const stats = measureLoudness(channels, msg.sampleRate, msg.length);
+
+              const ceilDB = msg.brickwallDB;
+              const wantDB = stats.integratedLUFS <= -70 ? 0 : msg.targetLUFS - stats.integratedLUFS;
+              let gainDB = wantDB;
+              let note = '';
+              if (stats.truePeakDB + gainDB > ceilDB) {
+                gainDB = ceilDB - stats.truePeakDB;
+                if (gainDB < wantDB - 0.05) {
+                  note = ' Gain was limited by the ' + ceilDB.toFixed(1) +
+                         ' dBTP ceiling: about ' + (stats.integratedLUFS + gainDB).toFixed(1) +
+                         ' LUFS instead of ' + msg.targetLUFS.toFixed(1) + '.';
+                }
+              }
+              const linearGain = Math.pow(10, gainDB / 20);
+              const ceilLin = Math.pow(10, ceilDB / 20);
+              applyGainAndClamp(channels, linearGain, ceilLin);
+
+              const transfer = channels.map(c => c.buffer);
+              self.postMessage(
+                {
+                  type: 'measureAndGainResult',
+                  id: msg.id,
+                  stats,
+                  note,
+                  buffers: transfer
+                },
+                transfer
+              );
+            }
+          } catch (err) {
+            self.postMessage({ type: 'error', id: msg.id, message: err.message || String(err) });
+          }
+        };
+      `;
+
+      const blob = new Blob([workerSource], { type: 'application/javascript' });
+      return new Worker(URL.createObjectURL(blob));
+    }
+
+    /**
+     * @param {Worker} worker
+     * @param {Object} message
+     * @param {Transferable[]} transferList
+     * @description Promise-based helper around the worker
+     */
+    function workerCall(worker, message, transferList = []) {
+      return new Promise((resolve, reject) => {
+        const id = Math.random().toString(36).slice(2);
+        /**
+         * @param {any} e
+         */
+        const handler = (e) => {
+          if (!e.data) return;
+          if (e.data.id !== id) return;
+          worker.removeEventListener('message', handler);
+          if (e.data.type === 'error') {
+            reject(new Error(e.data.message));
+          } else {
+            resolve(e.data);
+          }
+        };
+        worker.addEventListener('message', handler);
+        worker.postMessage({ ...message, id }, transferList);
+      });
+    }
+
+    /**
+     * @description 1. MASTERING DSP CHAIN (Works in both AudioContext & OfflineAudioContext)
+     */
+    class MasteringPipeline {
+      /**
+       * @param {AudioContext | OfflineAudioContext} ctx
+       * @param {MasterStateParams} params
+       */
+      constructor(ctx, params) {
+        this.ctx = ctx;
+        this.params = { ...params };
+        this.input = ctx.createGain();
+        this.output = ctx.createGain();
+        this._build();
+      }
+
+      _build() {
+        // Stage 1: Soft Saturation Exciter
+        this.exciter = this.ctx.createWaveShaper();
+        this.exciter.oversample = '4x';
+        this.setSaturation(this.params.satDrive);
+
+        // Stage 2: Soft Compressor
+        this.softComp = this.ctx.createDynamicsCompressor();
+        this.softComp.threshold.value = this.params.compThresh;
+        this.softComp.knee.value = 12.0;
+        this.softComp.ratio.value = this.params.compRatio;
+        this.softComp.attack.value = 0.015;
+        this.softComp.release.value = 0.15;
+
+        // Stage 3: High-Frequency Stereo Widener (above crossover)
+        this.wideIn = this.ctx.createGain();
+        this.wideOut = this.ctx.createGain();
+        this._buildWidener(this.wideIn, this.wideOut);
+
+        // Stage 4: Soft-Clip (ceiling from slider)
+        this.softClipper = this.ctx.createWaveShaper();
+        this.softClipper.oversample = '4x';
+        this.setSoftClip(this.params.softClipDB);
+
+        // Stage 5: Brickwall-style compressor (20:1). Web Audio compressors add automatic makeup gain,
+        // so the real final peak ceiling is enforced after normalization (see renderProcessedBuffer)
+        this.brickwall = this.ctx.createDynamicsCompressor();
+        this.brickwall.threshold.value = this.params.brickwallDB;
+        this.brickwall.knee.value = 0.0;
+        this.brickwall.ratio.value = 20.0;
+        this.brickwall.attack.value = 0.001;
+        this.brickwall.release.value = 0.05;
+
+        // Stage 6: unity here; the real normalization gain is applied in the Worker
+        this.normGain = this.ctx.createGain();
+        this.normGain.gain.value = 1.0;
+
+        // Connect in exact requested order
+        this.input
+          .connect(this.exciter)
+          .connect(this.softComp)
+          .connect(this.wideIn);
+
+        this.wideOut
+          .connect(this.softClipper)
+          .connect(this.brickwall)
+          .connect(this.normGain)
+          .connect(this.output);
+      }
+
+      /**
+       * @param {GainNode} inNode
+       * @param {GainNode} outNode
+      */
+      _buildWidener(inNode, outNode) {
+        this.lp1 = this.ctx.createBiquadFilter();
+        this.lp2 = this.ctx.createBiquadFilter();
+        this.hp1 = this.ctx.createBiquadFilter();
+        this.hp2 = this.ctx.createBiquadFilter();
+
+        // Web Audio lowpass/highpass Q is in dB: -3.0103 dB = 0.7071 linear (Butterworth) -> LR4 crossover
+        [this.lp1, this.lp2].forEach(f => { f.type = 'lowpass'; f.Q.value = -3.0103; });
+        [this.hp1, this.hp2].forEach(f => { f.type = 'highpass'; f.Q.value = -3.0103; });
+
+        inNode.connect(this.lp1).connect(this.lp2).connect(outNode);
+
+        const splitter = this.ctx.createChannelSplitter(2);
+        const merger = this.ctx.createChannelMerger(2);
+        const midGain = this.ctx.createGain();
+        this.sideGain = this.ctx.createGain();
+        const invR = this.ctx.createGain();
+        const invSide = this.ctx.createGain();
+
+        midGain.gain.value = 0.5;
+        invR.gain.value = -1.0;
+        invSide.gain.value = -1.0;
+        inNode.connect(this.hp1).connect(this.hp2).connect(splitter);
+        splitter.connect(midGain, 0);
+        splitter.connect(midGain, 1);
+        splitter.connect(this.sideGain, 0);
+        splitter.connect(invR, 1);
+        invR.connect(this.sideGain);
+        midGain.connect(merger, 0, 0);
+        this.sideGain.connect(merger, 0, 0);
+        midGain.connect(merger, 0, 1);
+        this.sideGain.connect(invSide);
+        invSide.connect(merger, 0, 1);
+        merger.connect(outNode);
+        this.setWidener(this.params.wideFreq, this.params.wideWidth);
+      }
+      /**
+       * @param {number} drive
+       */
+      setSaturation(drive) {
+        this.params.satDrive = drive;
+        const samples = 44100;
+        const curve = new Float32Array(samples);
+        const norm = Math.tanh(drive);
+        for (let i = 0; i < samples; i++) {
+          const x = (i * 2) / samples - 1;
+          curve[i] = Math.tanh(x * drive) / norm;
+        }
+        if (this.exciter)
+        this.exciter.curve = curve;
+      }
+      /**
+       * @param {number} freq
+       * @param {number} width
+       */
+      setWidener(freq, width) {
+        this.params.wideFreq = freq;
+        this.params.wideWidth = width;
+        [this.lp1, this.lp2, this.hp1, this.hp2].filter(f => f !== undefined).forEach(f => f.frequency.value = freq);
+        if (this.sideGain)
+        this.sideGain.gain.value = 0.5 * width;
+      }
+      /**
+       * @param {number} ceilingDB
+       */
+      setSoftClip(ceilingDB) {
+        this.params.softClipDB = ceilingDB;
+        const ceiling = Math.pow(10, ceilingDB / 20);
+        const samples = 44100;
+        const curve = new Float32Array(samples);
+        const kneeStart = ceiling * 0.75;
+        const kneeRange = Math.max(0.0001, ceiling - kneeStart);
+        for (let i = 0; i < samples; i++) {
+          const x = (i * 2) / samples - 1;
+          const absX = Math.abs(x);
+          const sign = Math.sign(x);
+          if (absX <= kneeStart) {
+            curve[i] = x;
+          } else {
+            const excess = (absX - kneeStart) / kneeRange;
+            curve[i] = sign * (kneeStart + kneeRange * Math.tanh(excess));
+          }
+        }
+        if (this.softClipper)
+        this.softClipper.curve = curve;
+      }
+    }
+    /**
+     * 2. APPLICATION STATE & DOM REFERENCES
+     */
+    const WORKING_SAMPLE_RATE = 48000;
+    const EXPORT_FORMATS = {
+      '48000-24': { sampleRate: 48000, bitDepth: 24, dither: false },
+      '44100-16': { sampleRate: 44100, bitDepth: 16, dither: true }
+    };
+
+    /**
+     * @typedef {Object} MasterStateParams
+     * @property {number} satDrive
+     * @property {number} compThresh
+     * @property {number} compRatio
+     * @property {number} wideFreq
+     * @property {number} wideWidth
+     * @property {number} softClipDB
+     * @property {number} brickwallDB
+     * @property {number} targetLUFS
+     * @property {number} maxLRA
+     */
+
+    // state params
+    /**
+     * @type {MasterStateParams}
+     */
+    const defaultStateParams = {
+      satDrive: 1.25,
+      compThresh: -8.0,
+      compRatio: 4.0,
+      wideFreq: 5000,
+      wideWidth: 1.25,
+      softClipDB: -0.1,
+      brickwallDB: -1.0,
+      targetLUFS: -14.0,
+      maxLRA: 8.0,
+    };
+
+    /**
+     * @typedef {Object} AudioMasterState
+     * @property {AudioBuffer?} rawBuffer
+     * @property {AudioBuffer?} masteredBuffer
+     * @property {AudioBuffer?} processedBuffer
+     * @property {number} formatJob
+     * @property {number} processJob
+     * @property {boolean} busy
+     * @property {string} note
+     * @property {AudioContext?} audioCtx
+     * @property {any[]} liveSources
+     * @property {boolean} isPlaying
+     * @property {number?} animId
+     * @property {Worker?} worker
+     * @property {MasterStateParams} params
+     */
+
+    /**
+     * @type {AudioMasterState}
+    */
+    const state = {
+      rawBuffer: null,
+      masteredBuffer: null,
+      processedBuffer: null,
+      formatJob: 0,
+      processJob: 0,
+      busy: false,
+      note: '',
+      audioCtx: null,
+      liveSources: [],
+      isPlaying: false,
+      animId: null,
+      worker: null,
+      params: defaultStateParams,
+    };
+    const dom = {
+      fileInput: document.getElementById('file-input'),
+      fileName: document.getElementById('file-name'),
+      btnImport: document.getElementById('btn-import'),
+      btnProcess: document.getElementById('btn-process'),
+      btnPlay: document.getElementById('btn-play'),
+      btnDownload: document.getElementById('btn-download'),
+      exportFormat: document.getElementById('export-format'),
+      status: document.getElementById('status-text'),
+      metrics: document.getElementById('metrics-text'),
+      canvasOrig: document.getElementById('spec-original'),
+      canvasProc: document.getElementById('spec-processed')
+    };
+
+    // Create the background worker once
+    try {
+      state.worker = createMasteringWorker();
+    } catch (err) {
+      console.warn('Worker creation failed, falling back to main-thread analysis:', err);
+      state.worker = null;
+    }
+
+    /**
+     * @description 3. REAL-TIME SPECTROGRAM RENDERER (TWO-PANE)
+     */
+    class SpectrogramVisualizer {
+      /**
+       * @param {any} canvas
+       * @param {any} analyser
+       * @param {number} sampleRate
+      */
+      constructor(canvas, analyser, sampleRate) {
+        this.canvas = canvas;
+        this.ctx = canvas.getContext('2d');
+        this.analyser = analyser;
+        this.analyser.fftSize = 2048;
+        this.analyser.smoothingTimeConstant = 0.2;
+        this.freqData = new Uint8Array(this.analyser.frequencyBinCount);
+        this.sampleRate = sampleRate;
+        this.maxFrequency = sampleRate / 2;
+        this.ctx.fillStyle = '#090a0d';
+        this.ctx.fillRect(0, 0, canvas.width, canvas.height);
+        // this.drawGrid();
+        this.buildAxis();
+      }
+      drawColumn() {
+        const { width, height } = this.canvas;
+        this.analyser.getByteFrequencyData(this.freqData);
+        // Shift existing spectrogram 2px to the left
+        this.ctx.drawImage(this.canvas, 2, 0, width - 2, height, 0, 0, width - 2, height);
+        // Draw a linear frequency slice on the right edge.
+        const binCount = this.freqData.length;
+        for (let y = 0; y < height; y++) {
+          const normY = 1 - y / (height - 1);
+          const frequency = this.maxFrequency * normY;
+          const logIndex = Math.min(binCount - 1, Math.floor(frequency * this.analyser.fftSize / this.analyser.context.sampleRate));
+          const mag = frequency <= this.analyser.context.sampleRate / 2 ? (this.freqData[logIndex] || 0) : 0;
+          this.ctx.fillStyle = this._heatColor(mag);
+          this.ctx.fillRect(width - 2, y, 2, 1);
+        }
+        // this.drawGrid();
+        this.buildAxis();
+      }
+      buildAxis() {
+        const axis = this.canvas.parentElement.querySelector('.spec-axis');
+        if (!axis) return;
+        axis.textContent = '';
+        const ticks = [1000, 4000, 8000, 12000, 16000, 20000].filter(f => f < this.maxFrequency);
+        ticks.push(this.maxFrequency);
+        ticks.forEach(f => {
+          const tick = document.createElement('div');
+          tick.className = 'spec-tick' + (f === this.maxFrequency ? ' nyq' : '');
+          tick.style.top = `${(1 - f / this.maxFrequency) * 100}%`;
+          const label = document.createElement('span');
+          const khz = Number((f / 1000).toFixed(2));
+          label.textContent = f === this.maxFrequency ? `${khz}k Nyq.` : `${khz}k`;
+          tick.appendChild(label);
+          axis.appendChild(tick);
+        });
+      }
+      drawGrid() {
+        const { width, height } = this.canvas;
+        const ticks = [1000, 4000, 8000, 12000, 16000, 20000].filter(frequency => frequency < this.maxFrequency);
+        ticks.push(this.maxFrequency);
+        this.ctx.font = '9px system-ui, sans-serif';
+        this.ctx.textBaseline = 'middle';
+        ticks.forEach(frequency => {
+          const norm = frequency / this.maxFrequency;
+          const y = Math.round((1 - norm) * (height - 1));
+          this.ctx.beginPath();
+          this.ctx.strokeStyle = frequency === this.maxFrequency ? 'rgba(96, 165, 250, 0.75)' : 'rgba(255, 255, 255, 0.24)';
+          this.ctx.lineWidth = 1;
+          this.ctx.moveTo(58, y + 0.5);
+          this.ctx.lineTo(width, y + 0.5);
+          this.ctx.stroke();
+          const khz = frequency / 1000;
+          const label = frequency === this.maxFrequency
+            ? `${Number(khz.toFixed(2))}k Nyq.`
+            : frequency >= 1000 ? `${Number(khz.toFixed(2))}k` : `${frequency} Hz`;
+          this.ctx.fillStyle = 'rgba(9, 10, 13, 0.82)';
+          this.ctx.fillRect(0, Math.max(0, y - 6), 56, 12);
+          this.ctx.fillStyle = '#e5e7eb';
+          this.ctx.fillText(label, 3, Math.max(6, y));
+        });
+      }
+      /**
+       * @param {number} val
+       */
+      _heatColor(val) {
+        if (val < 10) return '#090a0d';
+        const hue = 250 - (val / 255) * 250; // Deep blue -> cyan -> green -> yellow -> red
+        const light = 10 + (val / 255) * 50;
+        return `hsl(${hue}, 90%, ${light}%)`;
+      }
+    }
+
+    /**
+     * @param {AudioBuffer} buffer
+     * @description 4. BUFFER HELPERS (main-thread only – OfflineAudioContext + light work)
+     */
+    async function convertToWorkingBuffer(buffer) {
+      let working = buffer;
+      if (buffer.sampleRate !== WORKING_SAMPLE_RATE) {
+        const length = Math.max(1, Math.ceil(buffer.duration * WORKING_SAMPLE_RATE));
+        const offline = new OfflineAudioContext(buffer.numberOfChannels, length, WORKING_SAMPLE_RATE);
+        const source = offline.createBufferSource();
+        source.buffer = buffer;
+        source.connect(offline.destination);
+        source.start(0);
+        working = await offline.startRendering();
+      }
+      if (working.numberOfChannels !== 2) {
+        const stereo = new AudioBuffer({ numberOfChannels: 2, length: working.length, sampleRate: working.sampleRate });
+        stereo.copyToChannel(working.getChannelData(0), 0);
+        stereo.copyToChannel(working.getChannelData(working.numberOfChannels > 1 ? 1 : 0), 1);
+        working = stereo;
+      }
+      // Light quantisation to 24-bit (still on main – cheap compared with loudness analysis)
+      const scale = 8388608;
+      const ceiling = 1 - 1 / scale;
+      for (let ch = 0; ch < working.numberOfChannels; ch++) {
+        const data = working.getChannelData(ch);
+        for (let i = 0; i < data.length; i++) {
+          const sample = Math.max(-1, Math.min(ceiling, data[i]));
+          data[i] = Math.round(sample * scale) / scale;
+        }
+      }
+      return working;
+    }
+    /**
+     * @param {AudioBuffer} buffer
+     * @param {{sampleRate: number, bitDepth: number, dither: boolean}} format
+     */
+    async function convertToExportBuffer(buffer, format) {
+      const length = Math.max(1, Math.ceil(buffer.duration * format.sampleRate));
+      const offline = new OfflineAudioContext(buffer.numberOfChannels, length, format.sampleRate);
+      const source = offline.createBufferSource();
+      source.buffer = buffer;
+      source.connect(offline.destination);
+      source.start(0);
+      const converted = await offline.startRendering();
+      const scale = 2 ** (format.bitDepth - 1);
+      for (let ch = 0; ch < converted.numberOfChannels; ch++) {
+        const data = converted.getChannelData(ch);
+        for (let i = 0; i < data.length; i++) {
+          const dither = format.dither ? Math.random() - Math.random() : 0;
+          const sample = Math.max(-1, Math.min(1, data[i] + dither / scale));
+          const quantized = Math.max(-scale, Math.min(scale - 1, Math.round(sample * scale)));
+          data[i] = quantized / scale;
+        }
+      }
+      return converted;
+    }
+
+    /**
+     * @param {AudioBuffer} buffer
+     * @description Extract channel data as transferable ArrayBuffers
+     */
+    function extractChannels(buffer) {
+      const channels = [];
+      const transfer = [];
+      for (let ch = 0; ch < buffer.numberOfChannels; ch++) {
+        // Copy so we never detach the original AudioBuffer's memory
+        const copy = new Float32Array(buffer.getChannelData(ch));
+        channels.push(copy.buffer);
+        transfer.push(copy.buffer);
+      }
+      return { buffers: channels, transfer, length: buffer.length, sampleRate: buffer.sampleRate, numberOfChannels: buffer.numberOfChannels };
+    }
+
+    /**
+     * @param {number[][]} buffers
+     * @param {number} sampleRate
+     * @param {number} numberOfChannels
+     * @param {number} length
+     * @description Rebuild an AudioBuffer from worker-returned buffers
+    */
+    function bufferFromChannels(buffers, sampleRate, numberOfChannels, length) {
+      const ab = new AudioBuffer({ numberOfChannels, length, sampleRate });
+      for (let ch = 0; ch < numberOfChannels; ch++) {
+        ab.copyToChannel(new Float32Array(buffers[ch]), ch);
+      }
+      return ab;
+    }
+
+    async function prepareExportBuffer() {
+      const mastered = state.masteredBuffer;
+      if (!mastered) return;
+      const job = ++state.formatJob;
+      // @ts-ignore
+      const format = EXPORT_FORMATS[dom.exportFormat.value];
+      stopPlayback();
+      if (dom.btnPlay)
+      // @ts-ignore
+      dom.btnPlay.disabled = true;
+      if (dom.btnDownload)
+      // @ts-ignore
+      dom.btnDownload.disabled = true;
+      if (dom.status)
+      dom.status.textContent = 'Preparing the selected WAV format...';
+      const processed = await convertToExportBuffer(mastered, format);
+      if (job !== state.formatJob || mastered !== state.masteredBuffer) return;
+      state.processedBuffer = processed;
+
+      // Quick metrics on the final export buffer (still useful; the heavy work already happened)
+      if (state.worker) {
+        const { buffers, transfer, length, sampleRate } = extractChannels(processed);
+        try {
+          const res = await workerCall(state.worker, {
+            type: 'measure',
+            buffers,
+            sampleRate,
+            length
+          }, transfer);
+          const stats = res.stats;
+          if (dom.metrics)
+          dom.metrics.textContent =
+            `LUFS: ${stats.integratedLUFS.toFixed(1)} | dBTP: ${stats.truePeakDB.toFixed(2)} dB | LRA: ${stats.lra.toFixed(1)} LU`;
+        } catch (_) {
+          if (dom.metrics)
+          dom.metrics.textContent = 'LUFS: -- | dBTP: -- | LRA: --';
+        }
+      }
+
+      const label = format.dither ? '44.1 kHz / 16-bit dithered' : '48 kHz / 24-bit';
+      if (dom.status)
+      dom.status.textContent = `${label} render is ready to play or download.${state.note ? ' ' + state.note : ''}`;
+      if (dom.btnPlay)
+      // @ts-ignore
+      dom.btnPlay.disabled = false;
+      if (dom.btnDownload)
+      // @ts-ignore
+      dom.btnDownload.disabled = false;
+    }
+    /**
+     * @description 5. MAIN PROCESSING FLOW (OfflineAudioContext on main + Worker for analysis/gain)
+     */
+    async function renderProcessedBuffer() {
+      const raw = state.rawBuffer;
+      if (!raw) return;
+      const job = ++state.processJob;
+      const params = { ...state.params };
+      state.busy = true;
+      state.note = '';
+      if (dom.status)
+      dom.status.textContent = 'Processing audio through 6-stage mastering chain...';
+      /**
+       * @param {MasterStateParams} p
+       */
+      const renderOnce = async (p) => {
+        const offCtx = new OfflineAudioContext(raw.numberOfChannels, raw.length, raw.sampleRate);
+        const chain = new MasteringPipeline(offCtx, p);
+        const src = offCtx.createBufferSource();
+        src.buffer = raw;
+        src.connect(chain.input);
+        chain.output.connect(offCtx.destination);
+        src.start(0);
+        return await offCtx.startRendering();
+      };
+      try {
+        const tempParams = { ...params };
+        let rendered = await renderOnce(tempParams);
+        if (job !== state.processJob) return;
+
+        // --- First measurement (Worker) ---
+        let stats;
+        if (state.worker) {
+          const extracted = extractChannels(rendered);
+          const res = await workerCall(state.worker, {
+            type: 'measure',
+            buffers: extracted.buffers,
+            sampleRate: extracted.sampleRate,
+            length: extracted.length
+          }, extracted.transfer);
+          stats = res.stats;
+        } else {
+          // Fallback (should almost never happen)
+          stats = { integratedLUFS: -14, lra: 0, truePeakDB: -1 };
+        }
+
+        // Best-effort LRA control: tighten soft compression once if the range is too wide
+        if (stats.lra > params.maxLRA) {
+          const diff = stats.lra - params.maxLRA;
+          tempParams.compThresh = Math.max(-24, tempParams.compThresh - diff * 1.2);
+          tempParams.compRatio = Math.min(6.0, tempParams.compRatio + diff * 0.2);
+          rendered = await renderOnce(tempParams);
+          if (job !== state.processJob) return;
+
+          // Re-measure after the second render
+          if (state.worker) {
+            const extracted2 = extractChannels(rendered);
+            const res2 = await workerCall(state.worker, {
+              type: 'measure',
+              buffers: extracted2.buffers,
+              sampleRate: extracted2.sampleRate,
+              length: extracted2.length
+            }, extracted2.transfer);
+            stats = res2.stats;
+          }
+          if (stats.lra > params.maxLRA + 0.05) {
+            state.note += ` LRA is ${stats.lra.toFixed(1)} LU, above the ${params.maxLRA.toFixed(1)} LU limit.`;
+          }
+        }
+        // --- Final gain + peak ceiling (Worker) ---
+        if (state.worker) {
+          const extracted = extractChannels(rendered);
+          const res = await workerCall(state.worker, {
+            type: 'measureAndGain',
+            buffers: extracted.buffers,
+            sampleRate: extracted.sampleRate,
+            length: extracted.length,
+            targetLUFS: params.targetLUFS,
+            brickwallDB: params.brickwallDB
+          }, extracted.transfer);
+
+          state.note += res.note || '';
+          state.masteredBuffer = bufferFromChannels(
+            res.buffers,
+            extracted.sampleRate,
+            extracted.numberOfChannels,
+            extracted.length
+          );
+        } else {
+          // Extremely unlikely fallback
+          state.masteredBuffer = rendered;
+        }
+        await prepareExportBuffer();
+      } finally {
+        state.busy = false;
+      }
+    }
+    /**
+     * 6. BUTTON HANDLERS (IMPORT, PROCESS, PLAY, DOWNLOAD)
+     */
+    if (dom.btnImport)
+    dom.btnImport.addEventListener('click', () => dom.fileInput ? dom.fileInput.click() : undefined);
+    if (dom.fileInput)
+    dom.fileInput.addEventListener('change', async (e) => {
+      if (!e.target) return;
+      // @ts-ignore
+      if (!e.target.files) return;
+      // @ts-ignore
+      const file = e.target.files[0];
+      if (!file) return;
+      stopPlayback();
+      state.rawBuffer = null;
+      state.processJob++;
+      state.masteredBuffer = null;
+      state.processedBuffer = null;
+      state.formatJob++;
+      if (dom.btnProcess)
+      // @ts-ignore
+      dom.btnProcess.disabled = true;
+      if (dom.btnPlay)
+      // @ts-ignore
+      dom.btnPlay.disabled = true;
+      if (dom.btnDownload)
+      // @ts-ignore
+      dom.btnDownload.disabled = true;
+      if (dom.metrics)
+      dom.metrics.textContent = 'LUFS: -- | dBTP: -- | LRA: --';
+      if (dom.fileName)
+      dom.fileName.textContent = file.name;
+      if (dom.status)
+      dom.status.textContent = 'Decoding audio file...';
+      if (!state.audioCtx) {
+        const AC = window.AudioContext ||
+          // @ts-ignore
+          window.webkitAudioContext;
+        try { state.audioCtx = new AC({ sampleRate: WORKING_SAMPLE_RATE }); } catch (_) { state.audioCtx = new AC(); }
+      }
+      try {
+        const arrayBuf = await file.arrayBuffer();
+        const decoded = await state.audioCtx.decodeAudioData(arrayBuf);
+        state.rawBuffer = await convertToWorkingBuffer(decoded);
+        if (dom.btnProcess)
+        // @ts-ignore
+        dom.btnProcess.disabled = false;
+        if (dom.metrics)
+        dom.metrics.textContent = 'LUFS: -- | dBTP: -- | LRA: --';
+        if (dom.status)
+        dom.status.textContent = 'Audio converted to 48 kHz / 24-bit stereo working format. Adjust sliders, then process it.';
+      } catch (error) {
+        if (dom.status)
+        // @ts-ignore
+        dom.status.textContent = `Could not decode this audio file: ${error.message}`;
+      } finally {
+        if (dom.fileInput)
+        // @ts-ignore
+        dom.fileInput.value = '';
+      }
+    });
+    if (dom.btnProcess)
+    dom.btnProcess.addEventListener('click', async () => {
+      stopPlayback();
+      state.formatJob++;
+      state.masteredBuffer = null;
+      state.processedBuffer = null;
+      if (dom.btnPlay)
+      // @ts-ignore
+      dom.btnPlay.disabled = true;
+      if (dom.btnDownload)
+      // @ts-ignore
+      dom.btnDownload.disabled = true;
+      if (dom.btnProcess)
+      // @ts-ignore
+      dom.btnProcess.disabled = true;
+      try {
+        await renderProcessedBuffer();
+      } catch (error) {
+        if (dom.status)
+        // @ts-ignore
+        dom.status.textContent = `Processing failed: ${error.message}`;
+      } finally {
+        if (dom.btnProcess)
+        // @ts-ignore
+        dom.btnProcess.disabled = !state.rawBuffer;
+      }
+    });
+    if (dom.exportFormat)
+    dom.exportFormat.addEventListener('change', async () => {
+      if (!state.masteredBuffer) return;
+      try {
+        await prepareExportBuffer();
+      } catch (error) {
+        if (dom.status)
+        // @ts-ignore
+        dom.status.textContent = `Could not prepare the selected WAV format: ${error.message}`;
+      }
+    });
+    if (dom.btnPlay)
+    dom.btnPlay.addEventListener('click', async () => {
+      if (state.isPlaying) {
+        stopPlayback();
+        return;
+      }
+      if (!state.rawBuffer || !state.processedBuffer) return;
+      if (state.audioCtx && state.audioCtx.state === 'suspended') await state.audioCtx.resume();
+      const ctx = state.audioCtx;
+      if (!ctx) throw Error("FAILED TO ACQUIRE AUDIO CONTEXT");
+      const srcOrig = ctx.createBufferSource();
+      srcOrig.buffer = state.rawBuffer;
+      const srcProc = ctx.createBufferSource();
+      srcProc.buffer = state.processedBuffer;
+      // Spectrograms show processed audio above the original.
+      const analyserOrig = ctx.createAnalyser();
+      const analyserProc = ctx.createAnalyser();
+      // Monitor Switcher (Listen to Original or Processed without stopping spectrograms)
+      const monitorOrigGain = ctx.createGain();
+      const monitorProcGain = ctx.createGain();
+      /**
+       * @type {HTMLInputElement?}
+      */
+      const currentMonitorSelected = document.querySelector('input[name="monitor"]:checked');
+      const isOrigSelected = !!currentMonitorSelected && currentMonitorSelected.value === 'original';
+      monitorOrigGain.gain.value = isOrigSelected ? 1 : 0;
+      monitorProcGain.gain.value = isOrigSelected ? 0 : 1;
+      /**
+       * @type {NodeListOf<HTMLInputElement>}
+       */
+      const allAvailableMonitors = document.querySelectorAll('input[name="monitor"]');
+      allAvailableMonitors.forEach(radio => {
+        radio.onchange = (ev) => {
+          if (!ev.target) return;
+          // @ts-ignore
+          const orig = ev.target.value === 'original';
+          monitorOrigGain.gain.setTargetAtTime(orig ? 1 : 0, ctx.currentTime, 0.02);
+          monitorProcGain.gain.setTargetAtTime(orig ? 0 : 1, ctx.currentTime, 0.02);
+        };
+      });
+      // Routing
+      srcOrig.connect(analyserOrig);
+      srcProc.connect(analyserProc);
+      analyserOrig.connect(monitorOrigGain).connect(ctx.destination);
+      analyserProc.connect(monitorProcGain).connect(ctx.destination);
+      const vizOrig = new SpectrogramVisualizer(dom.canvasOrig, analyserOrig, state.rawBuffer.sampleRate);
+      const vizProc = new SpectrogramVisualizer(dom.canvasProc, analyserProc, state.processedBuffer.sampleRate);
+      const renderLoop = () => {
+        if (!state.isPlaying) return;
+        vizOrig.drawColumn();
+        vizProc.drawColumn();
+        state.animId = requestAnimationFrame(renderLoop);
+      };
+      srcOrig.onended = () => stopPlayback();
+      state.liveSources = [srcOrig, srcProc];
+      state.isPlaying = true;
+      if (dom.btnPlay)
+      dom.btnPlay.textContent = 'Stop Audio';
+      srcOrig.start(0);
+      srcProc.start(0);
+      renderLoop();
+    });
+    function stopPlayback() {
+      state.liveSources.forEach(source => {
+        source.onended = null;
+        try { source.stop(); } catch (_) {}
+        source.disconnect();
+      });
+      state.liveSources = [];
+      if (state.animId) cancelAnimationFrame(state.animId);
+      state.isPlaying = false;
+      if (dom.btnPlay)
+      dom.btnPlay.textContent = '3. Play Audio';
+    }
+    /**
+     * 7. WAV ENCODER & DOWNLOAD
+     */
+    if (dom.btnDownload)
+    dom.btnDownload.addEventListener('click', () => {
+      if (!state.processedBuffer) return;
+      // @ts-ignore
+      const format = EXPORT_FORMATS[dom.exportFormat.value];
+      const wavBlob = audioBufferToWav(state.processedBuffer, format.bitDepth);
+      const url = URL.createObjectURL(wavBlob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `mastered_${state.params.targetLUFS}LUFS_${format.sampleRate / 1000}kHz_${format.bitDepth}bit.wav`;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      setTimeout(() => URL.revokeObjectURL(url), 1000);
+    });
+    /**
+     * @param {AudioBuffer} buffer
+     * @param {number} bitDepth
+     */
+    function audioBufferToWav(buffer, bitDepth) {
+      const numCh = buffer.numberOfChannels;
+      const sampleRate = buffer.sampleRate;
+      const format = 1; // PCM
+      const bytesPerSample = bitDepth / 8;
+      const blockAlign = numCh * bytesPerSample;
+      const dataLength = buffer.length * blockAlign;
+      const arrayBuffer = new ArrayBuffer(44 + dataLength);
+      const view = new DataView(arrayBuffer);
+      /**
+       * @param {number} offset
+       * @param {string} str
+       */
+      const writeStr = (offset, str) => {
+        for (let i = 0; i < str.length; i++) view.setUint8(offset + i, str.charCodeAt(i));
+      };
+      writeStr(0, 'RIFF');
+      view.setUint32(4, 36 + dataLength, true);
+      writeStr(8, 'WAVE');
+      writeStr(12, 'fmt ');
+      view.setUint32(16, 16, true);
+      view.setUint16(20, format, true);
+      view.setUint16(22, numCh, true);
+      view.setUint32(24, sampleRate, true);
+      view.setUint32(28, sampleRate * blockAlign, true);
+      view.setUint16(32, blockAlign, true);
+      view.setUint16(34, bitDepth, true);
+      writeStr(36, 'data');
+      view.setUint32(40, dataLength, true);
+      let offset = 44;
+      const channels = Array.from({ length: numCh }, (_, c) => buffer.getChannelData(c));
+      for (let i = 0; i < buffer.length; i++) {
+        for (let ch = 0; ch < numCh; ch++) {
+          const sample = Math.max(-1, Math.min(1, channels[ch][i]));
+          if (bitDepth === 16) {
+            const intVal = Math.max(-32768, Math.min(32767, Math.round(sample * 32768)));
+            view.setInt16(offset, intVal, true);
+            offset += 2;
+            continue;
+          }
+          const intVal = Math.max(-8388608, Math.min(8388607, Math.round(sample * 8388608)));
+          view.setUint8(offset, intVal & 0xff);
+          view.setUint8(offset + 1, (intVal >>> 8) & 0xff);
+          view.setUint8(offset + 2, (intVal >>> 16) & 0xff);
+          offset += 3;
+        }
+      }
+      return new Blob([arrayBuffer], { type: 'audio/wav' });
+    }
+    /**
+     * @param {string} id
+     * @param {string} valId
+     * @param {string} paramKey
+     * @param {(value: number) => string} formatter
+     * @description 8. SLIDER BINDINGS
+     */
+    function bindSlider(id, valId, paramKey, formatter) {
+      /**
+       * @type {HTMLInputElement | null}
+       */
+      let el = null;
+      // @ts-ignore
+      el = document.getElementById(id);
+      const valEl = document.getElementById(valId);
+      if (el)
+      el.addEventListener('input', () => {
+        const v = parseFloat(el.value);
+        // @ts-ignore
+        state.params[paramKey] = v;
+        if (valEl)
+        valEl.textContent = formatter(v);
+        state.processJob++;
+        if (state.masteredBuffer || state.processedBuffer || state.busy) {
+          stopPlayback();
+          state.formatJob++;
+          state.masteredBuffer = null;
+          state.processedBuffer = null;
+          if (dom.btnPlay)
+          // @ts-ignore
+          dom.btnPlay.disabled = true;
+          if (dom.btnDownload)
+          // @ts-ignore
+          dom.btnDownload.disabled = true;
+          if (dom.metrics)
+          dom.metrics.textContent = 'LUFS: -- | dBTP: -- | LRA: --';
+          if (dom.status)
+          dom.status.textContent = 'Settings changed. Process the audio again before playing or downloading.';
+        }
+      });
+    }
+    bindSlider('ctrl-sat', 'val-sat', 'satDrive', v => v.toFixed(2));
+    bindSlider('ctrl-comp-thresh', 'val-comp-thresh', 'compThresh', v => `${v.toFixed(1)} dB`);
+    bindSlider('ctrl-comp-ratio', 'val-comp-ratio', 'compRatio', v => `${v.toFixed(1)} : 1`);
+    bindSlider('ctrl-wide-freq', 'val-wide-freq', 'wideFreq', v => `${v} Hz`);
+    bindSlider('ctrl-wide-width', 'val-wide-width', 'wideWidth', v => `${v.toFixed(2)}x`);
+    bindSlider('ctrl-softclip', 'val-softclip', 'softClipDB', v => `${v.toFixed(1)} dB (${Math.pow(10, v / 20).toFixed(3)})`);
+    bindSlider('ctrl-brickwall', 'val-brickwall', 'brickwallDB', v => `${v.toFixed(1)} dB`);
+    bindSlider('ctrl-lufs', 'val-lufs', 'targetLUFS', v => `${v.toFixed(1)} LUFS`);
+    bindSlider('ctrl-lra', 'val-lra', 'maxLRA', v => `${v.toFixed(1)} LU`);
+    document.querySelectorAll('input[type="range"]').forEach(el => {
+      if (!el.parentElement) return;
+      const lbl = el.parentElement.querySelector('.slider-label span');
+      if (lbl) el.setAttribute('aria-label', lbl.textContent);
+      el.dispatchEvent(new Event('input'));
+    });
+  </script>
+</body>
+</html>
