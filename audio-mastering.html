@@ -144,16 +144,9 @@
     <div class="right-column">
     <!-- PIPELINE SLIDERS -->
     <div class="controls-grid">
-    <div class="card">
-      <h3>1. Soft Saturation (Harmonics Exciter)</h3>
-      <div class="slider-row">
-        <div class="slider-label"><span>Drive Amount</span><span id="val-sat">1.25</span></div>
-        <input type="range" id="ctrl-sat" min="1.0" max="4.0" step="0.05" value="1.25" />
-      </div>
-    </div>
 
     <div class="card">
-      <h3>2. Soft Audio Compressor</h3>
+      <h3>1. Soft Audio Compressor</h3>
       <div class="slider-row">
         <div class="slider-label"><span>Threshold (dB)</span><span id="val-comp-thresh">-8.0 dB</span></div>
         <input type="range" id="ctrl-comp-thresh" min="-24" max="0" step="0.5" value="-8" />
@@ -165,10 +158,18 @@
     </div>
 
     <div class="card">
+      <h3>2. Soft Saturation (Harmonics Exciter)</h3>
+      <div class="slider-row">
+        <div class="slider-label"><span>Drive Amount</span><span id="val-sat">1.25</span></div>
+        <input type="range" id="ctrl-sat" min="1.0" max="4.0" step="0.05" value="1.25" />
+      </div>
+    </div>
+
+    <div class="card">
       <h3>3A. Bass Mono Maker (De-stereo)</h3>
       <div class="slider-row">
         <div class="slider-label"><span>Mono Upper Limit</span><span id="val-mono-freq">120 Hz</span></div>
-        <input type="range" id="ctrl-mono-freq" min="80" max="160" step="10" value="120" />
+        <input type="range" id="ctrl-mono-freq" min="80" max="160" step="5" value="120" />
       </div>
       <p></p>
       <h3>3B. High-Band Stereo Widener/Imaging</h3>
@@ -478,18 +479,18 @@
       }
 
       _build() {
-        // Stage 1: Soft Saturation Exciter
-        this.exciter = this.ctx.createWaveShaper();
-        this.exciter.oversample = '4x';
-        this.setSaturation(this.params.satDrive);
-
-        // Stage 2: Soft Compressor
+        // Stage 1: Soft Compressor
         this.softComp = this.ctx.createDynamicsCompressor();
         this.softComp.threshold.value = this.params.compThresh;
         this.softComp.knee.value = 12.0;
         this.softComp.ratio.value = this.params.compRatio;
         this.softComp.attack.value = 0.015;
         this.softComp.release.value = 0.15;
+
+        // Stage 2: Soft Saturation Exciter
+        this.exciter = this.ctx.createWaveShaper();
+        this.exciter.oversample = '4x';
+        this.setSaturation(this.params.satDrive);
 
         // Stage 3A: Bass Mono Maker (below crossover)
         this.monoIn = this.ctx.createGain();
@@ -521,8 +522,8 @@
 
         // Connect in exact requested order
         this.input
-          .connect(this.exciter)
           .connect(this.softComp)
+          .connect(this.exciter)
           .connect(this.monoIn);
         this.monoOut
           .connect(this.wideIn);
@@ -559,40 +560,43 @@
        * @param {GainNode} outNode
        */
       _buildWidener(inNode, outNode) {
-        this.lp1 = this.ctx.createBiquadFilter();
-        this.lp2 = this.ctx.createBiquadFilter();
-        this.hp1 = this.ctx.createBiquadFilter();
-        this.hp2 = this.ctx.createBiquadFilter();
+        const lp1 = this.ctx.createBiquadFilter();
+        const lp2 = this.ctx.createBiquadFilter();
+        const hp1 = this.ctx.createBiquadFilter();
+        const hp2 = this.ctx.createBiquadFilter();
+
+        const freq = this.params.wideFreq;
+        const width = this.params.wideWidth;
 
         // Web Audio lowpass/highpass Q is in dB: -3.0103 dB = 0.7071 linear (Butterworth) -> LR4 crossover
-        [this.lp1, this.lp2].forEach(f => { f.type = 'lowpass'; f.Q.value = -3.0103; });
-        [this.hp1, this.hp2].forEach(f => { f.type = 'highpass'; f.Q.value = -3.0103; });
+        [lp1, lp2].forEach(f => { f.type = 'lowpass'; f.frequency.value = freq; f.Q.value = -3.0103; });
+        [hp1, hp2].forEach(f => { f.type = 'highpass'; f.frequency.value = freq; f.Q.value = -3.0103; });
 
-        inNode.connect(this.lp1).connect(this.lp2).connect(outNode);
+        inNode.connect(lp1).connect(lp2).connect(outNode);
 
         const splitter = this.ctx.createChannelSplitter(2);
         const merger = this.ctx.createChannelMerger(2);
         const midGain = this.ctx.createGain();
-        this.sideGain = this.ctx.createGain();
+        const sideGain = this.ctx.createGain();
         const invR = this.ctx.createGain();
         const invSide = this.ctx.createGain();
 
         midGain.gain.value = 0.5;
         invR.gain.value = -1.0;
         invSide.gain.value = -1.0;
-        inNode.connect(this.hp1).connect(this.hp2).connect(splitter);
+        inNode.connect(hp1).connect(hp2).connect(splitter);
         splitter.connect(midGain, 0);
         splitter.connect(midGain, 1);
-        splitter.connect(this.sideGain, 0);
+        splitter.connect(sideGain, 0);
         splitter.connect(invR, 1);
-        invR.connect(this.sideGain);
+        invR.connect(sideGain);
         midGain.connect(merger, 0, 0);
-        this.sideGain.connect(merger, 0, 0);
+        sideGain.connect(merger, 0, 0);
         midGain.connect(merger, 0, 1);
-        this.sideGain.connect(invSide);
+        sideGain.connect(invSide);
         invSide.connect(merger, 0, 1);
         merger.connect(outNode);
-        this.setWidener(this.params.wideFreq, this.params.wideWidth);
+        sideGain.gain.value = 0.5 * width;
       }
       /**
        * @param {number} drive
@@ -608,17 +612,6 @@
         }
         if (this.exciter)
         this.exciter.curve = curve;
-      }
-      /**
-       * @param {number} freq
-       * @param {number} width
-       */
-      setWidener(freq, width) {
-        this.params.wideFreq = freq;
-        this.params.wideWidth = width;
-        [this.lp1, this.lp2, this.hp1, this.hp2].filter(f => f !== undefined).forEach(f => f.frequency.value = freq);
-        if (this.sideGain)
-        this.sideGain.gain.value = 0.5 * width;
       }
       /**
        * @param {number} ceilingDB
