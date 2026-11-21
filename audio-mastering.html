@@ -155,6 +155,7 @@
           <button id="btn-process" disabled>2. Process Audio</button>
           <button id="btn-play" disabled>3. Play Audio</button>
           <button id="btn-download" class="secondary" disabled>4. Download Audio</button>
+          <button id="btn-reset" class="secondary">5. Reset Controls</button>
         </div>
       </header>
 
@@ -469,21 +470,40 @@
         return channels;
       }
 
+      /**
+       * @param {Float32Array[]} channels
+       */
+      function sanitizeChannels(channels) {
+        let count = 0;
+        for (const data of channels) {
+          for (let i = 0; i < data.length; i++) {
+            if (!Number.isFinite(data[i])) {
+              data[i] = 0;
+              count++;
+            }
+          }
+        }
+        return count;
+      }
+
       // Worker bootstrap
       const workerSource = `
         const kWeightCoeffs = ${kWeightCoeffs.toString()};
         const measureLoudness = ${measureLoudness.toString()};
         const applyGainAndClamp = ${applyGainAndClamp.toString()};
+        const sanitizeChannels = ${sanitizeChannels.toString()};
 
         self.onmessage = function(e) {
           const msg = e.data;
           try {
             if (msg.type === 'measure') {
               const channels = msg.buffers.map(b => new Float32Array(b));
+              sanitizeChannels(channels);
               const stats = measureLoudness(channels, msg.sampleRate, msg.length);
               self.postMessage({ type: 'measureResult', id: msg.id, stats });
             } else if (msg.type === 'gainClamp') {
               const channels = msg.buffers.map(b => new Float32Array(b));
+              sanitizeChannels(channels);
               applyGainAndClamp(channels, msg.linearGain, msg.ceilLin);
               // Transfer the modified buffers back
               const transfer = channels.map(c => c.buffer);
@@ -494,16 +514,19 @@
             } else if (msg.type === 'measureAndGain') {
               // Combined path used by the normal render flow
               const channels = msg.buffers.map(b => new Float32Array(b));
+              const invalidSamples = sanitizeChannels(channels);
               const stats = measureLoudness(channels, msg.sampleRate, msg.length);
 
               const ceilDB = msg.brickwallDB;
               const wantDB = stats.integratedLUFS <= -70 ? 0 : msg.targetLUFS - stats.integratedLUFS;
               let gainDB = wantDB;
-              let note = '';
+              let note = invalidSamples
+                ? ' Replaced ' + invalidSamples.toString() + ' non-finite samples with silence before normalization.'
+                : '';
               if (stats.truePeakDB + gainDB > ceilDB) {
                 gainDB = ceilDB - stats.truePeakDB;
                 if (gainDB < wantDB - 0.05) {
-                  note = ' Gain was limited by the ' + ceilDB.toFixed(1) +
+                  note += ' Gain was limited by the ' + ceilDB.toFixed(1) +
                          ' dBTP ceiling: about ' + (stats.integratedLUFS + gainDB).toFixed(1) +
                          ' LUFS instead of ' + msg.targetLUFS.toFixed(1) + '.';
                 }
@@ -708,7 +731,7 @@
         input.connect(output);
         if (wetLevel <= 0) return { input, output };
 
-        // Pre-delay + band-limiting before diffusion prevents direct transient comb-filtering
+        // Pre-delay + band-limiting before the diffuse tail protects direct transients
         const preDelay = ctx.createDelay(0.1);
         preDelay.delayTime.value = 0.015 * roomSize; // 15 ms pre-delay
 
@@ -722,72 +745,47 @@
         wetLowpass.frequency.value = 6000;
         wetLowpass.Q.value = 0.707;
 
+        const wetTailFilter = ctx.createBiquadFilter();
+        wetTailFilter.type = 'lowpass';
+        wetTailFilter.frequency.value = 4200;
+        wetTailFilter.Q.value = 0.707;
+
         const wetGain = ctx.createGain();
         wetGain.gain.value = wetLevel;
 
-        /**
-         * All-pass diffuser (delaySeconds must stay > 128 / sampleRate ≈ 0.0027s)
-         * @param {AudioNode} source
-         * @param {number} delaySeconds
-         * @param {number} coefficient
-         */
-        const createAllPass = (source, delaySeconds, coefficient) => {
-          const delay = ctx.createDelay(0.1);
-          const apOut = ctx.createGain();
-          const direct = ctx.createGain();
-          const feedback = ctx.createGain();
-          delay.delayTime.value = Math.max(0.003, delaySeconds * roomSize);
-          direct.gain.value = -coefficient;
-          feedback.gain.value = coefficient;
-          source.connect(direct).connect(apOut);
-          source.connect(delay).connect(apOut);
-          apOut.connect(feedback).connect(delay);
-          return apOut;
-        };
+        // A diffuse impulse response avoids the high-Q resonances of a feedback comb bank.
+        const sampleRate = ctx.sampleRate;
+        const responseLength = Math.max(1, Math.ceil(decaySeconds * 2 * sampleRate));
+        const response = ctx.createBuffer(2, responseLength, sampleRate);
+        const responseScale = Math.sqrt((360 * Math.LN10) / (sampleRate * decaySeconds));
 
-        // Input diffusion smears hi-hat & kick transients BEFORE hitting the comb bank
-        input.connect(preDelay).connect(wetHighpass).connect(wetLowpass);
-        const diff1 = createAllPass(wetLowpass, 0.0047, 0.65);
-        const diff2 = createAllPass(diff1, 0.0073, 0.65);
-        const diff3 = createAllPass(diff2, 0.0113, 0.60);
+        for (let ch = 0; ch < 2; ch++) {
+          const data = response.getChannelData(ch);
+          let seed = 0x6d2b79f5 ^ (ch + 1);
+          for (let i = 0; i < responseLength; i++) {
+            seed ^= seed << 13;
+            seed ^= seed >>> 17;
+            seed ^= seed << 5;
+            const noise = (seed >>> 0) / 2147483648 - 1;
+            const time = i / sampleRate;
+            const buildup = Math.min(1, time / (0.02 * roomSize));
+            const decay = Math.pow(10, (-3 * time) / decaySeconds);
+            data[i] = noise * buildup * decay * responseScale;
+          }
+        }
 
-        // Split into decorrelated L/R comb banks so the tail blooms wide instead of clanging mono
-        const splitter = ctx.createChannelSplitter(2);
-        const merger = ctx.createChannelMerger(2);
-        diff3.connect(splitter);
+        const convolver = ctx.createConvolver();
+        convolver.normalize = false;
+        convolver.buffer = response;
 
-        const combConfigs = [
-          { l: 0.0297, r: 0.0319 },
-          { l: 0.0371, r: 0.0353 },
-          { l: 0.0411, r: 0.0433 },
-          { l: 0.0467, r: 0.0449 },
-        ];
-
-        combConfigs.forEach(({ l, r }) => {
-          [
-            { ch: 0, baseTime: l },
-            { ch: 1, baseTime: r },
-          ].forEach(({ ch, baseTime }) => {
-            const delayTime = baseTime * roomSize;
-            const delay = ctx.createDelay(0.2);
-            const damping = ctx.createBiquadFilter();
-            const feedback = ctx.createGain();
-            const combGain = ctx.createGain();
-
-            delay.delayTime.value = delayTime;
-            damping.type = 'lowpass';
-            damping.frequency.value = 4200; // Darker feedback loop tames metallic hat ring
-            damping.Q.value = 0.707;
-            feedback.gain.value = Math.pow(10, (-3 * delayTime) / decaySeconds);
-            combGain.gain.value = 0.25;
-
-            splitter.connect(delay, ch);
-            delay.connect(combGain).connect(merger, 0, ch);
-            delay.connect(damping).connect(feedback).connect(delay);
-          });
-        });
-
-        merger.connect(wetGain).connect(output);
+        input
+          .connect(preDelay)
+          .connect(wetHighpass)
+          .connect(wetLowpass)
+          .connect(convolver)
+          .connect(wetTailFilter)
+          .connect(wetGain)
+          .connect(output);
         return { input, output };
       }
 
@@ -961,7 +959,7 @@
       isPlaying: false,
       animId: null,
       worker: null,
-      params: defaultStateParams,
+      params: { ...defaultStateParams },
     };
     const dom = {
       fileInput: document.getElementById('file-input'),
@@ -970,6 +968,7 @@
       btnProcess: document.getElementById('btn-process'),
       btnPlay: document.getElementById('btn-play'),
       btnDownload: document.getElementById('btn-download'),
+      btnReset: document.getElementById('btn-reset'),
       exportFormat: document.getElementById('export-format'),
       status: document.getElementById('status-text'),
       metrics: document.getElementById('metrics-text'),
@@ -1216,6 +1215,9 @@
       if (dom.btnDownload)
       // @ts-ignore
       dom.btnDownload.disabled = false;
+      if (dom.btnReset)
+      // @ts-ignore
+      dom.btnReset.disabled = false;
     }
     /**
      * @description 5. MAIN PROCESSING FLOW (OfflineAudioContext on main + Worker for analysis/gain)
@@ -1362,6 +1364,9 @@
         if (dom.btnProcess)
         // @ts-ignore
         dom.btnProcess.disabled = false;
+        if (dom.btnReset)
+        // @ts-ignore
+        dom.btnReset.disabled = false;
         if (dom.metrics)
         dom.metrics.textContent = 'LUFS: -- | dBTP: -- | LRA: --';
         if (dom.status)
@@ -1378,6 +1383,9 @@
     });
     if (dom.btnProcess)
     dom.btnProcess.addEventListener('click', async () => {
+      if (dom.btnReset)
+      // @ts-ignore
+      dom.btnReset.disabled = true;
       stopPlayback();
       state.formatJob++;
       state.masteredBuffer = null;
@@ -1401,6 +1409,9 @@
         if (dom.btnProcess)
         // @ts-ignore
         dom.btnProcess.disabled = !state.rawBuffer;
+        if (dom.btnReset)
+        // @ts-ignore
+        dom.btnReset.disabled = false;
       }
     });
     if (dom.exportFormat)
@@ -1488,6 +1499,20 @@
       if (dom.btnPlay)
       dom.btnPlay.textContent = '3. Play Audio';
     }
+    if (dom.btnReset)
+    dom.btnReset.addEventListener('click', () => {
+      if (state.isPlaying || state.masteredBuffer || state.processedBuffer || state.busy) {
+        stopPlayback();
+      }
+      state.params = { ...defaultStateParams };
+      for (let paramKey of Object.keys(defaultStateParams)) {
+        const storageKey = "storageKey" + paramKey;
+        // @ts-ignore
+        const storageValue = defaultStateParams[paramKey].toString();
+        localStorage.setItem(storageKey, storageValue);
+      }
+      globalThis.setupBindAllSliders();
+    });
     /**
      * 7. WAV ENCODER & DOWNLOAD
      */
@@ -1610,6 +1635,7 @@
         }
       });
     }
+    globalThis.setupBindAllSliders = function () {
     bindSlider('ctrl-bass-freq', 'val-bass-freq', 'bassFreq', v => `${v} Hz`);
     bindSlider('ctrl-bass-boost', 'val-bass-boost', 'bassBoost', v => `${v.toFixed(1)} dB`);
     bindSlider('ctrl-treble-freq', 'val-treble-freq', 'trebleFreq', v => `${v} Hz`);
@@ -1627,6 +1653,8 @@
     bindSlider('ctrl-brickwall', 'val-brickwall', 'brickwallDB', v => `${v.toFixed(1)} dB`);
     bindSlider('ctrl-lufs', 'val-lufs', 'targetLUFS', v => `${v.toFixed(1)} LUFS`);
     bindSlider('ctrl-lra', 'val-lra', 'maxLRA', v => `${v.toFixed(1)} LU`);
+    };
+    globalThis.setupBindAllSliders();
     document.querySelectorAll('input[type="range"]').forEach(el => {
       if (!el.parentElement) return;
       const lbl = el.parentElement.querySelector('.slider-label span');
