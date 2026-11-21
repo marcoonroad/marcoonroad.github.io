@@ -4,6 +4,10 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Web Audio Mastering Studio</title>
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet"/>
+  <!--
+  <link rel="stylesheet" href="https://googleapis.com" />
+  -->
   <style>
     :root {
       --bg: #111318;
@@ -87,6 +91,53 @@
       font: 9px/12px system-ui, sans-serif; color: #e5e7eb; background: rgba(9,10,13,.82);
     }
     .spec-tick.nyq span { top: 0; } /* keep the top label inside the canvas */
+    div.right-column > div.controls-grid > div.card {
+      /*
+      transition: 1s;
+      */
+    }
+    div.right-column > div.controls-grid > div.card > h3 {
+      cursor: pointer;
+      vertical-align: middle;
+      align-items: center;
+      align-content: center;
+      flex-direction: row;
+      flex-flow: row;
+      display: flex;
+    }
+    div.right-column > div.controls-grid > div.card > div.slider-row {
+      display: none;
+      visibility: hidden;
+    }
+    @keyframes slider-title-fadein {
+      from { color: #3b82f600; }
+      to   { color: #3b82f6ff; }
+    }
+    div.right-column > div.controls-grid > div.card > h3 > span.title-label {
+      margin-top: 0.1em;
+      display: flex;
+      padding-left: 0.1em;
+      color: transparent;
+      animation-name: slider-title-fadein;
+      animation-duration: 2s;          /* Animation window/length: 1s */
+      animation-timing-function: ease-out;
+      animation-delay: 0s;             /* Delay before starting: 1s */
+      animation-iteration-count: 1;    /* Play only once (this is also the default) */
+      animation-fill-mode: both;       /* Holds start state during delay & end state after finishing */
+    }
+    div.right-column > div.controls-grid > div.card > h3 > span.material-icons {
+      display: flex;
+      color: transparent;
+      animation-name: slider-title-fadein;
+      animation-duration: 2s;          /* Animation window/length: 1s */
+      animation-timing-function: ease-out;
+      animation-delay: 0s;             /* Delay before starting: 1s */
+      animation-iteration-count: 1;    /* Play only once (this is also the default) */
+      animation-fill-mode: both;       /* Holds start state during delay & end state after finishing */
+    }
+    div.right-column > div.controls-grid > div.card > h3:hover > span.title-label {
+      text-decoration: underline;
+    }
   </style>
 </head>
 <body>
@@ -144,9 +195,41 @@
     <div class="right-column">
     <!-- PIPELINE SLIDERS -->
     <div class="controls-grid">
+    <div class="card">
+      <h3 class="export-title">WAV Export Format</h3>
+      <select id="export-format" aria-label="WAV export format">
+        <option value="48000-24">48 kHz · 24-bit</option>
+        <option value="44100-16">44.1 kHz · 16-bit (dithered)</option>
+      </select>
+      <p class="export-note">Imports use a 48 kHz / 24-bit working format. Playback and the processed spectrogram follow this selection. Heavy analysis runs in a background Worker.</p>
+    </div>
 
     <div class="card">
-      <h3>1. Soft Audio Compressor</h3>
+      <h3><span class="material-icons">keyboard_arrow_down</span><span class="title-label">1A. Subtractive Bass EQ</span></h3>
+      <div class="slider-row">
+        <div class="slider-label"><span>Bass Freq (Hz)</span><span id="val-bass-freq">100 Hz</span></div>
+        <input type="range" id="ctrl-bass-freq" min="80" max="160" step="5" value="100" />
+      </div>
+      <div class="slider-row">
+        <div class="slider-label"><span>Bass Gain</span><span id="val-bass-boost">2 dB</span></div>
+        <input type="range" id="ctrl-bass-boost" min="-4" max="4" step="1" value="2" />
+      </div>
+    </div>
+
+    <div class="card">
+      <h3><span class="material-icons">keyboard_arrow_down</span><span class="title-label">1B. Subtractive Treble EQ</span></h3>
+      <div class="slider-row">
+        <div class="slider-label"><span>Treble Freq (Hz)</span><span id="val-treble-freq">100 Hz</span></div>
+        <input type="range" id="ctrl-treble-freq" min="2000" max="8000" step="100" value="2000" />
+      </div>
+      <div class="slider-row">
+        <div class="slider-label"><span>Treble Gain</span><span id="val-treble-boost">-2 dB</span></div>
+        <input type="range" id="ctrl-treble-boost" min="-4" max="4" step="1" value="-2" />
+      </div>
+    </div>
+
+    <div class="card">
+      <h3><span class="material-icons">keyboard_arrow_down</span><span class="title-label">2. Soft Audio Compressor</span></h3>
       <div class="slider-row">
         <div class="slider-label"><span>Threshold (dB)</span><span id="val-comp-thresh">-8.0 dB</span></div>
         <input type="range" id="ctrl-comp-thresh" min="-24" max="0" step="0.5" value="-8" />
@@ -158,7 +241,7 @@
     </div>
 
     <div class="card">
-      <h3>2. Soft Saturation (Harmonics Exciter)</h3>
+      <h3><span class="material-icons">keyboard_arrow_down</span><span class="title-label">3. Soft Saturation (Harmonics Exciter)</span></h3>
       <div class="slider-row">
         <div class="slider-label"><span>Drive Amount</span><span id="val-sat">1.25</span></div>
         <input type="range" id="ctrl-sat" min="1.0" max="4.0" step="0.05" value="1.25" />
@@ -166,13 +249,15 @@
     </div>
 
     <div class="card">
-      <h3>3A. Bass Mono Maker (De-stereo)</h3>
+      <h3><span class="material-icons">keyboard_arrow_down</span><span class="title-label">4A. Bass Mono Maker (De-stereo)</span></h3>
       <div class="slider-row">
         <div class="slider-label"><span>Mono Upper Limit</span><span id="val-mono-freq">120 Hz</span></div>
         <input type="range" id="ctrl-mono-freq" min="80" max="160" step="5" value="120" />
       </div>
-      <p></p>
-      <h3>3B. High-Band Stereo Widener/Imaging</h3>
+    </div>
+
+    <div class="card">
+      <h3><span class="material-icons">keyboard_arrow_down</span><span class="title-label">4B. High-Band Stereo Widener/Imaging</span></h3>
       <div class="slider-row">
         <div class="slider-label"><span>Crossover Freq</span><span id="val-wide-freq">5000 Hz</span></div>
         <input type="range" id="ctrl-wide-freq" min="2000" max="8000" step="100" value="5000" />
@@ -184,7 +269,14 @@
     </div>
 
     <div class="card">
-      <h3>4 & 5. Soft-Clip & Brickwall Limiter</h3>
+      <h3 class="export-title" style="cursor: not-allowed;">
+      <span class="material-icons" style="color: transparent !important;">keyboard_arrow_down</span>
+      <span class="title-label" style="text-decoration: none !important;">5. Additive-Mirrored Bass EQ and Treble EQ</span>
+      </h3>
+    </div>
+
+    <div class="card">
+      <h3><span class="material-icons">keyboard_arrow_down</span><span class="title-label">6. Soft-Clip and Brickwall Limiter</span></h3>
       <div class="slider-row">
         <div class="slider-label"><span>Soft-Clip Ceiling</span><span id="val-softclip">-0.1 dB (0.989)</span></div>
         <input type="range" id="ctrl-softclip" min="-3.0" max="0.0" step="0.1" value="-0.1" />
@@ -196,7 +288,23 @@
     </div>
 
     <div class="card">
-      <h3>6. Loudness Target Normalization</h3>
+      <h3><span class="material-icons">keyboard_arrow_down</span><span class="title-label">7. Room Reverb (Warning - in Beta)</span></h3>
+      <div class="slider-row">
+        <div class="slider-label"><span>Wet Level</span><span id="val-room-wet">10%</span></div>
+        <input type="range" id="ctrl-room-wet" min="0" max="50" step="1" value="10" />
+      </div>
+      <div class="slider-row">
+        <div class="slider-label"><span>Room Size</span><span id="val-room-size">1.00x</span></div>
+        <input type="range" id="ctrl-room-size" min="0.7" max="1.4" step="0.05" value="1.0" />
+      </div>
+      <div class="slider-row">
+        <div class="slider-label"><span>Decay (approx. RT60)</span><span id="val-room-decay">0.8 s</span></div>
+        <input type="range" id="ctrl-room-decay" min="0.4" max="2.5" step="0.1" value="0.8" />
+      </div>
+    </div>
+
+    <div class="card">
+      <h3><span class="material-icons">keyboard_arrow_down</span><span class="title-label">8. Loudness Target Normalization</span></h3>
       <div class="slider-row">
         <div class="slider-label"><span>Target LUFS</span><span id="val-lufs">-14.0 LUFS</span></div>
         <input type="range" id="ctrl-lufs" min="-20" max="-8" step="0.5" value="-14" />
@@ -206,15 +314,6 @@
         <input type="range" id="ctrl-lra" min="4" max="14" step="0.5" value="8" />
       </div>
     </div>
-    </div>
-
-    <div class="card">
-      <h3>WAV Export Format</h3>
-      <select id="export-format" aria-label="WAV export format">
-        <option value="48000-24">48 kHz · 24-bit</option>
-        <option value="44100-16">44.1 kHz · 16-bit (dithered)</option>
-      </select>
-      <p class="export-note">Imports use a 48 kHz / 24-bit working format. Playback and the processed spectrogram follow this selection. Heavy analysis runs in a background Worker.</p>
     </div>
     </div>
   </div>
@@ -479,6 +578,14 @@
       }
 
       _build() {
+        // Stage 0: Subtractive EQ
+        // Subtractive EQ first
+        this.subEQBass   = this.makeEQ({ type: 'lowshelf',  freq: this.params.bassFreq,   gain: -1 * this.params.bassBoost });
+        this.addEQTreble = this.makeEQ({ type: 'highshelf', freq: this.params.trebleFreq, gain: this.params.trebleBoost });
+        // Additive EQ later in the chain
+        this.subEQTreble = this.makeEQ({ type: 'highshelf', freq: this.params.trebleFreq, gain: -1 * this.params.trebleBoost });
+        this.addEQBass   = this.makeEQ({ type: 'lowshelf',  freq: this.params.bassFreq,   gain: this.params.bassBoost });
+
         // Stage 1: Soft Compressor
         this.softComp = this.ctx.createDynamicsCompressor();
         this.softComp.threshold.value = this.params.compThresh;
@@ -520,8 +627,18 @@
         this.normGain = this.ctx.createGain();
         this.normGain.gain.value = 1.0;
 
+        const reverbNodes = this.createRoomReverbStage(
+          this.params.roomWet / 100,
+          this.params.roomSize,
+          this.params.roomDecay
+        );
+        this.roomIn = reverbNodes.input;
+        this.roomOut = reverbNodes.output;
+
         // Connect in exact requested order
         this.input
+          .connect(this.subEQBass)
+          .connect(this.addEQTreble)
           .connect(this.softComp)
           .connect(this.exciter)
           .connect(this.monoIn);
@@ -529,8 +646,13 @@
           .connect(this.wideIn);
 
         this.wideOut
+          .connect(this.subEQTreble)
+          .connect(this.addEQBass)
           .connect(this.softClipper)
           .connect(this.brickwall)
+          .connect(this.roomIn)
+
+        this.roomOut
           .connect(this.normGain)
           .connect(this.output);
       }
@@ -553,6 +675,120 @@
         mid.connect(merger, 0, 0); hp2.connect(merger, 0, 0);                           // L = M + S'
         mid.connect(merger, 0, 1); hp2.connect(invSide); invSide.connect(merger, 0, 1); // R = M - S'
         merger.connect(outNode);
+      }
+
+      /**
+       * @param {Object} config
+       * @param {BiquadFilterType} [config.type]
+       * @param {number} [config.freq]
+       * @param {number} [config.gain]
+       * @param {number} [config.q]
+       * @description Either lowshelf or highshelf accept gain, lowpass and highpass not
+      */
+      makeEQ({ type = 'lowshelf', freq = 100, gain = 0, q = 1 }) {
+        const f = this.ctx.createBiquadFilter();
+        f.type = type;
+        f.frequency.value = freq;
+        f.gain.value = gain; // dB
+        f.Q.value = q;       // only matters for 'peaking' (bandwidth) and lowpass/highpass (resonance)
+        return f;
+      }
+
+      /**
+       * @param {number} wetLevel
+       * @param {number} roomSize
+       * @param {number} decaySeconds
+       */
+      createRoomReverbStage(wetLevel, roomSize, decaySeconds) {
+        const ctx = this.ctx;
+        const input = ctx.createGain();
+        const output = ctx.createGain();
+
+        // Keep dry path untouched
+        input.connect(output);
+        if (wetLevel <= 0) return { input, output };
+
+        // Pre-delay + band-limiting before diffusion prevents direct transient comb-filtering
+        const preDelay = ctx.createDelay(0.1);
+        preDelay.delayTime.value = 0.015 * roomSize; // 15 ms pre-delay
+
+        const wetHighpass = ctx.createBiquadFilter();
+        wetHighpass.type = 'highpass';
+        wetHighpass.frequency.value = 180;
+        wetHighpass.Q.value = 0.707;
+
+        const wetLowpass = ctx.createBiquadFilter();
+        wetLowpass.type = 'lowpass';
+        wetLowpass.frequency.value = 6000;
+        wetLowpass.Q.value = 0.707;
+
+        const wetGain = ctx.createGain();
+        wetGain.gain.value = wetLevel;
+
+        /**
+         * All-pass diffuser (delaySeconds must stay > 128 / sampleRate ≈ 0.0027s)
+         * @param {AudioNode} source
+         * @param {number} delaySeconds
+         * @param {number} coefficient
+         */
+        const createAllPass = (source, delaySeconds, coefficient) => {
+          const delay = ctx.createDelay(0.1);
+          const apOut = ctx.createGain();
+          const direct = ctx.createGain();
+          const feedback = ctx.createGain();
+          delay.delayTime.value = Math.max(0.003, delaySeconds * roomSize);
+          direct.gain.value = -coefficient;
+          feedback.gain.value = coefficient;
+          source.connect(direct).connect(apOut);
+          source.connect(delay).connect(apOut);
+          apOut.connect(feedback).connect(delay);
+          return apOut;
+        };
+
+        // Input diffusion smears hi-hat & kick transients BEFORE hitting the comb bank
+        input.connect(preDelay).connect(wetHighpass).connect(wetLowpass);
+        const diff1 = createAllPass(wetLowpass, 0.0047, 0.65);
+        const diff2 = createAllPass(diff1, 0.0073, 0.65);
+        const diff3 = createAllPass(diff2, 0.0113, 0.60);
+
+        // Split into decorrelated L/R comb banks so the tail blooms wide instead of clanging mono
+        const splitter = ctx.createChannelSplitter(2);
+        const merger = ctx.createChannelMerger(2);
+        diff3.connect(splitter);
+
+        const combConfigs = [
+          { l: 0.0297, r: 0.0319 },
+          { l: 0.0371, r: 0.0353 },
+          { l: 0.0411, r: 0.0433 },
+          { l: 0.0467, r: 0.0449 },
+        ];
+
+        combConfigs.forEach(({ l, r }) => {
+          [
+            { ch: 0, baseTime: l },
+            { ch: 1, baseTime: r },
+          ].forEach(({ ch, baseTime }) => {
+            const delayTime = baseTime * roomSize;
+            const delay = ctx.createDelay(0.2);
+            const damping = ctx.createBiquadFilter();
+            const feedback = ctx.createGain();
+            const combGain = ctx.createGain();
+
+            delay.delayTime.value = delayTime;
+            damping.type = 'lowpass';
+            damping.frequency.value = 4200; // Darker feedback loop tames metallic hat ring
+            damping.Q.value = 0.707;
+            feedback.gain.value = Math.pow(10, (-3 * delayTime) / decaySeconds);
+            combGain.gain.value = 0.25;
+
+            splitter.connect(delay, ch);
+            delay.connect(combGain).connect(merger, 0, ch);
+            delay.connect(damping).connect(feedback).connect(delay);
+          });
+        });
+
+        merger.connect(wetGain).connect(output);
+        return { input, output };
       }
 
       /**
@@ -649,12 +885,19 @@
 
     /**
      * @typedef {Object} MasterStateParams
+     * @property {number} bassFreq
+     * @property {number} bassBoost
+     * @property {number} trebleFreq
+     * @property {number} trebleBoost
      * @property {number} satDrive
      * @property {number} compThresh
      * @property {number} compRatio
      * @property {number} monoFreq
      * @property {number} wideFreq
      * @property {number} wideWidth
+     * @property {number} roomWet
+     * @property {number} roomSize
+     * @property {number} roomDecay
      * @property {number} softClipDB
      * @property {number} brickwallDB
      * @property {number} targetLUFS
@@ -666,12 +909,19 @@
      * @type {MasterStateParams}
      */
     const defaultStateParams = {
+      bassFreq: 100,
+      bassBoost: 2,
+      trebleFreq: 2000,
+      trebleBoost: -2,
       satDrive: 1.25,
       compThresh: -8.0,
       compRatio: 4.0,
       monoFreq: 120,
       wideFreq: 5000,
       wideWidth: 1.25,
+      roomWet: 10,
+      roomSize: 1.0,
+      roomDecay: 0.8,
       softClipDB: -0.1,
       brickwallDB: -1.0,
       targetLUFS: -14.0,
@@ -978,12 +1228,13 @@
       state.busy = true;
       state.note = '';
       if (dom.status)
-      dom.status.textContent = 'Processing audio through 6-stage mastering chain...';
+      dom.status.textContent = 'Processing audio through all stages of mastering chain...';
       /**
        * @param {MasterStateParams} p
        */
       const renderOnce = async (p) => {
-        const offCtx = new OfflineAudioContext(raw.numberOfChannels, raw.length, raw.sampleRate);
+        const tailSamples = p.roomWet > 0 ? Math.ceil(p.roomDecay * 2 * raw.sampleRate) : 0;
+        const offCtx = new OfflineAudioContext(raw.numberOfChannels, raw.length + tailSamples, raw.sampleRate);
         const chain = new MasteringPipeline(offCtx, p);
         const src = offCtx.createBufferSource();
         src.buffer = raw;
@@ -1316,6 +1567,7 @@
      * @description 8. SLIDER BINDINGS
      */
     function bindSlider(id, valId, paramKey, formatter) {
+      const storageKey = "storageKey" + paramKey;
       /**
        * @type {HTMLInputElement | null}
        */
@@ -1323,12 +1575,21 @@
       // @ts-ignore
       el = document.getElementById(id);
       const valEl = document.getElementById(valId);
-      if (el)
+      if (!el || !valEl) return;
+      const storageValue = localStorage.getItem(storageKey);
+      if (storageValue !== null) {
+        const parsedValue = parseFloat(storageValue);
+        el.value = storageValue;
+        // @ts-ignore
+        state.params[paramKey] = parsedValue;
+        valEl.textContent = formatter(parsedValue);
+      }
       el.addEventListener('input', () => {
         const v = parseFloat(el.value);
         // @ts-ignore
         state.params[paramKey] = v;
-        if (valEl)
+        localStorage.setItem(storageKey, el.value);
+        // if (valEl)
         valEl.textContent = formatter(v);
         state.processJob++;
         if (state.masteredBuffer || state.processedBuffer || state.busy) {
@@ -1349,12 +1610,19 @@
         }
       });
     }
+    bindSlider('ctrl-bass-freq', 'val-bass-freq', 'bassFreq', v => `${v} Hz`);
+    bindSlider('ctrl-bass-boost', 'val-bass-boost', 'bassBoost', v => `${v.toFixed(1)} dB`);
+    bindSlider('ctrl-treble-freq', 'val-treble-freq', 'trebleFreq', v => `${v} Hz`);
+    bindSlider('ctrl-treble-boost', 'val-treble-boost', 'trebleBoost', v => `${v.toFixed(1)} dB`);
     bindSlider('ctrl-sat', 'val-sat', 'satDrive', v => v.toFixed(2));
     bindSlider('ctrl-comp-thresh', 'val-comp-thresh', 'compThresh', v => `${v.toFixed(1)} dB`);
     bindSlider('ctrl-comp-ratio', 'val-comp-ratio', 'compRatio', v => `${v.toFixed(1)} : 1`);
     bindSlider('ctrl-mono-freq', 'val-mono-freq', 'monoFreq', v => `${v} Hz`);
     bindSlider('ctrl-wide-freq', 'val-wide-freq', 'wideFreq', v => `${v} Hz`);
     bindSlider('ctrl-wide-width', 'val-wide-width', 'wideWidth', v => `${v.toFixed(2)}x`);
+    bindSlider('ctrl-room-wet', 'val-room-wet', 'roomWet', v => `${v.toFixed(0)}%`);
+    bindSlider('ctrl-room-size', 'val-room-size', 'roomSize', v => `${v.toFixed(2)}x`);
+    bindSlider('ctrl-room-decay', 'val-room-decay', 'roomDecay', v => `${v.toFixed(1)} s`);
     bindSlider('ctrl-softclip', 'val-softclip', 'softClipDB', v => `${v.toFixed(1)} dB (${Math.pow(10, v / 20).toFixed(3)})`);
     bindSlider('ctrl-brickwall', 'val-brickwall', 'brickwallDB', v => `${v.toFixed(1)} dB`);
     bindSlider('ctrl-lufs', 'val-lufs', 'targetLUFS', v => `${v.toFixed(1)} LUFS`);
@@ -1365,6 +1633,64 @@
       if (lbl) el.setAttribute('aria-label', lbl.textContent);
       el.dispatchEvent(new Event('input'));
     });
+  </script>
+  <script>
+    (function () {
+      /**
+       * @param {any} child
+       * @param {number} _key
+       * @param {NodeListOf<ChildNode>} _parent
+      */
+      const startupIterator = function (child, _key, _parent) {
+        child.style.display = "none";
+        child.style.visibility = "hidden";
+      };
+      document.querySelectorAll("div.right-column > div.controls-grid > div.card > div.slider-row").forEach(startupIterator);
+
+      /**
+       * @param {any} cardTitle
+       * @param {number} _key
+       * @param {NodeListOf<ChildNode>} _parent
+       */
+      const cardIterator = function (cardTitle, _key, _parent) {
+        /**
+         * @param {any} child
+         * @param {number} _key
+         * @param {NodeListOf<ChildNode>} _parent
+         */
+        const sliderIterator = function (child, _key, _parent) {
+          if (child.className !== "slider-row") return;
+          child.style.display    = child.style.display    === "none"   ? "block"   : "none";
+          child.style.visibility = child.style.visibility === "hidden" ? "visible" : "hidden";
+        }
+
+        /**
+         * @param {HTMLElement} child
+         * @param {number} _key
+         * @param {NodeListOf<ChildNode>} _parent
+         */
+        const iconSwitcher = function (child, _key, _parent) {
+          if (child.className === "material-icons") {
+            child.innerHTML =
+              child.innerHTML === "keyboard_arrow_up" ?
+              "keyboard_arrow_down" :
+              "keyboard_arrow_up";
+          }
+        };
+
+        if (cardTitle.className === "export-title") return;
+        /**
+         * @param {PointerEvent} event
+         */
+        const onclick = function (event) {
+          if (!cardTitle.parentElement) return;
+          cardTitle.parentElement.childNodes.forEach(sliderIterator);
+          cardTitle.childNodes.forEach(iconSwitcher);
+        };
+        cardTitle.addEventListener('click', onclick);
+      };
+      document.querySelectorAll("div.right-column > div.controls-grid > div.card > h3").forEach(cardIterator);
+    })();
   </script>
 </body>
 </html>
